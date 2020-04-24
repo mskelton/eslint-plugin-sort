@@ -48,24 +48,21 @@ function autofix(context: Rule.RuleContext, node: ObjectPattern) {
   });
 }
 
+const isProperty = (
+  node: AssignmentProperty | RestElement
+): node is AssignmentProperty => node.type === "Property";
+
 function sort(node: ObjectPattern, context: Rule.RuleContext) {
+  const properties = node.properties.filter(isProperty);
+
+  // If there is one or less property, there is nothing to sort.
+  if (properties.length < 2) {
+    return;
+  }
+
   let lastUnsortedNode: AssignmentProperty | null = null;
 
-  node.properties.reduce((previousNode, currentNode) => {
-    // Rest elements must always be the last node. As such, we skip the rest
-    // elements if they are the current node as we will process them when
-    // they are the previous node.
-    if (currentNode.type === "RestElement") {
-      return currentNode;
-    }
-
-    // If the rest element is the previous node, it was not placed at the end of
-    // the destructuring pattern. Fortunately, we can autofix this mistake.
-    if (previousNode.type === "RestElement") {
-      console.log("bad");
-      return currentNode;
-    }
-
+  properties.reduce((previousNode, currentNode) => {
     const previousText = getNodeText(previousNode);
     const currentText = getNodeText(currentNode);
 

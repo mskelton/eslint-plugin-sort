@@ -1,5 +1,6 @@
 import { RuleTester } from "eslint";
 import rule from "../rules/sort-object-patterns";
+import { invalidFixture, validFixture } from "./utils";
 
 const messages = rule.meta!.messages! as Record<
   "unsorted" | "unsortedPattern",
@@ -30,6 +31,7 @@ const ruleTester = new RuleTester({
 ruleTester.run("sort/object-patterns", rule, {
   valid: [
     // Basic
+    valid("{}"),
     valid("{a}"),
     valid("{a, b, c}"),
     valid("{_, a, b}"),
@@ -44,6 +46,7 @@ ruleTester.run("sort/object-patterns", rule, {
     valid("{...rest}"),
 
     // Comments
+    validFixture("object-patterns/valid-comments"),
   ],
   invalid: [
     // Basic
@@ -84,12 +87,6 @@ ruleTester.run("sort/object-patterns", rule, {
       messages.unsortedPattern,
       error("a", "c")
     ),
-    // invalid(
-    //   "{c, a, ...rest, b}",
-    //   "{a, b, c, ...rest}",
-    //   'Expected "a" to be before "c".',
-    //   "Expected "
-    // ),
 
     // All properties are sorted with a single sort
     invalid(
@@ -109,5 +106,10 @@ ruleTester.run("sort/object-patterns", rule, {
     ),
 
     // Comments
+    invalidFixture(
+      "object-patterns/invalid-comments",
+      messages.unsortedPattern,
+      error("a", "b")
+    ),
   ],
 });
