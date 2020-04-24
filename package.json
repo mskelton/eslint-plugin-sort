@@ -1,0 +1,26 @@
+{
+  "name": "eslint-plugin-sort",
+  "description": "Autofixable sort rules for ESLint.",
+  "version": "0.0.0-semantically-released",
+  "author": "Mark Skelton",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mskelton/eslint-plugin-sort.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mskelton/eslint-plugin-sort/issues"
+  },
+  "homepage": "https://github.com/mskelton/eslint-plugin-sort#readme",
+  "license": "MIT",
+  "keywords": [
+    "eslint",
+    "sort",
+    "fix"
+  ],
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.29.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "prettier": "^2.0.5"
+  }
+}
