@@ -1,3 +1,8 @@
 {
-  "extends": "@mskelton/tsconfig"
+  "extends": "@mskelton/tsconfig",
+  "compilerOptions": {
+    "declarationMap": false,
+    "rootDir": "src",
+    "outDir": "lib"
+  }
 }

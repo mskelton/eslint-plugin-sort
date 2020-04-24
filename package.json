@@ -14,9 +14,19 @@
   "license": "MIT",
   "keywords": [
     "eslint",
+    "eslint-plugin",
     "sort",
     "fix"
   ],
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "eslint": ">=6"
+  },
   "devDependencies": {
     "@mskelton/tsconfig": "^1.0.2",
     "@types/node": "^13.13.2",
