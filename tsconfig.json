@@ -1,8 +1,10 @@
 {
   "extends": "@mskelton/tsconfig",
   "compilerOptions": {
-    "declarationMap": false,
     "rootDir": "src",
-    "outDir": "lib"
+    "outDir": "lib",
+    "module": "CommonJS",
+    "emitDeclarationOnly": false,
+    "declarationMap": false
   }
 }
