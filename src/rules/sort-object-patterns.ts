@@ -1,12 +1,55 @@
 import { Rule } from "eslint";
-import ESTree from "estree";
+import {
+  AssignmentProperty,
+  Identifier,
+  ObjectPattern,
+  RestElement,
+} from "estree";
+import { getNodeGroupRange, getSorter, getTextBetweenNodes } from "./utils";
 
-function getNodeText(node: ESTree.AssignmentProperty) {
-  return node.value.name;
+type Property = AssignmentProperty | RestElement;
+
+function getNodeText(node: AssignmentProperty) {
+  return (node.value as Identifier).name;
 }
 
-function sort(node: ESTree.ObjectPattern, context: Rule.RuleContext) {
-  let lastUnsortedNode: ESTree.AssignmentProperty | null = null;
+function getNodeSortValue(node: Property) {
+  if (node.type === "RestElement") {
+    return Infinity;
+  }
+
+  return getNodeText(node).toLowerCase();
+}
+
+function autofix(context: Rule.RuleContext, node: ObjectPattern) {
+  const sourceCode = context.getSourceCode();
+
+  context.report({
+    node,
+    messageId: "unsortedPattern",
+    fix(fixer) {
+      const text = node.properties
+        .slice()
+        .sort(getSorter(getNodeSortValue))
+        .reduce((acc, currentNode, index) => {
+          return (
+            acc +
+            sourceCode.getText(currentNode) +
+            getTextBetweenNodes(
+              sourceCode,
+              node.properties[index],
+              node.properties[index + 1]
+            )
+          );
+        }, "");
+
+      return fixer.replaceTextRange(getNodeGroupRange(node.properties), text);
+    },
+  });
+}
+
+function sort(node: ObjectPattern, context: Rule.RuleContext) {
+  let lastUnsortedNode: AssignmentProperty | null = null;
 
   node.properties.reduce((previousNode, currentNode) => {
     // Rest elements must always be the last node. As such, we skip the rest
@@ -47,10 +90,7 @@ function sort(node: ESTree.ObjectPattern, context: Rule.RuleContext) {
   // track the last unsorted property and add special error with an autofix
   // rule which will sort the entire object pattern at once.
   if (lastUnsortedNode) {
-    context.report({
-      node: lastUnsortedNode,
-      messageId: "unsortedPattern",
-    });
+    autofix(context, node);
   }
 }
 
@@ -58,11 +98,12 @@ export default {
   create(context) {
     return {
       ObjectPattern(node) {
-        return sort(node as ESTree.ObjectPattern, context);
+        return sort(node as ObjectPattern, context);
       },
     };
   },
   meta: {
+    fixable: "code",
     messages: {
       unsorted: "Expected '{{a}}' to be before '{{b}}'.",
       unsortedPattern: "Expected destructured properties to be sorted.",

@@ -15,7 +15,7 @@ const invalid = (
 ): RuleTester.InvalidTestCase => ({
   code: `let ${input} = {}`,
   errors,
-  // output: `let ${output} = {}`,
+  output: `let ${output} = {}`,
 });
 
 const error = (a: string, b: string) =>
@@ -50,39 +50,39 @@ ruleTester.run("sort/object-patterns", rule, {
     invalid(
       "{c, a, b}",
       "{a, b, c}",
-      error("a", "c"),
-      messages.unsortedPattern
+      messages.unsortedPattern,
+      error("a", "c")
     ),
     invalid(
       "{b, a, _}",
       "{_, a, b}",
+      messages.unsortedPattern,
       error("a", "b"),
-      error("_", "a"),
-      messages.unsortedPattern
+      error("_", "a")
     ),
 
     // Case insensitive
     invalid(
       "{b, A, _}",
       "{_, A, b}",
+      messages.unsortedPattern,
       error("A", "b"),
-      error("_", "A"),
-      messages.unsortedPattern
+      error("_", "A")
     ),
     invalid(
       "{D, a, c, B}",
       "{a, B, c, D}",
+      messages.unsortedPattern,
       error("a", "D"),
-      error("B", "c"),
-      messages.unsortedPattern
+      error("B", "c")
     ),
 
     // Rest element
     invalid(
       "{c, a, b, ...rest}",
       "{a, b, c, ...rest}",
-      error("a", "c"),
-      messages.unsortedPattern
+      messages.unsortedPattern,
+      error("a", "c")
     ),
     // invalid(
     //   "{c, a, ...rest, b}",
@@ -91,10 +91,11 @@ ruleTester.run("sort/object-patterns", rule, {
     //   "Expected "
     // ),
 
-    //
+    // All properties are sorted with a single sort
     invalid(
       "{z,y,x,w,v,u,t,s,r,q,p}",
-      "{p,q,s,r,t,u,v,w,x,y,z}",
+      "{p,q,r,s,t,u,v,w,x,y,z}",
+      messages.unsortedPattern,
       error("y", "z"),
       error("x", "y"),
       error("w", "x"),
@@ -104,8 +105,7 @@ ruleTester.run("sort/object-patterns", rule, {
       error("s", "t"),
       error("r", "s"),
       error("q", "r"),
-      error("p", "q"),
-      messages.unsortedPattern
+      error("p", "q")
     ),
 
     // Comments
