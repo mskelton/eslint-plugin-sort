@@ -7,9 +7,9 @@ module.exports = {
     recommended: {
       plugins: ["sort"],
       rules: {
-        "sort/imports": ["warn", { fix: true }],
-        "sort/object-patterns": ["warn", { fix: true }],
-        "sort/object-properties": ["warn", { fix: true }],
+        "sort/imports": "warn",
+        "sort/object-patterns": "warn",
+        "sort/object-properties": "warn",
       },
     },
   },

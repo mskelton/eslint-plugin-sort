@@ -1,0 +1,113 @@
+import { RuleTester } from "eslint";
+import rule from "../rules/sort-object-patterns";
+
+const messages = rule.meta!.messages! as Record<
+  "unsorted" | "unsortedPattern",
+  string
+>;
+
+const valid = (input: string) => ({ code: `let ${input} = {}` });
+
+const invalid = (
+  input: string,
+  output: string,
+  ...errors: string[]
+): RuleTester.InvalidTestCase => ({
+  code: `let ${input} = {}`,
+  errors,
+  // output: `let ${output} = {}`,
+});
+
+const error = (a: string, b: string) =>
+  messages.unsorted.replace("{{a}}", a).replace("{{b}}", b);
+
+const ruleTester = new RuleTester({
+  parserOptions: {
+    ecmaVersion: 2018,
+  },
+});
+
+ruleTester.run("sort/object-patterns", rule, {
+  valid: [
+    // Basic
+    valid("{a}"),
+    valid("{a, b, c}"),
+    valid("{_, a, b}"),
+    valid("{p,q,r,s,t,u,v,w,x,y,z}"),
+
+    // Case insensitive
+    valid("{a, B, c, D}"),
+    valid("{_, A, b}"),
+
+    // Rest element
+    valid("{a, b, ...c}"),
+    valid("{...rest}"),
+
+    // Comments
+  ],
+  invalid: [
+    // Basic
+    invalid(
+      "{c, a, b}",
+      "{a, b, c}",
+      error("a", "c"),
+      messages.unsortedPattern
+    ),
+    invalid(
+      "{b, a, _}",
+      "{_, a, b}",
+      error("a", "b"),
+      error("_", "a"),
+      messages.unsortedPattern
+    ),
+
+    // Case insensitive
+    invalid(
+      "{b, A, _}",
+      "{_, A, b}",
+      error("A", "b"),
+      error("_", "A"),
+      messages.unsortedPattern
+    ),
+    invalid(
+      "{D, a, c, B}",
+      "{a, B, c, D}",
+      error("a", "D"),
+      error("B", "c"),
+      messages.unsortedPattern
+    ),
+
+    // Rest element
+    invalid(
+      "{c, a, b, ...rest}",
+      "{a, b, c, ...rest}",
+      error("a", "c"),
+      messages.unsortedPattern
+    ),
+    // invalid(
+    //   "{c, a, ...rest, b}",
+    //   "{a, b, c, ...rest}",
+    //   'Expected "a" to be before "c".',
+    //   "Expected "
+    // ),
+
+    //
+    invalid(
+      "{z,y,x,w,v,u,t,s,r,q,p}",
+      "{p,q,s,r,t,u,v,w,x,y,z}",
+      error("y", "z"),
+      error("x", "y"),
+      error("w", "x"),
+      error("v", "w"),
+      error("u", "v"),
+      error("t", "u"),
+      error("s", "t"),
+      error("r", "s"),
+      error("q", "r"),
+      error("p", "q"),
+      messages.unsortedPattern
+    ),
+
+    // Comments
+  ],
+});
