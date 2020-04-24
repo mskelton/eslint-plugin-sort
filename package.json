@@ -22,7 +22,8 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "format": "prettier --write ."
   },
   "peerDependencies": {
     "eslint": ">=6"
