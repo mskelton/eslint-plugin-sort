@@ -1,9 +1,9 @@
 export const input = `
 let {
+  // c
+  c,
   // b
   b,
-  c,
-  // a
   a,
   // rest
   ...rest
@@ -12,10 +12,10 @@ let {
 
 export const output = `
 let {
-  // a
   a,
   // b
   b,
+  // c
   c,
   // rest
   ...rest

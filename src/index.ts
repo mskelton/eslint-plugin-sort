@@ -1,6 +1,7 @@
 import sortImports from "./rules/sort-imports"
+import sortImportSpecifiers from "./rules/sort-imports"
+import sortObjectPatterns from "./rules/sort-object-patterns"
 import sortObjectProperties from "./rules/sort-object-properties"
-import sortObjectPatterns from "./rules/sort-destructured-properties"
 
 module.exports = {
   configs: {
@@ -8,6 +9,7 @@ module.exports = {
       plugins: ["sort"],
       rules: {
         "sort/imports": "warn",
+        "sort/imported-variables": "warn",
         "sort/destructured-properties": "warn",
         "sort/object-properties": "warn",
       },
@@ -15,6 +17,7 @@ module.exports = {
   },
   rules: {
     "sort/imports": sortImports,
+    "sort/imported-variables": sortImportSpecifiers,
     "sort/destructured-properties": sortObjectPatterns,
     "sort/object-properties": sortObjectProperties,
   },
