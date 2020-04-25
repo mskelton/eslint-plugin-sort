@@ -50,13 +50,12 @@ const isProperty = (
 
 function sort(node: ObjectPattern, context: Rule.RuleContext) {
   const properties = node.properties.filter(isProperty)
+  let unsorted = false
 
   // If there is one or less property, there is nothing to sort.
   if (properties.length < 2) {
     return
   }
-
-  let lastUnsortedNode: AssignmentProperty | null = null
 
   properties.reduce((previousNode, currentNode) => {
     if (isUnsorted(previousNode.key, currentNode.key)) {
@@ -69,7 +68,7 @@ function sort(node: ObjectPattern, context: Rule.RuleContext) {
         },
       })
 
-      lastUnsortedNode = currentNode
+      unsorted = true
     }
 
     return currentNode
@@ -79,7 +78,7 @@ function sort(node: ObjectPattern, context: Rule.RuleContext) {
   // runs to fix if there are multiple unsorted properties. Instead, we
   // track the last unsorted property and add special error with an autofix
   // rule which will sort the entire object pattern at once.
-  if (lastUnsortedNode) {
+  if (unsorted) {
     autofix(context, node)
   }
 }
