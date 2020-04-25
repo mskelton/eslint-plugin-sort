@@ -18,6 +18,7 @@
     "sort",
     "fix"
   ],
+  "main": "lib/index.js",
   "files": [
     "lib"
   ],
