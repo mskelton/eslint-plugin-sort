@@ -1,5 +1,5 @@
 import { RuleTester } from "eslint";
-import rule from "../rules/sort-object-patterns";
+import rule from "../rules/sort-destructured-properties";
 import { invalidFixture, validFixture } from "./utils";
 
 const messages = rule.meta!.messages! as Record<
@@ -46,7 +46,7 @@ ruleTester.run("sort/destructured-properties", rule, {
     valid("{...rest}"),
 
     // Comments
-    validFixture("object-patterns/valid-comments"),
+    validFixture("destructured-properties/valid-comments"),
   ],
   invalid: [
     // Basic
@@ -107,7 +107,7 @@ ruleTester.run("sort/destructured-properties", rule, {
 
     // Comments
     invalidFixture(
-      "object-patterns/invalid-comments",
+      "destructured-properties/invalid-comments",
       messages.unsortedPattern,
       error("a", "c")
     ),
