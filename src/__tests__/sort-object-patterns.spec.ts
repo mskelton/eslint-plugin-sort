@@ -28,7 +28,7 @@ const ruleTester = new RuleTester({
   },
 });
 
-ruleTester.run("sort/object-patterns", rule, {
+ruleTester.run("sort/destructured-properties", rule, {
   valid: [
     // Basic
     valid("{}"),

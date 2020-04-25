@@ -8,14 +8,14 @@ module.exports = {
       plugins: ["sort"],
       rules: {
         "sort/imports": "warn",
-        "sort/object-patterns": "warn",
+        "sort/destructured-properties": "warn",
         "sort/object-properties": "warn",
       },
     },
   },
   rules: {
     "sort/imports": sortImports,
-    "sort/object-patterns": sortObjectPatterns,
+    "sort/destructured-properties": sortObjectPatterns,
     "sort/object-properties": sortObjectProperties,
   },
 };
