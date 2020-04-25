@@ -47,7 +47,7 @@ ruleTester.run("sort/imported-variables", rule, {
     valid("{a as b, b as a}"),
 
     // Comments
-    // validFixture("import-specifiers/valid-comments"),
+    validFixture("import-specifiers/valid-comments"),
   ],
   invalid: [
     // Basic
@@ -107,10 +107,11 @@ ruleTester.run("sort/imported-variables", rule, {
     ),
 
     // Comments
-    // invalidFixture(
-    //   "import-specifiers/invalid-comments",
-    //   messages.unsortedSpecifiers,
-    //   error("a", "c")
-    // ),
+    invalidFixture(
+      "import-specifiers/invalid-comments",
+      messages.unsortedSpecifiers,
+      error("b", "c"),
+      error("a", "b")
+    ),
   ],
 })
