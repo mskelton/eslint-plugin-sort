@@ -17,12 +17,10 @@ type Specifier =
   | ImportDefaultSpecifier
   | ImportNamespaceSpecifier
 
-function getNodeText(node: ImportSpecifier) {
-  return node.imported.name
-}
-
 const isImportSpecifier = (node: Specifier): node is ImportSpecifier =>
   node.type === "ImportSpecifier"
+
+const getNodeText = (node: ImportSpecifier) => node.imported.name
 
 const getNodeSortValue = (node: Specifier) =>
   isImportSpecifier(node) ? getNodeText(node).toLowerCase() : -Infinity
