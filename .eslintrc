@@ -8,8 +8,8 @@
   },
   "extends": [
     "eslint:recommended",
-    "plugin:prettier/recommended",
     "plugin:@typescript-eslint/recommended",
+    "prettier",
     "prettier/@typescript-eslint"
   ],
   "parser": "@typescript-eslint/parser",
