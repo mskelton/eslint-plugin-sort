@@ -5,7 +5,12 @@ import {
   ObjectPattern,
   RestElement,
 } from "estree";
-import { getNodeGroupRange, getSorter, getTextBetweenNodes } from "./utils";
+import {
+  getNodeGroupRange,
+  getSorter,
+  getTextBetweenNodes,
+  getTextWithComments,
+} from "./utils";
 
 type Property = AssignmentProperty | RestElement;
 
@@ -22,7 +27,7 @@ function getNodeSortValue(node: Property) {
 }
 
 function autofix(context: Rule.RuleContext, node: ObjectPattern) {
-  const sourceCode = context.getSourceCode();
+  const source = context.getSourceCode();
 
   context.report({
     node,
@@ -34,16 +39,19 @@ function autofix(context: Rule.RuleContext, node: ObjectPattern) {
         .reduce((acc, currentNode, index) => {
           return (
             acc +
-            sourceCode.getText(currentNode) +
+            getTextWithComments(source, currentNode) +
             getTextBetweenNodes(
-              sourceCode,
+              source,
               node.properties[index],
               node.properties[index + 1]
             )
           );
         }, "");
 
-      return fixer.replaceTextRange(getNodeGroupRange(node.properties), text);
+      return fixer.replaceTextRange(
+        getNodeGroupRange(source, node.properties),
+        text
+      );
     },
   });
 }
@@ -63,16 +71,13 @@ function sort(node: ObjectPattern, context: Rule.RuleContext) {
   let lastUnsortedNode: AssignmentProperty | null = null;
 
   properties.reduce((previousNode, currentNode) => {
-    const previousText = getNodeText(previousNode);
-    const currentText = getNodeText(currentNode);
-
-    if (currentText.toLowerCase() < previousText.toLowerCase()) {
+    if (getNodeSortValue(currentNode) < getNodeSortValue(previousNode)) {
       context.report({
         node: currentNode,
         messageId: "unsorted",
         data: {
-          a: currentText,
-          b: previousText,
+          a: getNodeText(currentNode),
+          b: getNodeText(previousNode),
         },
       });
 
@@ -95,7 +100,7 @@ export default {
   create(context) {
     return {
       ObjectPattern(node) {
-        return sort(node as ObjectPattern, context);
+        sort(node as ObjectPattern, context);
       },
     };
   },

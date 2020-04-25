@@ -1,5 +1,5 @@
 import { AST, SourceCode } from "eslint";
-import { AssignmentProperty, Node, RestElement } from "estree";
+import { AssignmentProperty, Comment, Node, RestElement } from "estree";
 
 type Property = AssignmentProperty | RestElement;
 
@@ -18,12 +18,38 @@ export function getSorter(sortFn: (node: Property) => string | number) {
   };
 }
 
+const getTextRange = (
+  left: Node | Comment,
+  right: Node | Comment
+): AST.Range => [left.range![0], right.range![1]];
+
+export function getTextWithComments(source: SourceCode, node: Node) {
+  return source
+    .getText()
+    .slice(...getTextRange(source.getCommentsBefore(node)[0] || node, node));
+}
+
 export const getTextBetweenNodes = (
   source: SourceCode,
-  start: Node,
-  end: Node
-) => (end ? source.getText().slice(start.range![1], end.range![0]) : "");
+  left: Node,
+  right: Node
+) => {
+  const nextComments = right ? source.getCommentsBefore(right) : [];
+  const nextNodeStart = nextComments[0] || right;
 
-export function getNodeGroupRange(nodes: Node[]): AST.Range {
-  return [nodes[0].range![0], nodes[nodes.length - 1].range![1]];
+  const text = source
+    .getText()
+    .slice(
+      left.range![1],
+      nextNodeStart ? nextNodeStart.range![0] : left.range![1]
+    );
+
+  return text;
+};
+
+export function getNodeGroupRange(source: SourceCode, nodes: Node[]) {
+  return getTextRange(
+    source.getCommentsBefore(nodes[0])[0] || nodes[0],
+    nodes[nodes.length - 1]
+  );
 }

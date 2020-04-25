@@ -109,7 +109,7 @@ ruleTester.run("sort/object-patterns", rule, {
     invalidFixture(
       "object-patterns/invalid-comments",
       messages.unsortedPattern,
-      error("a", "b")
+      error("a", "c")
     ),
   ],
 });

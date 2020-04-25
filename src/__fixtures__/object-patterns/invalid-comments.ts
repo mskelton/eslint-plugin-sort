@@ -2,6 +2,7 @@ export const input = `
 let {
   // b
   b,
+  c,
   // a
   a,
   // rest
@@ -15,6 +16,7 @@ let {
   a,
   // b
   b,
+  c,
   // rest
   ...rest
 } = {}
