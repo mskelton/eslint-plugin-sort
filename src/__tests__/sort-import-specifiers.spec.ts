@@ -25,7 +25,7 @@ const ruleTester = new RuleTester({
   },
 })
 
-ruleTester.run("sort/destructured-properties", rule, {
+ruleTester.run("sort/imported-variables", rule, {
   valid: [
     // Basic
     valid("{}"),
@@ -47,7 +47,7 @@ ruleTester.run("sort/destructured-properties", rule, {
     valid("{a as b, b as a}"),
 
     // Comments
-    // validFixture("destructured-properties/valid-comments"),
+    // validFixture("import-specifiers/valid-comments"),
   ],
   invalid: [
     // Basic
@@ -108,7 +108,7 @@ ruleTester.run("sort/destructured-properties", rule, {
 
     // Comments
     // invalidFixture(
-    //   "destructured-properties/invalid-comments",
+    //   "import-specifiers/invalid-comments",
     //   messages.unsortedSpecifiers,
     //   error("a", "c")
     // ),

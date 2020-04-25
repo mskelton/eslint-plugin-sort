@@ -1,18 +1,18 @@
 import { AST, SourceCode } from "eslint"
-import { AssignmentProperty, Comment, Node, RestElement } from "estree"
+import { Comment, Node } from "estree"
 
-type Property = AssignmentProperty | RestElement
-
-export function getSorter(sortFn: (node: Property) => string | number) {
-  return (a: Property, b: Property) => {
+export function getSorter<T extends Node>(
+  sortFn: (node: T) => string | number
+) {
+  return (a: T, b: T) => {
     const aText = sortFn(a)
     const bText = sortFn(b)
 
     if (aText === Infinity) return 1
     if (aText === -Infinity) return -1
 
-    if (aText < bText) return -1
     if (aText > bText) return 1
+    if (aText < bText) return -1
 
     return 0
   }
