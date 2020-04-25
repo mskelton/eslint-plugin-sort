@@ -12,7 +12,7 @@ import {
 type Property = AssignmentProperty | RestElement
 
 const sortFn = (node: Property) =>
-  node.type === "RestElement" ? Infinity : getSortValue(node.key)
+  node.type === "RestElement" ? Infinity : getSortValue(node.key).toLowerCase()
 
 function autofix(context: Rule.RuleContext, node: ObjectPattern) {
   const source = context.getSourceCode()

@@ -22,7 +22,7 @@ const isImportSpecifier = (node: Specifier): node is ImportSpecifier =>
 
 const getNodeText = (node: ImportSpecifier) => node.imported.name
 
-const getNodeSortValue = (node: Specifier) =>
+const sortFn = (node: Specifier) =>
   isImportSpecifier(node) ? getNodeText(node).toLowerCase() : -Infinity
 
 function autofix(context: Rule.RuleContext, node: ImportDeclaration) {
@@ -34,7 +34,7 @@ function autofix(context: Rule.RuleContext, node: ImportDeclaration) {
     fix(fixer) {
       const text = node.specifiers
         .slice()
-        .sort(getSorter(getNodeSortValue))
+        .sort(getSorter(sortFn))
         .reduce((acc, currentNode, index) => {
           return (
             acc +
@@ -65,7 +65,7 @@ function sort(node: ImportDeclaration, context: Rule.RuleContext) {
   }
 
   specifiers.reduce((previousNode, currentNode) => {
-    if (getNodeSortValue(currentNode) < getNodeSortValue(previousNode)) {
+    if (sortFn(currentNode) < sortFn(previousNode)) {
       context.report({
         node: currentNode,
         messageId: "unsorted",
