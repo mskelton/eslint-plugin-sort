@@ -41,6 +41,9 @@ ruleTester.run("sort/destructured-properties", rule, {
     valid("{a, B, c, D}"),
     valid("{_, A, b}"),
 
+    // Aliases
+    valid("{a: b, b: a}"),
+
     // Rest element
     valid("{a, b, ...c}"),
     valid("{...rest}"),
@@ -78,6 +81,14 @@ ruleTester.run("sort/destructured-properties", rule, {
       messages.unsortedPattern,
       error("a", "D"),
       error("B", "c")
+    ),
+
+    // Aliases
+    invalid(
+      "{b: a, a: b}",
+      "{a: b, b: a}",
+      messages.unsortedPattern,
+      error("a", "b")
     ),
 
     // Rest element

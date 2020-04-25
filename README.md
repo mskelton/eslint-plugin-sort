@@ -1,20 +1,76 @@
 # eslint-plugin-sort
 
 [![Build status](https://github.com/mskelton/eslint-plugin-sort/workflows/Build/badge.svg)](https://github.com/mskelton/eslint-plugin-sort/actions)
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg)](#contributors)
+[![npm](https://img.shields.io/npm/v/eslint-plugin-sort)](https://www.npmjs.com/package/eslint-plugin-sort)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg)](#contributors)
 
 > Autofixable sort rules for ESLint.
 
 ## Installation
 
 ```sh
+# npm
 npm install -D eslint-plugin-sort
+
+# Yarn
+yarn add -D eslint-plugin-sort
 ```
 
 ## Usage
 
-// TODO
+After installing, add `sort` to your list of ESLint plugins and extend the recommended configuration. This will enable all available rules as warnings.
+
+```json
+{
+  "extends": ["plugin:sort/recommended"],
+  "plugins": ["sort"]
+}
+```
+
+## Rules
+
+While the recommended configuration is the simplest way to use this plugin, you can also configure the rules manually based on your needs.
+
+### `sort/destructured-properties` 🔧
+
+Sorts properties in object destructuring patterns.
+
+Examples of **incorrect** code for this rule.
+
+```js
+let { b, c, a } = {}
+let { C, b } = {}
+let { b: a, a: b } = {}
+```
+
+Examples of **correct** code for this rule.
+
+```js
+let { a, b, c } = {}
+let { b, C } = {}
+let { a: b, b: a } = {}
+```
+
+### `sort/imported-variables` 🔧
+
+Sorts imported variable names alphabetically and case insensitive.
+
+Examples of **incorrect** code for this rule.
+
+```js
+import { b, c, a } from "a"
+import { C, b } from "a"
+import { b as a, a as b } from "a"
+```
+
+Examples of **correct** code for this rule.
+
+```js
+import { a, b, c } from "a"
+import { b, C } from "a"
+import { a as b, b as a } from "a"
+```
 
 ## Contributors ✨
 
