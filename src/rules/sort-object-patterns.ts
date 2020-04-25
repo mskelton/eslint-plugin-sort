@@ -109,7 +109,6 @@ export default {
     messages: {
       unsorted: "Expected '{{a}}' to be before '{{b}}'.",
       unsortedPattern: "Expected destructured properties to be sorted.",
-      invalidRest: "Expected rest element to be the last property.",
     },
   },
 } as Rule.RuleModule
