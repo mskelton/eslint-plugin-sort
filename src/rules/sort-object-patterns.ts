@@ -1,30 +1,18 @@
 import { Rule } from "eslint"
-import {
-  AssignmentProperty,
-  Identifier,
-  ObjectPattern,
-  RestElement,
-} from "estree"
+import { AssignmentProperty, ObjectPattern, RestElement } from "estree"
 import {
   getNodeGroupRange,
   getSorter,
+  getSortValue,
   getTextBetweenNodes,
   getTextWithComments,
+  isUnsorted,
 } from "./utils"
 
 type Property = AssignmentProperty | RestElement
 
-function getNodeText(node: AssignmentProperty) {
-  return (node.key as Identifier).name
-}
-
-function getNodeSortValue(node: Property) {
-  if (node.type === "RestElement") {
-    return Infinity
-  }
-
-  return getNodeText(node).toLowerCase()
-}
+const sortFn = (node: Property) =>
+  node.type === "RestElement" ? Infinity : getSortValue(node.key)
 
 function autofix(context: Rule.RuleContext, node: ObjectPattern) {
   const source = context.getSourceCode()
@@ -35,7 +23,7 @@ function autofix(context: Rule.RuleContext, node: ObjectPattern) {
     fix(fixer) {
       const text = node.properties
         .slice()
-        .sort(getSorter(getNodeSortValue))
+        .sort(getSorter(sortFn))
         .reduce((acc, currentNode, index) => {
           return (
             acc +
@@ -71,13 +59,13 @@ function sort(node: ObjectPattern, context: Rule.RuleContext) {
   let lastUnsortedNode: AssignmentProperty | null = null
 
   properties.reduce((previousNode, currentNode) => {
-    if (getNodeSortValue(currentNode) < getNodeSortValue(previousNode)) {
+    if (isUnsorted(previousNode.key, currentNode.key)) {
       context.report({
         node: currentNode,
         messageId: "unsorted",
         data: {
-          a: getNodeText(currentNode),
-          b: getNodeText(previousNode),
+          a: getSortValue(currentNode.key),
+          b: getSortValue(previousNode.key),
         },
       })
 
