@@ -8,7 +8,7 @@ let {
   // rest
   ...rest
 } = {}
-`;
+`
 
 export const output = `
 let {
@@ -20,4 +20,4 @@ let {
   // rest
   ...rest
 } = {}
-`;
+`

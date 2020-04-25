@@ -1,6 +1,6 @@
-import sortImports from "./rules/sort-imports";
-import sortObjectProperties from "./rules/sort-object-properties";
-import sortObjectPatterns from "./rules/sort-destructured-properties";
+import sortImports from "./rules/sort-imports"
+import sortObjectProperties from "./rules/sort-object-properties"
+import sortObjectPatterns from "./rules/sort-destructured-properties"
 
 module.exports = {
   configs: {
@@ -18,4 +18,4 @@ module.exports = {
     "sort/destructured-properties": sortObjectPatterns,
     "sort/object-properties": sortObjectProperties,
   },
-};
+}

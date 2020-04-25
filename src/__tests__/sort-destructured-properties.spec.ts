@@ -1,13 +1,13 @@
-import { RuleTester } from "eslint";
-import rule from "../rules/sort-destructured-properties";
-import { invalidFixture, validFixture } from "./utils";
+import { RuleTester } from "eslint"
+import rule from "../rules/sort-destructured-properties"
+import { invalidFixture, validFixture } from "./utils"
 
 const messages = rule.meta!.messages! as Record<
   "unsorted" | "unsortedPattern",
   string
->;
+>
 
-const valid = (input: string) => ({ code: `let ${input} = {}` });
+const valid = (input: string) => ({ code: `let ${input} = {}` })
 
 const invalid = (
   input: string,
@@ -17,16 +17,16 @@ const invalid = (
   code: `let ${input} = {}`,
   errors,
   output: `let ${output} = {}`,
-});
+})
 
 const error = (a: string, b: string) =>
-  messages.unsorted.replace("{{a}}", a).replace("{{b}}", b);
+  messages.unsorted.replace("{{a}}", a).replace("{{b}}", b)
 
 const ruleTester = new RuleTester({
   parserOptions: {
     ecmaVersion: 2018,
   },
-});
+})
 
 ruleTester.run("sort/destructured-properties", rule, {
   valid: [
@@ -112,4 +112,4 @@ ruleTester.run("sort/destructured-properties", rule, {
       error("a", "c")
     ),
   ],
-});
+})

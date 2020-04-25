@@ -1,33 +1,33 @@
-import { Rule } from "eslint";
+import { Rule } from "eslint"
 import {
   AssignmentProperty,
   Identifier,
   ObjectPattern,
   RestElement,
-} from "estree";
+} from "estree"
 import {
   getNodeGroupRange,
   getSorter,
   getTextBetweenNodes,
   getTextWithComments,
-} from "./utils";
+} from "./utils"
 
-type Property = AssignmentProperty | RestElement;
+type Property = AssignmentProperty | RestElement
 
 function getNodeText(node: AssignmentProperty) {
-  return (node.value as Identifier).name;
+  return (node.value as Identifier).name
 }
 
 function getNodeSortValue(node: Property) {
   if (node.type === "RestElement") {
-    return Infinity;
+    return Infinity
   }
 
-  return getNodeText(node).toLowerCase();
+  return getNodeText(node).toLowerCase()
 }
 
 function autofix(context: Rule.RuleContext, node: ObjectPattern) {
-  const source = context.getSourceCode();
+  const source = context.getSourceCode()
 
   context.report({
     node,
@@ -45,30 +45,30 @@ function autofix(context: Rule.RuleContext, node: ObjectPattern) {
               node.properties[index],
               node.properties[index + 1]
             )
-          );
-        }, "");
+          )
+        }, "")
 
       return fixer.replaceTextRange(
         getNodeGroupRange(source, node.properties),
         text
-      );
+      )
     },
-  });
+  })
 }
 
 const isProperty = (
   node: AssignmentProperty | RestElement
-): node is AssignmentProperty => node.type === "Property";
+): node is AssignmentProperty => node.type === "Property"
 
 function sort(node: ObjectPattern, context: Rule.RuleContext) {
-  const properties = node.properties.filter(isProperty);
+  const properties = node.properties.filter(isProperty)
 
   // If there is one or less property, there is nothing to sort.
   if (properties.length < 2) {
-    return;
+    return
   }
 
-  let lastUnsortedNode: AssignmentProperty | null = null;
+  let lastUnsortedNode: AssignmentProperty | null = null
 
   properties.reduce((previousNode, currentNode) => {
     if (getNodeSortValue(currentNode) < getNodeSortValue(previousNode)) {
@@ -79,20 +79,20 @@ function sort(node: ObjectPattern, context: Rule.RuleContext) {
           a: getNodeText(currentNode),
           b: getNodeText(previousNode),
         },
-      });
+      })
 
-      lastUnsortedNode = currentNode;
+      lastUnsortedNode = currentNode
     }
 
-    return currentNode;
-  });
+    return currentNode
+  })
 
   // If we fixed each set of unsorted properties, it would require multiple
   // runs to fix if there are multiple unsorted properties. Instead, we
   // track the last unsorted property and add special error with an autofix
   // rule which will sort the entire object pattern at once.
   if (lastUnsortedNode) {
-    autofix(context, node);
+    autofix(context, node)
   }
 }
 
@@ -100,9 +100,9 @@ export default {
   create(context) {
     return {
       ObjectPattern(node) {
-        sort(node as ObjectPattern, context);
+        sort(node as ObjectPattern, context)
       },
-    };
+    }
   },
   meta: {
     fixable: "code",
@@ -112,4 +112,4 @@ export default {
       invalidRest: "Expected rest element to be the last property.",
     },
   },
-} as Rule.RuleModule;
+} as Rule.RuleModule
