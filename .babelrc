@@ -1,4 +1,9 @@
 {
+  "env": {
+    "build": {
+      "ignore": ["*/__tests__/", "*/__fixtures__/"]
+    }
+  },
   "ignore": ["/node_modules/"],
   "presets": [
     "@babel/preset-typescript",

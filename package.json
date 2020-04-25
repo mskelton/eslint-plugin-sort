@@ -22,7 +22,7 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "babel src --out-dir lib --extensions .ts --env-name=build",
     "format": "prettier --write .",
     "test": "jest"
   },
@@ -30,6 +30,7 @@
     "eslint": ">=6"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
     "@babel/preset-typescript": "^7.9.0",
