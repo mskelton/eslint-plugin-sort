@@ -43,7 +43,7 @@ ruleTester.run("sort/imported-variables", rule, {
     valid("* as React"),
     valid("React, {a, b}"),
 
-    //
+    // Import aliases
     valid("{a as b, b as a}"),
 
     // Comments
@@ -87,6 +87,14 @@ ruleTester.run("sort/imported-variables", rule, {
       "React, {a, b, c}",
       messages.unsortedSpecifiers,
       error("a", "c")
+    ),
+
+    // Import aliases
+    invalid(
+      "{b as a, a as b}",
+      "{a as b, b as a}",
+      messages.unsortedSpecifiers,
+      error("a", "b")
     ),
 
     // All properties are sorted with a single sort
