@@ -12,16 +12,20 @@ import {
   getTextBetweenNodes,
 } from "./utils"
 
+type Specifier =
+  | ImportSpecifier
+  | ImportDefaultSpecifier
+  | ImportNamespaceSpecifier
+
 function getNodeText(node: ImportSpecifier) {
   return node.imported.name
 }
 
-const getNodeSortValue = (node: ImportSpecifier) =>
-  getNodeText(node).toLowerCase()
+const isImportSpecifier = (node: Specifier): node is ImportSpecifier =>
+  node.type === "ImportSpecifier"
 
-const isImportSpecifier = (
-  node: ImportSpecifier | ImportDefaultSpecifier | ImportNamespaceSpecifier
-): node is ImportSpecifier => node.type === "ImportSpecifier"
+const getNodeSortValue = (node: Specifier) =>
+  isImportSpecifier(node) ? getNodeText(node).toLowerCase() : -Infinity
 
 function autofix(context: Rule.RuleContext, node: ImportDeclaration) {
   const source = context.getSourceCode()
@@ -31,7 +35,7 @@ function autofix(context: Rule.RuleContext, node: ImportDeclaration) {
     messageId: "unsortedSpecifiers",
     fix(fixer) {
       const text = node.specifiers
-        .filter(isImportSpecifier)
+        .slice()
         .sort(getSorter(getNodeSortValue))
         .reduce((acc, currentNode, index) => {
           return (
