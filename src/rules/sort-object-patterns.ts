@@ -15,7 +15,7 @@ import {
 type Property = AssignmentProperty | RestElement
 
 function getNodeText(node: AssignmentProperty) {
-  return (node.value as Identifier).name
+  return (node.key as Identifier).name
 }
 
 function getNodeSortValue(node: Property) {
