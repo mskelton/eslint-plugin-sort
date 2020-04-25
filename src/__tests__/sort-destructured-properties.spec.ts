@@ -109,7 +109,8 @@ ruleTester.run("sort/destructured-properties", rule, {
     invalidFixture(
       "destructured-properties/invalid-comments",
       messages.unsortedPattern,
-      error("a", "c")
+      error("b", "c"),
+      error("a", "b")
     ),
   ],
 })
