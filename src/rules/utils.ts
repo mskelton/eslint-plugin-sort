@@ -54,10 +54,24 @@ export function getNodeGroupRange(source: SourceCode, nodes: Node[]) {
   )
 }
 
-export function getSortValue(node: Expression) {
+export function getSortValue(node?: Expression): string {
+  if (!node) {
+    return ""
+  }
+
   switch (node.type) {
     case "Identifier":
       return node.name
+
+    case "Literal":
+      return node.value!.toString()
+
+    case "TemplateLiteral":
+      return node.quasis.reduce(
+        (acc, quasi, index) =>
+          acc + quasi.value.raw + getSortValue(node.expressions[index]),
+        ""
+      )
   }
 
   return ""
