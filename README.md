@@ -32,9 +32,29 @@ After installing, add `sort` to your list of ESLint plugins and extend the recom
 
 While the recommended configuration is the simplest way to use this plugin, you can also configure the rules manually based on your needs.
 
+### `sort/object-properties` 🔧
+
+Sorts object properties alphabetically and case insensitive in ascending order.
+
+Examples of **incorrect** code for this rule.
+
+```js
+var a = { b: 1, c: 2, a: 3 }
+var a = { C: 1, b: 2 }
+var a = { C: 1, b: { y: 1, x: 2 } }
+```
+
+Examples of **correct** code for this rule.
+
+```js
+var a = { a: 1, b: 2, c: 3 }
+var a = { b: 1, C: 2 }
+var a = { b: { x: 1, y: 2 }, C: 1 }
+```
+
 ### `sort/destructured-properties` 🔧
 
-Sorts properties in object destructuring patterns.
+Sorts properties in object destructuring patterns alphabetically and case insensitive in ascending order.
 
 Examples of **incorrect** code for this rule.
 
@@ -54,7 +74,7 @@ let { a: b, b: a } = {}
 
 ### `sort/imported-variables` 🔧
 
-Sorts imported variable names alphabetically and case insensitive.
+Sorts imported variable names alphabetically and case insensitive in ascending order.
 
 Examples of **incorrect** code for this rule.
 

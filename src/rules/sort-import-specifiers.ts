@@ -17,14 +17,12 @@ type Specifier =
   | ImportDefaultSpecifier
   | ImportNamespaceSpecifier
 
-function getNodeText(node: ImportSpecifier) {
-  return node.imported.name
-}
-
 const isImportSpecifier = (node: Specifier): node is ImportSpecifier =>
   node.type === "ImportSpecifier"
 
-const getNodeSortValue = (node: Specifier) =>
+const getNodeText = (node: ImportSpecifier) => node.imported.name
+
+const sortFn = (node: Specifier) =>
   isImportSpecifier(node) ? getNodeText(node).toLowerCase() : -Infinity
 
 function autofix(context: Rule.RuleContext, node: ImportDeclaration) {
@@ -36,7 +34,7 @@ function autofix(context: Rule.RuleContext, node: ImportDeclaration) {
     fix(fixer) {
       const text = node.specifiers
         .slice()
-        .sort(getSorter(getNodeSortValue))
+        .sort(getSorter(sortFn))
         .reduce((acc, currentNode, index) => {
           return (
             acc +
@@ -59,16 +57,15 @@ function autofix(context: Rule.RuleContext, node: ImportDeclaration) {
 
 function sort(node: ImportDeclaration, context: Rule.RuleContext) {
   const specifiers = node.specifiers.filter(isImportSpecifier)
+  let unsorted = false
 
   // If there are less than two specifiers, there is nothing to sort.
   if (specifiers.length < 2) {
     return
   }
 
-  let lastUnsortedNode: ImportSpecifier | null = null
-
   specifiers.reduce((previousNode, currentNode) => {
-    if (getNodeSortValue(currentNode) < getNodeSortValue(previousNode)) {
+    if (sortFn(currentNode) < sortFn(previousNode)) {
       context.report({
         node: currentNode,
         messageId: "unsorted",
@@ -78,7 +75,7 @@ function sort(node: ImportDeclaration, context: Rule.RuleContext) {
         },
       })
 
-      lastUnsortedNode = currentNode
+      unsorted = true
     }
 
     return currentNode
@@ -87,7 +84,7 @@ function sort(node: ImportDeclaration, context: Rule.RuleContext) {
   // If we fixed each set of unsorted nodes, it would require multiple runs to
   // fix if there are multiple unsorted nodes. Instead, we add a add special
   // error with an autofix rule which will sort all specifiers at once.
-  if (lastUnsortedNode) {
+  if (unsorted) {
     autofix(context, node)
   }
 }
