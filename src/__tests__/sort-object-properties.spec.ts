@@ -43,14 +43,21 @@ ruleTester.run("sort/destructured-properties", rule, {
 
     // Bracket notation
     valid("{['a']: 1, ['b']: 2}"),
-    valid("{[`a`]: 1, [`b`]: 2}"),
     valid("{[1]: 'a', [2]: 'b'}"),
+
+    // Template literals
+    valid("{[`a`]: 1, [`b`]: 2}"),
+    valid("{[`a${b}c${d}`]: 1, [`a${c}e${g}`]: 2}"),
+    valid("{[`${a}b${c}d`]: 1, [`${a}c${e}g`]: 2}"),
 
     // Spread elements
     valid("{a:1, b:2, ...c, d:3, e:4}"),
     valid("{d:1, e:2, ...c, a:3, b:4}"),
     valid("{e:1, f:2, ...d, ...c, a:3, b:4}"),
     valid("{f:1, g:2, ...d, a:3, ...c, b:4, c:5}"),
+
+    // Nested properties
+    valid("{a:1, b:{x:2, y:3}, c:4}"),
 
     // Comments
     validFixture("object-properties/valid-comments"),
@@ -148,6 +155,23 @@ ruleTester.run("sort/destructured-properties", rule, {
       "{[`a${b}c${d}`]: 1, [`a${c}e${g}`]: 2}",
       messages.unsortedProperties,
       error("abcd", "aceg")
+    ),
+    invalid(
+      "{[`${a}c${e}g`]: 2, [`${a}b${c}d`]: 1}",
+      "{[`${a}b${c}d`]: 1, [`${a}c${e}g`]: 2}",
+      messages.unsortedProperties,
+      error("abcd", "aceg")
+    ),
+
+    // Nested properties
+    invalid(
+      "{c:4, b:{y:3, x:2}, a:1}",
+      "{a:1, b:{x:2, y:3}, c:4}",
+      messages.unsortedProperties,
+      error("b", "c"),
+      messages.unsortedProperties,
+      error("x", "y"),
+      error("a", "b")
     ),
 
     // Comments
