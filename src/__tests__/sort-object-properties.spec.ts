@@ -166,7 +166,9 @@ ruleTester.run("sort/destructured-properties", rule, {
     // Nested properties
     invalid(
       "{c:4, b:{y:3, x:2}, a:1}",
-      "{a:1, b:{x:2, y:3}, c:4}",
+      // Because RuleTester runs autofixing only once, nested properties don't
+      // appear to be fixed even though they will be fixed in real world usage.
+      "{a:1, b:{y:3, x:2}, c:4}",
       messages.unsortedProperties,
       error("b", "c"),
       messages.unsortedProperties,
