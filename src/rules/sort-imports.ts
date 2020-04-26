@@ -1,20 +1,20 @@
-import { Rule } from "eslint"
+import { Rule, SourceCode } from "eslint"
 import {
-  Program,
   Directive,
-  Statement,
-  ModuleDeclaration,
   ImportDeclaration,
-  ImportSpecifier,
   ImportDefaultSpecifier,
   ImportNamespaceSpecifier,
+  ImportSpecifier,
+  ModuleDeclaration,
+  Program,
+  Statement,
 } from "estree"
 import {
   getSorter,
-  getTextWithComments,
-  getNodeGroupRange,
-  getTextBetweenNodes,
   getSortValue,
+  getTextBetweenNodes,
+  getTextRange,
+  getTextWithComments,
 } from "./utils"
 
 type Specifier =
@@ -28,6 +28,9 @@ const isImport = (
 
 const sortFn = (node: ImportDeclaration) =>
   getSortValue(node.source).toLowerCase()
+
+const getText = (source: SourceCode, node: ImportDeclaration) =>
+  source.getText().slice(...getTextRange(node, node))
 
 function autofix(
   context: Rule.RuleContext,
@@ -43,15 +46,26 @@ function autofix(
       const text = imports
         .slice()
         .sort(getSorter(sortFn))
-        .reduce((acc, currentNode, index) => {
+        .reduce((acc, node, index) => {
+          // If the current import was the first import before sorting, don't
+          // move the comments as we don't know if they are for the import or
+          // the file header comments.
+          const text =
+            node === imports[0]
+              ? getText(source, node)
+              : getTextWithComments(source, node)
+
           return (
             acc +
-            getTextWithComments(source, currentNode) +
+            text +
             getTextBetweenNodes(source, imports[index], imports[index + 1])
           )
         }, "")
 
-      return fixer.replaceTextRange(getNodeGroupRange(source, imports), text)
+      return fixer.replaceTextRange(
+        getTextRange(imports[0], imports[imports.length - 1]),
+        text
+      )
     },
   })
 }
