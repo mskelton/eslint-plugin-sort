@@ -10,7 +10,7 @@ import {
   getTextWithComments,
   getNodeGroupRange,
   getTextBetweenNodes,
-} from "./utils"
+} from "../utils"
 
 type Specifier =
   | ImportSpecifier

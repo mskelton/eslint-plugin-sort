@@ -42,6 +42,11 @@ ruleTester.run("sort/imported-variables", rule, {
 
     // Comments
     validFixture("imports/valid-comments"),
+
+    // Sort groups
+    validFixture("imports/valid-sort-groups", [
+      [{ type: "external" }, { regex: "\\.(png|jpg)$" }, { type: "internal" }],
+    ]),
   ],
   invalid: [
     // Basic
@@ -60,11 +65,10 @@ ruleTester.run("sort/imported-variables", rule, {
     ),
 
     // Comments
-    invalidFixture(
-      "imports/invalid-comments",
+    invalidFixture("imports/invalid-comments", [
       error("b", "c"),
       error("a", "b"),
-      messages.unsortedImports
-    ),
+      messages.unsortedImports,
+    ]),
   ],
 })

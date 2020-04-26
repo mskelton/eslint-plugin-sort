@@ -2,32 +2,71 @@ import { Rule, SourceCode } from "eslint"
 import {
   Directive,
   ImportDeclaration,
-  ImportDefaultSpecifier,
-  ImportNamespaceSpecifier,
-  ImportSpecifier,
   ModuleDeclaration,
   Program,
   Statement,
 } from "estree"
 import {
-  getSorter,
   getSortValue,
   getTextBetweenNodes,
   getTextRange,
   getTextWithComments,
-} from "./utils"
+} from "../utils"
+import { isResolved } from "../resolver"
 
-type Specifier =
-  | ImportSpecifier
-  | ImportDefaultSpecifier
-  | ImportNamespaceSpecifier
+export type SortGroup = {
+  order: number
+  type?: "external" | "side-effect" | "other"
+  regex?: string
+}
 
 const isImport = (
   node: Directive | Statement | ModuleDeclaration
 ): node is ImportDeclaration => node.type === "ImportDeclaration"
 
-const sortFn = (node: ImportDeclaration) =>
-  getSortValue(node.source).toLowerCase()
+function getSortGroup(sortGroups: SortGroup[], node: ImportDeclaration) {
+  const source = getSortValue(node.source)
+
+  for (const { regex, type, order } of sortGroups) {
+    switch (type) {
+      case "side-effect":
+        if (!node.specifiers.length) return order
+        break
+
+      case "external":
+        if (isResolved(source)) return order
+        break
+
+      case "other":
+        return order
+    }
+
+    if (regex && new RegExp(regex).test(source)) {
+      return order
+    }
+  }
+
+  return Infinity
+}
+
+const getSortFn = (sortGroups: SortGroup[]) => (
+  a: ImportDeclaration,
+  b: ImportDeclaration
+) => {
+  const aSortGroup = getSortGroup(sortGroups, a)
+  const bSortGroup = getSortGroup(sortGroups, b)
+
+  if (aSortGroup > bSortGroup) return 1
+  if (aSortGroup < bSortGroup) return -1
+
+  const aText = getSortValue(a.source)
+  const bText = getSortValue(b.source)
+
+  if (aText > bText) return 1
+  if (aText < bText) return -1
+
+  return 0
+}
 
 const getText = (source: SourceCode, node: ImportDeclaration) =>
   source.getText().slice(...getTextRange(node, node))
@@ -35,7 +74,8 @@ const getText = (source: SourceCode, node: ImportDeclaration) =>
 function autofix(
   context: Rule.RuleContext,
   imports: ImportDeclaration[],
-  lastUnsortedNode: ImportDeclaration
+  lastUnsortedNode: ImportDeclaration,
+  sortGroups: SortGroup[]
 ) {
   const source = context.getSourceCode()
 
@@ -45,7 +85,7 @@ function autofix(
     fix(fixer) {
       const text = imports
         .slice()
-        .sort(getSorter(sortFn))
+        .sort(getSortFn(sortGroups))
         .reduce((acc, node, index) => {
           // If the current import was the first import before sorting, don't
           // move the comments as we don't know if they are for the import or
@@ -70,7 +110,11 @@ function autofix(
   })
 }
 
-function sort(imports: ImportDeclaration[], context: Rule.RuleContext) {
+function sort(
+  imports: ImportDeclaration[],
+  context: Rule.RuleContext,
+  sortGroups: SortGroup[]
+) {
   let lastUnsortedNode: ImportDeclaration | null = null
 
   // If there are less than two imports, there is nothing to sort.
@@ -78,8 +122,11 @@ function sort(imports: ImportDeclaration[], context: Rule.RuleContext) {
     return
   }
 
+  const sortFn = getSortFn(sortGroups)
+
   imports.reduce((previousNode, currentNode) => {
-    if (sortFn(currentNode) < sortFn(previousNode)) {
+    console.log(sortFn(currentNode, previousNode))
+    if (sortFn(currentNode, previousNode) < 0) {
       context.report({
         node: currentNode,
         messageId: "unsorted",
@@ -99,7 +146,7 @@ function sort(imports: ImportDeclaration[], context: Rule.RuleContext) {
   // fix if there are multiple unsorted imports. Instead, we add a add special
   // error with an autofix rule which will sort all imports at once.
   if (lastUnsortedNode) {
-    autofix(context, imports, lastUnsortedNode)
+    autofix(context, imports, lastUnsortedNode, sortGroups)
   }
 }
 
@@ -107,7 +154,11 @@ export default {
   create(context) {
     return {
       Program(node) {
-        sort((node as Program).body.filter(isImport), context)
+        sort(
+          (node as Program).body.filter(isImport),
+          context,
+          context.options[0] || []
+        )
       },
     }
   },
@@ -117,5 +168,6 @@ export default {
       unsorted: "Expected '{{a}}' to be before '{{b}}'.",
       unsortedImports: "Expected imports to be sorted.",
     },
+    schema: [{ type: "array" }],
   },
 } as Rule.RuleModule
