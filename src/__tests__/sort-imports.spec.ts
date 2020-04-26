@@ -124,6 +124,24 @@ ruleTester.run("sort/imported-variables", rule, {
       )
     ),
 
+    // No separator
+    invalidFixture(
+      "imports/invalid-no-separator",
+      [
+        error("external-c", "../b"),
+        error("external-b", "b.jpg"),
+        messages.unsortedImports,
+      ],
+      sortGroups(
+        "",
+        { type: "side-effect", order: 1 },
+        { regex: "\\.(png|jpg)$", order: 3 },
+        { regex: "^\\.+\\/", order: 5 },
+        { type: "external", order: 2 },
+        { type: "other", order: 4 }
+      )
+    ),
+
     // Custom separator
     invalidFixture(
       "imports/invalid-custom-separator",
