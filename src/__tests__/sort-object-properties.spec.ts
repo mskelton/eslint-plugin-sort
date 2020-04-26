@@ -137,11 +137,25 @@ ruleTester.run("sort/destructured-properties", rule, {
     ),
 
     // Template literals
-    // invalid(
-    //   "{[`b`]: 2, [`a`]: 1}",
-    //   "{[`a`]: 1, [`b`]: 2}",
-    //   messages.unsortedProperties,
-    //   error("a", "b")
-    // ),
+    invalid(
+      "{[`b`]: 2, [`a`]: 1}",
+      "{[`a`]: 1, [`b`]: 2}",
+      messages.unsortedProperties,
+      error("a", "b")
+    ),
+    invalid(
+      "{[`a${c}e${g}`]: 2, [`a${b}c${d}`]: 1}",
+      "{[`a${b}c${d}`]: 1, [`a${c}e${g}`]: 2}",
+      messages.unsortedProperties,
+      error("abcd", "aceg")
+    ),
+
+    // Comments
+    invalidFixture(
+      "object-properties/invalid-comments",
+      messages.unsortedProperties,
+      error("c", "d"),
+      error("a", "b")
+    ),
   ],
 })
