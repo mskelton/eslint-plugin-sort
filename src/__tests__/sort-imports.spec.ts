@@ -39,6 +39,9 @@ ruleTester.run("sort/imported-variables", rule, {
 
     // Programs without imports are valid
     { code: "var a = 1" },
+
+    // Comments
+    validFixture("imports/valid-comments"),
   ],
   invalid: [
     // Basic
@@ -51,6 +54,14 @@ ruleTester.run("sort/imported-variables", rule, {
     invalid(
       code("c from 'c'", "b from 'b'", "a from 'a'"),
       code("a from 'a'", "b from 'b'", "c from 'c'"),
+      error("b", "c"),
+      error("a", "b"),
+      messages.unsortedImports
+    ),
+
+    // Comments
+    invalidFixture(
+      "imports/invalid-comments",
       error("b", "c"),
       error("a", "b"),
       messages.unsortedImports
