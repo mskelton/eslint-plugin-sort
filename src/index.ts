@@ -10,7 +10,18 @@ module.exports = {
       rules: {
         "sort/destructured-properties": "warn",
         "sort/imported-variables": "warn",
-        "sort/imports": "warn",
+        "sort/imports": [
+          "warn",
+          {
+            groups: [
+              { type: "side-effect", order: 1 },
+              { regex: "^\\.+\\/", order: 4 },
+              { type: "dependency", order: 2 },
+              { type: "other", order: 3 },
+            ],
+            separator: "\n",
+          },
+        ],
         "sort/object-properties": "warn",
       },
     },

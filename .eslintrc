@@ -28,6 +28,9 @@
   "overrides": [
     {
       "files": "**/__tests__/**",
+      "env": {
+        "jest": true
+      },
       "rules": {
         "@typescript-eslint/no-var-requires": "off"
       }

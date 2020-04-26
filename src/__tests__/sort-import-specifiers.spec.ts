@@ -115,11 +115,10 @@ ruleTester.run("sort/imported-variables", rule, {
     ),
 
     // Comments
-    invalidFixture(
-      "import-specifiers/invalid-comments",
+    invalidFixture("import-specifiers/invalid-comments", [
       messages.unsortedSpecifiers,
       error("b", "c"),
-      error("a", "b")
-    ),
+      error("a", "b"),
+    ]),
   ],
 })

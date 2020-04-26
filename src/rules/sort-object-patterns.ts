@@ -7,7 +7,7 @@ import {
   getTextBetweenNodes,
   getTextWithComments,
   isUnsorted,
-} from "./utils"
+} from "../utils"
 
 type Property = AssignmentProperty | RestElement
 

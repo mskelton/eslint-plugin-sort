@@ -7,7 +7,7 @@ import {
   getTextBetweenNodes,
   getTextWithComments,
   isUnsorted,
-} from "./utils"
+} from "../utils"
 
 /**
  * When sorting object properties, we have to sort the groups of nodes between
