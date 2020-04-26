@@ -2,8 +2,8 @@ export const input = `
 import 'index.css'
 import 'side-effect'
 
-import a from "external-b"
-import b from "external-c"
+import a from "dependency-b"
+import b from "dependency-c"
 
 import c from "a.png"
 import d from "b.jpg"

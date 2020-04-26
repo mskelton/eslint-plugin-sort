@@ -16,7 +16,7 @@ type Options = {
 
 export type SortGroup = {
   order: number
-  type?: "external" | "side-effect" | "other"
+  type?: "dependency" | "side-effect" | "other"
   regex?: string
 }
 
@@ -33,7 +33,7 @@ function getSortGroup(sortGroups: SortGroup[], node: ImportDeclaration) {
         if (!node.specifiers.length) return order
         break
 
-      case "external":
+      case "dependency":
         if (isResolved(source)) return order
         break
 

@@ -57,7 +57,7 @@ ruleTester.run("sort/imported-variables", rule, {
         { type: "side-effect", order: 1 },
         { regex: "\\.(png|jpg)$", order: 3 },
         { regex: "^\\.+\\/", order: 5 },
-        { type: "external", order: 2 },
+        { type: "dependency", order: 2 },
         { type: "other", order: 4 }
       )
     ),
@@ -94,7 +94,7 @@ ruleTester.run("sort/imported-variables", rule, {
         error("a.png", "b"),
         error("side-effect", "a.png"),
         error("index.css", "side-effect"),
-        error("external-b", "b.jpg"),
+        error("dependency-b", "b.jpg"),
         messages.unsortedImports,
       ],
       sortGroups(
@@ -102,7 +102,7 @@ ruleTester.run("sort/imported-variables", rule, {
         { type: "side-effect", order: 1 },
         { regex: "\\.(png|jpg)$", order: 3 },
         { regex: "^\\.+\\/", order: 5 },
-        { type: "external", order: 2 },
+        { type: "dependency", order: 2 },
         { type: "other", order: 4 }
       )
     ),
@@ -112,14 +112,14 @@ ruleTester.run("sort/imported-variables", rule, {
         error("./b", "c"),
         error("index.css", "side-effect"),
         error("b.jpg", "index.css"),
-        error("external-b", "b.jpg"),
+        error("dependency-b", "b.jpg"),
         messages.unsortedImports,
       ],
       sortGroups(
         "\n",
         { type: "side-effect", order: 4 },
         { regex: "\\.(png|jpg)$", order: 3 },
-        { type: "external", order: 1 },
+        { type: "dependency", order: 1 },
         { type: "other", order: 2 }
       )
     ),
@@ -128,8 +128,8 @@ ruleTester.run("sort/imported-variables", rule, {
     invalidFixture(
       "imports/invalid-no-separator",
       [
-        error("external-c", "../b"),
-        error("external-b", "b.jpg"),
+        error("dependency-c", "../b"),
+        error("dependency-b", "b.jpg"),
         messages.unsortedImports,
       ],
       sortGroups(
@@ -137,7 +137,7 @@ ruleTester.run("sort/imported-variables", rule, {
         { type: "side-effect", order: 1 },
         { regex: "\\.(png|jpg)$", order: 3 },
         { regex: "^\\.+\\/", order: 5 },
-        { type: "external", order: 2 },
+        { type: "dependency", order: 2 },
         { type: "other", order: 4 }
       )
     ),
@@ -146,8 +146,8 @@ ruleTester.run("sort/imported-variables", rule, {
     invalidFixture(
       "imports/invalid-custom-separator",
       [
-        error("external-c", "../b"),
-        error("external-b", "b.jpg"),
+        error("dependency-c", "../b"),
+        error("dependency-b", "b.jpg"),
         messages.unsortedImports,
       ],
       sortGroups(
@@ -155,7 +155,7 @@ ruleTester.run("sort/imported-variables", rule, {
         { type: "side-effect", order: 1 },
         { regex: "\\.(png|jpg)$", order: 3 },
         { regex: "^\\.+\\/", order: 5 },
-        { type: "external", order: 2 },
+        { type: "dependency", order: 2 },
         { type: "other", order: 4 }
       )
     ),

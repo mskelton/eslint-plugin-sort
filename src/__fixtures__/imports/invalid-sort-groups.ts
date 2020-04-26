@@ -1,5 +1,5 @@
 export const input = `
-import b from "external-c"
+import b from "dependency-c"
 import h from "../b"
 import g from "c"
 
@@ -11,7 +11,7 @@ import 'index.css'
 
 import d from "b.jpg"
 
-import a from "external-b"
+import a from "dependency-b"
 import e from "a"
 `
 
@@ -19,8 +19,8 @@ export const output = `
 import 'index.css'
 import 'side-effect'
 
-import a from "external-b"
-import b from "external-c"
+import a from "dependency-b"
+import b from "dependency-c"
 
 import c from "a.png"
 import d from "b.jpg"

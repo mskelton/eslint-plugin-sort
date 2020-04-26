@@ -12,12 +12,15 @@ module.exports = {
         "sort/imported-variables": "warn",
         "sort/imports": [
           "warn",
-          [
-            { type: "side-effect", order: 1 },
-            { type: "external", order: 2 },
-            { regex: "^\\.+\\/", order: 4 },
-            { type: "other", order: 3 },
-          ],
+          {
+            groups: [
+              { type: "side-effect", order: 1 },
+              { regex: "^\\.+\\/", order: 4 },
+              { type: "dependency", order: 2 },
+              { type: "other", order: 3 },
+            ],
+            separator: "\n",
+          },
         ],
         "sort/object-properties": "warn",
       },
