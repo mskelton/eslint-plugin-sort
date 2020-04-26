@@ -42,18 +42,23 @@ function autofix(context: Rule.RuleContext, node: ObjectExpression) {
     node,
     messageId: "unsortedProperties",
     fix(fixer) {
-      return getNodeGroupsBetweenSpreads(node).map((nodes) => {
+      return getNodeGroupsBetweenSpreads(node).map((nodes, index) => {
         const text = nodes
           .slice()
-          .sort(getSorter((node) => getSortValue(node.key)))
-          .reduce((acc, currentNode, index) => {
+          .sort(getSorter((node) => getSortValue(node.key).toLowerCase()))
+          .reduce((acc, currentNode, idx, group) => {
+            // The last node in the group should not get the text between itself
+            // and the next property as the next property is a spread element
+            // and is not part of the replaced text range.
+            const endIndex = index + (idx < group.length - 1 ? 1 : 0)
+
             return (
               acc +
               getTextWithComments(source, currentNode) +
               getTextBetweenNodes(
                 source,
                 node.properties[index],
-                node.properties[index + 1]
+                node.properties[endIndex]
               )
             )
           }, "")

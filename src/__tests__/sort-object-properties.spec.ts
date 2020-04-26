@@ -73,22 +73,75 @@ ruleTester.run("sort/destructured-properties", rule, {
       "{2:'b', 1:'a'}",
       "{1:'a', 2:'b'}",
       messages.unsortedProperties,
-      error("a", "b")
+      error("1", "2")
     ),
 
-    // // Case insensitive
-    // invalid("{a:1, B:2, c:3, D:4}"),
-    // invalid("{_:1, A:2, b:3}"),
+    // Case insensitive
+    invalid(
+      "{D:4, B:2, a:1, c:3}",
+      "{a:1, B:2, c:3, D:4}",
+      messages.unsortedProperties,
+      error("B", "D"),
+      error("a", "B")
+    ),
+    invalid(
+      "{b:3, A:2, _:1}",
+      "{_:1, A:2, b:3}",
+      messages.unsortedProperties,
+      error("A", "b"),
+      error("_", "A")
+    ),
 
-    // // Bracket notation
-    // invalid("{['a']: 1, ['b']: 2}"),
-    // invalid("{[`a`]: 1, [`b`]: 2}"),
-    // invalid("{[1]: 'a', [2]: 'b'}"),
+    // Spread elements
+    invalid(
+      "{e:2, d:1, ...c, b:4, a:3}",
+      "{d:1, e:2, ...c, a:3, b:4}",
+      messages.unsortedProperties,
+      error("d", "e"),
+      error("a", "b")
+    ),
+    invalid(
+      "{b:2, a:1, ...c, e:4, d:3}",
+      "{a:1, b:2, ...c, d:3, e:4}",
+      messages.unsortedProperties,
+      error("a", "b"),
+      error("d", "e")
+    ),
+    invalid(
+      "{f:2, e:1, ...d, ...c, b:4, a:3}",
+      "{e:1, f:2, ...d, ...c, a:3, b:4}",
+      messages.unsortedProperties,
+      error("e", "f"),
+      error("a", "b")
+    ),
+    invalid(
+      "{g:2, f:1, ...d, a:3, ...c, c:5, b:4}",
+      "{f:1, g:2, ...d, a:3, ...c, b:4, c:5}",
+      messages.unsortedProperties,
+      error("f", "g"),
+      error("b", "c")
+    ),
 
-    // // Spread elements
-    // invalid("{a:1, b:2, ...c, d:3, e:4}"),
-    // invalid("{d:1, e:2, ...c, a:3, b:4}"),
-    // invalid("{e:1, f:2, ...d, ...c, a:3, b:4}"),
-    // invalid("{f:1, g:2, ...d, a:3, ...c, b:4, c:5}"),
+    // Bracket notation
+    invalid(
+      "{['b']: 2, ['a']: 1}",
+      "{['a']: 1, ['b']: 2}",
+      messages.unsortedProperties,
+      error("a", "b")
+    ),
+    invalid(
+      "{[2]: 'b', [1]: 'a'}",
+      "{[1]: 'a', [2]: 'b'}",
+      messages.unsortedProperties,
+      error("1", "2")
+    ),
+
+    // Template literals
+    // invalid(
+    //   "{[`b`]: 2, [`a`]: 1}",
+    //   "{[`a`]: 1, [`b`]: 2}",
+    //   messages.unsortedProperties,
+    //   error("a", "b")
+    // ),
   ],
 })
