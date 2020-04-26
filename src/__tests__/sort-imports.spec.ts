@@ -1,5 +1,7 @@
+jest.mock("../resolver")
+
 import { RuleTester } from "eslint"
-import rule from "../rules/sort-imports"
+import rule, { SortGroup } from "../rules/sort-imports"
 import { invalidFixture, validFixture } from "./utils"
 
 const messages = rule.meta!.messages! as Record<
@@ -13,6 +15,10 @@ const code = (...names: string[]) =>
 const valid = (...names: string[]) => ({
   code: code(...names.map((name, index) => `a${index} from '${name}'`)),
 })
+
+const sortGroups = (separator: string, ...groups: SortGroup[]) => [
+  { groups, separator },
+]
 
 const invalid = (input: string, output: string, ...errors: string[]) => ({
   code: input,
@@ -44,9 +50,17 @@ ruleTester.run("sort/imported-variables", rule, {
     validFixture("imports/valid-comments"),
 
     // Sort groups
-    validFixture("imports/valid-sort-groups", [
-      [{ type: "external" }, { regex: "\\.(png|jpg)$" }, { type: "internal" }],
-    ]),
+    validFixture(
+      "imports/valid-sort-groups",
+      sortGroups(
+        "\n",
+        { type: "side-effect", order: 1 },
+        { regex: "\\.(png|jpg)$", order: 3 },
+        { regex: "^\\.+\\/", order: 5 },
+        { type: "external", order: 2 },
+        { type: "other", order: 4 }
+      )
+    ),
   ],
   invalid: [
     // Basic
@@ -70,5 +84,62 @@ ruleTester.run("sort/imported-variables", rule, {
       error("a", "b"),
       messages.unsortedImports,
     ]),
+
+    // Sort groups
+    invalidFixture(
+      "imports/invalid-sort-groups",
+      [
+        error("c", "../b"),
+        error("b", "./b"),
+        error("a.png", "b"),
+        error("side-effect", "a.png"),
+        error("index.css", "side-effect"),
+        error("external-b", "b.jpg"),
+        messages.unsortedImports,
+      ],
+      sortGroups(
+        "\n",
+        { type: "side-effect", order: 1 },
+        { regex: "\\.(png|jpg)$", order: 3 },
+        { regex: "^\\.+\\/", order: 5 },
+        { type: "external", order: 2 },
+        { type: "other", order: 4 }
+      )
+    ),
+    invalidFixture(
+      "imports/invalid-sort-groups-2",
+      [
+        error("./b", "c"),
+        error("index.css", "side-effect"),
+        error("b.jpg", "index.css"),
+        error("external-b", "b.jpg"),
+        messages.unsortedImports,
+      ],
+      sortGroups(
+        "\n",
+        { type: "side-effect", order: 4 },
+        { regex: "\\.(png|jpg)$", order: 3 },
+        { type: "external", order: 1 },
+        { type: "other", order: 2 }
+      )
+    ),
+
+    // Custom separator
+    invalidFixture(
+      "imports/invalid-custom-separator",
+      [
+        error("external-c", "../b"),
+        error("external-b", "b.jpg"),
+        messages.unsortedImports,
+      ],
+      sortGroups(
+        "/* separator */",
+        { type: "side-effect", order: 1 },
+        { regex: "\\.(png|jpg)$", order: 3 },
+        { regex: "^\\.+\\/", order: 5 },
+        { type: "external", order: 2 },
+        { type: "other", order: 4 }
+      )
+    ),
   ],
 })
