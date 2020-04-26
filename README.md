@@ -92,6 +92,26 @@ import { b, C } from "a"
 import { a as b, b as a } from "a"
 ```
 
+### `sort/imports` 🔧
+
+Sorts imports alphabetically and case insensitive in ascending order.
+
+Example of **incorrect** code for this rule.
+
+```js
+import c from "c"
+import b from "b"
+import a from "a"
+```
+
+Example of **correct** code for this rule.
+
+```js
+import a from "a"
+import b from "b"
+import c from "c"
+```
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):

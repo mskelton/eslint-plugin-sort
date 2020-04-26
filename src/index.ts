@@ -1,4 +1,4 @@
-// import sortImports from "./rules/sort-imports"
+import sortImports from "./rules/sort-imports"
 import sortImportSpecifiers from "./rules/sort-import-specifiers"
 import sortObjectPatterns from "./rules/sort-object-patterns"
 import sortObjectProperties from "./rules/sort-object-properties"
@@ -10,7 +10,7 @@ module.exports = {
       rules: {
         "sort/destructured-properties": "warn",
         "sort/imported-variables": "warn",
-        // "sort/imports": "warn",
+        "sort/imports": "warn",
         "sort/object-properties": "warn",
       },
     },
@@ -18,7 +18,7 @@ module.exports = {
   rules: {
     "destructured-properties": sortObjectPatterns,
     "imported-variables": sortImportSpecifiers,
-    // "imports": sortImports,
+    imports: sortImports,
     "object-properties": sortObjectProperties,
   },
 }

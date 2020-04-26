@@ -18,7 +18,7 @@ export function getSorter<T extends Node>(
   }
 }
 
-const getTextRange = (
+export const getTextRange = (
   left: Node | Comment,
   right: Node | Comment
 ): AST.Range => [left.range![0], right.range![1]]
