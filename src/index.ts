@@ -19,7 +19,7 @@ module.exports = {
               { type: "dependency", order: 2 },
               { type: "other", order: 3 },
             ],
-            separator: "\n",
+            separator: "",
           },
         ],
         "sort/object-properties": "warn",

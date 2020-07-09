@@ -171,7 +171,7 @@ The configuration example above shows how this works where the static asset impo
 
 #### Custom Separator
 
-If you are using sort groups, you have the option to provide a custom separator between sort groups. The default separator is a newline (`\n`), but you can customize it to any string you would like. For example, the following configuration would not separate groups by newlines.
+If you are using sort groups, you have the option to provide a custom separator between sort groups. For example, the following configuration would separate groups by newlines.
 
 ```json
 {
@@ -181,7 +181,7 @@ If you are using sort groups, you have the option to provide a custom separator 
       "groups": [
         // ...
       ],
-      "separator": ""
+      "separator": "\n"
     }
   ]
 }
