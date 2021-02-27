@@ -9,11 +9,15 @@
 
 ## Installation
 
-```sh
-# npm
-npm install -D eslint-plugin-sort
+### npm
 
-# Yarn
+```sh
+npm install -D eslint-plugin-sort
+```
+
+### Yarn
+
+```sh
 yarn add -D eslint-plugin-sort
 ```
 
