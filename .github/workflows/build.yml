@@ -14,6 +14,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: yarn install --immutable --immutable-cache
       - run: yarn test
+      - run: yarn ts
   release:
     needs: test
     runs-on: ubuntu-latest

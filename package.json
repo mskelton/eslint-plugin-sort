@@ -26,7 +26,8 @@
     "build": "babel src --out-dir lib --extensions .ts --env-name=build",
     "format": "prettier --write .",
     "lint": "eslint . --ext .ts",
-    "test": "jest"
+    "test": "jest",
+    "ts": "tsc"
   },
   "peerDependencies": {
     "eslint": ">=6"
