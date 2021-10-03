@@ -3,6 +3,7 @@
   "description": "Autofixable sort rules for ESLint.",
   "version": "0.0.0-semantically-released",
   "author": "Mark Skelton",
+  "packageManager": "yarn@3.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/mskelton/eslint-plugin-sort.git"
