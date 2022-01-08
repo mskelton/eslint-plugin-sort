@@ -1,32 +1,7 @@
 jest.mock("../resolver")
 
 import { RuleTester } from "eslint"
-import rule, { SortGroup } from "../rules/imports"
-
-const messages = rule.meta!.messages! as Record<
-  "unsorted" | "unsortedImports",
-  string
->
-
-const code = (...names: string[]) =>
-  names.map((name) => `import ${name}`).join("\n")
-
-const valid = (...names: string[]) => ({
-  code: code(...names.map((name, index) => `a${index} from '${name}'`)),
-})
-
-const sortGroups = (separator: string, ...groups: SortGroup[]) => [
-  { groups, separator },
-]
-
-const invalid = (input: string, output: string, ...errors: string[]) => ({
-  code: input,
-  errors,
-  output,
-})
-
-const error = (a: string, b: string) =>
-  messages.unsorted.replace("{{a}}", a).replace("{{b}}", b)
+import rule from "../rules/imports"
 
 const ruleTester = new RuleTester({
   parserOptions: {
@@ -37,126 +12,229 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("sort/imports", rule, {
   valid: [
-    // Basic
-    valid("a"),
-    valid("a", "b"),
-    valid("a", "b", "c"),
+    "import a from 'a'",
+    `
+      import a from 'a'
+      import b from 'b'
+    `.trim(),
+    `
+      import a from 'a'
+      import b from 'b'
+      import c from 'c'
+    `.trim(),
 
     // Programs without imports are valid
-    { code: "var a = 1" },
+    "var a = 1",
 
     // Comments
-    validFixture("imports/valid-comments"),
+    `
+      // Start comment isn't moved
+      import a from "a"
+      // b
+      import b from "b"
+      // c
+      import c from "c"
+    `.trim(),
 
     // Sort groups
-    validFixture(
-      "imports/valid-sort-groups",
-      sortGroups(
-        "\n",
-        { type: "side-effect", order: 1 },
-        { regex: "\\.(png|jpg)$", order: 3 },
-        { regex: "^\\.+\\/", order: 5 },
-        { type: "dependency", order: 2 },
-        { type: "other", order: 4 }
-      )
-    ),
+    {
+      code: `
+        import 'index.css'
+        import 'side-effect'
+
+        import a from "dependency-b"
+        import b from "dependency-c"
+
+        import c from "a.png"
+        import d from "b.jpg"
+
+        import e from "a"
+        import f from "b"
+        import g from "c"
+
+        import h from "../b"
+        import i from "./b"
+      `.trim(),
+      options: [
+        {
+          separator: "\n",
+          groups: [
+            { type: "side-effect", order: 1 },
+            { regex: "\\.(png|jpg)$", order: 3 },
+            { regex: "^\\.+\\/", order: 5 },
+            { type: "dependency", order: 2 },
+            { type: "other", order: 4 },
+          ],
+        },
+      ],
+    },
   ],
   invalid: [
-    // Basic
-    invalid(
-      code("b from 'b'", "a from 'a'"),
-      code("a from 'a'", "b from 'b'"),
-      error("a", "b"),
-      messages.unsortedImports
-    ),
-    invalid(
-      code("c from 'c'", "b from 'b'", "a from 'a'"),
-      code("a from 'a'", "b from 'b'", "c from 'c'"),
-      error("b", "c"),
-      error("a", "b"),
-      messages.unsortedImports
-    ),
+    {
+      code: `
+        import b from 'b'
+        import a from 'a'
+      `,
+      output: `
+        import a from 'a'
+        import b from 'b'
+      `,
+      errors: [{ messageId: "unsorted" }],
+    },
+    {
+      code: `
+        import c from 'c'
+        import b from 'b'
+        import a from 'a'
+      `,
+      output: `
+        import a from 'a'
+        import b from 'b'
+        import c from 'c'
+      `,
+      errors: [{ messageId: "unsorted" }],
+    },
 
     // Comments
-    invalidFixture("imports/invalid-comments", [
-      error("b", "c"),
-      error("a", "b"),
-      messages.unsortedImports,
-    ]),
+    {
+      code: `
+        // Start comment isn't moved
+        import c from "c"
+        // b
+        import b from "b"
+        // a
+        import a from "a"
+      `.trim(),
+      output: `
+        // Start comment isn't moved
+        // a
+        import a from "a"
+        // b
+        import b from "b"
+        import c from "c"
+      `.trim(),
+      errors: [{ messageId: "unsorted" }],
+    },
 
     // Sort groups
-    invalidFixture(
-      "imports/invalid-sort-groups",
-      [
-        error("c", "../b"),
-        error("b", "./b"),
-        error("a.png", "b"),
-        error("side-effect", "a.png"),
-        error("index.css", "side-effect"),
-        error("dependency-b", "b.jpg"),
-        messages.unsortedImports,
+    {
+      code: `
+        import c from "a.png"
+        import h from "../b"
+        import b from "dependency-c"
+        import d from "b.jpg"
+        import a from "dependency-b"
+        import i from "./b"
+      `.trim(),
+      output: `
+        import a from "dependency-b"
+        import b from "dependency-c"
+        import c from "a.png"
+        import d from "b.jpg"
+        import h from "../b"
+        import i from "./b"
+      `.trim(),
+      errors: [{ messageId: "unsorted" }],
+      options: [
+        {
+          groups: [
+            { type: "side-effect", order: 1 },
+            { regex: "\\.(png|jpg)$", order: 3 },
+            { regex: "^\\.+\\/", order: 5 },
+            { type: "dependency", order: 2 },
+            { type: "other", order: 4 },
+          ],
+        },
       ],
-      sortGroups(
-        "\n",
-        { type: "side-effect", order: 1 },
-        { regex: "\\.(png|jpg)$", order: 3 },
-        { regex: "^\\.+\\/", order: 5 },
-        { type: "dependency", order: 2 },
-        { type: "other", order: 4 }
-      )
-    ),
-    invalidFixture(
-      "imports/invalid-sort-groups-2",
-      [
-        error("./b", "c"),
-        error("index.css", "side-effect"),
-        error("b.jpg", "index.css"),
-        error("dependency-b", "b.jpg"),
-        messages.unsortedImports,
-      ],
-      sortGroups(
-        "\n",
-        { type: "side-effect", order: 4 },
-        { regex: "\\.(png|jpg)$", order: 3 },
-        { type: "dependency", order: 1 },
-        { type: "other", order: 2 }
-      )
-    ),
+    },
+    {
+      code: `
+        import b from "dependency-c"
+        import h from "../b"
+        import g from "c"
 
-    // No separator
-    invalidFixture(
-      "imports/invalid-no-separator",
-      [
-        error("dependency-c", "../b"),
-        error("dependency-b", "b.jpg"),
-        messages.unsortedImports,
-      ],
-      sortGroups(
-        "",
-        { type: "side-effect", order: 1 },
-        { regex: "\\.(png|jpg)$", order: 3 },
-        { regex: "^\\.+\\/", order: 5 },
-        { type: "dependency", order: 2 },
-        { type: "other", order: 4 }
-      )
-    ),
+        import i from "./b"
+        import f from "b"
+        import c from "a.png"
+        import 'side-effect'
+        import 'index.css'
 
-    // Custom separator
-    invalidFixture(
-      "imports/invalid-custom-separator",
-      [
-        error("dependency-c", "../b"),
-        error("dependency-b", "b.jpg"),
-        messages.unsortedImports,
+        import d from "b.jpg"
+
+        import a from "dependency-b"
+        import e from "a"
+      `.trim(),
+      output: `
+        import 'index.css'
+        import 'side-effect'
+        import a from "dependency-b"
+        import b from "dependency-c"
+        import c from "a.png"
+        import d from "b.jpg"
+        import e from "a"
+        import f from "b"
+        import g from "c"
+        import h from "../b"
+        import i from "./b"
+      `.trim(),
+      errors: [{ messageId: "unsorted" }],
+      options: [
+        {
+          groups: [
+            { type: "side-effect", order: 1 },
+            { regex: "\\.(png|jpg)$", order: 3 },
+            { regex: "^\\.+\\/", order: 5 },
+            { type: "dependency", order: 2 },
+            { type: "other", order: 4 },
+          ],
+        },
       ],
-      sortGroups(
-        "/* separator */",
-        { type: "side-effect", order: 1 },
-        { regex: "\\.(png|jpg)$", order: 3 },
-        { regex: "^\\.+\\/", order: 5 },
-        { type: "dependency", order: 2 },
-        { type: "other", order: 4 }
-      )
-    ),
+    },
+    {
+      code: `
+        import b from "dependency-c"
+        import h from "../b"
+        import g from "c"
+
+        import i from "./b"
+        import f from "b"
+        import c from "a.png"
+        import 'side-effect'
+        import 'index.css'
+
+        import d from "b.jpg"
+
+        import a from "dependency-b"
+        import e from "a"
+      `.trim(),
+      output: `
+        import a from "dependency-b"
+        import b from "dependency-c"
+
+        import h from "../b"
+        import i from "./b"
+        import e from "a"
+        import f from "b"
+        import g from "c"
+
+        import c from "a.png"
+        import d from "b.jpg"
+
+        import 'index.css'
+        import 'side-effect'
+      `.trim(),
+      errors: [{ messageId: "unsorted" }],
+      options: [
+        {
+          separator: "\n",
+          groups: [
+            { type: "side-effect", order: 4 },
+            { regex: "\\.(png|jpg)$", order: 3 },
+            { type: "dependency", order: 1 },
+            { type: "other", order: 2 },
+          ],
+        },
+      ],
+    },
   ],
 })
