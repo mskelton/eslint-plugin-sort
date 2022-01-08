@@ -10,7 +10,6 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("sort/destructured-properties", rule, {
   valid: [
-    // Basic
     "let {} = {}",
     "let {a} = {}",
     "let {a, b, c} = {}",
@@ -41,7 +40,6 @@ ruleTester.run("sort/destructured-properties", rule, {
     `),
   ],
   invalid: [
-    // Basic
     {
       code: "let {c, a, b} = {}",
       output: "let {a, b, c} = {}",
