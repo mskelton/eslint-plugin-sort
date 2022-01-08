@@ -2,6 +2,7 @@ import { Rule } from "eslint"
 import { Property, SpreadElement } from "estree"
 import {
   alphaSorter,
+  docsURL,
   enumerate,
   getName,
   getNodeRange,
@@ -61,6 +62,9 @@ export default {
   },
   meta: {
     type: "suggestion",
+    docs: {
+      url: docsURL("object-properties"),
+    },
     fixable: "code",
     messages: {
       unsorted: "Object properties should be sorted alphabetically.",

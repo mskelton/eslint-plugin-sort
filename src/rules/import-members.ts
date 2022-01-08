@@ -1,6 +1,7 @@
 import { Rule } from "eslint"
 import {
   alphaSorter,
+  docsURL,
   enumerate,
   filterNodes,
   getNodeRange,
@@ -45,6 +46,9 @@ export default {
   meta: {
     type: "suggestion",
     fixable: "code",
+    docs: {
+      url: docsURL("import-members"),
+    },
     messages: {
       unsorted: "Import members should be sorted alphabetically.",
     },
