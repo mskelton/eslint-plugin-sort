@@ -15,11 +15,7 @@ module.exports = {
           {
             groups: [
               { type: "side-effect", order: 1 },
-              {
-                name: "relative",
-                regex: "^\\.+\\/",
-                order: 4,
-              },
+              { regex: "^\\.+\\/", order: 4 },
               { type: "dependency", order: 2 },
               { type: "other", order: 3 },
             ],
