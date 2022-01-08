@@ -2,6 +2,7 @@ import { Rule } from "eslint"
 import { ImportDeclaration } from "estree"
 import { isResolved } from "../resolver"
 import {
+  docsURL,
   enumerate,
   filterNodes,
   getName,
@@ -97,6 +98,9 @@ export default {
   meta: {
     fixable: "code",
     type: "suggestion",
+    docs: {
+      url: docsURL("imports"),
+    },
     messages: {
       unsorted: "Imports should be sorted.",
     },

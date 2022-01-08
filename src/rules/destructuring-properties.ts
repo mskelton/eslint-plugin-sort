@@ -1,6 +1,7 @@
 import { Rule } from "eslint"
 import {
   alphaSorter,
+  docsURL,
   enumerate,
   filterNodes,
   getName,
@@ -46,6 +47,9 @@ export default {
   meta: {
     type: "suggestion",
     fixable: "code",
+    docs: {
+      url: docsURL("destructuring-properties"),
+    },
     messages: {
       unsorted: "Destructuring properties should be sorted alphabetically.",
     },

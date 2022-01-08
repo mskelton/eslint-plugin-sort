@@ -91,3 +91,9 @@ export function getNodeText(
 ) {
   return source.getText().slice(...getNodeRange(source, node, includeComments))
 }
+
+/**
+ * Returns the URL to a rule's documentation.
+ */
+export const docsURL = (ruleName: string) =>
+  `https://github.com/mskelton/eslint-plugin-sort/blob/main/docs/rules/${ruleName}.md`
