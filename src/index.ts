@@ -1,15 +1,15 @@
-import sortImports from "./rules/sort-imports"
-import sortImportSpecifiers from "./rules/sort-import-specifiers"
-import sortObjectPatterns from "./rules/sort-object-patterns"
-import sortObjectProperties from "./rules/sort-object-properties"
+import imports from "./rules/imports"
+import importMembers from "./rules/import-members"
+import destructuringProperties from "./rules/destructuring-properties"
+import objectProperties from "./rules/object-properties"
 
 module.exports = {
   configs: {
     recommended: {
       plugins: ["sort"],
       rules: {
-        "sort/destructured-properties": "warn",
-        "sort/imported-variables": "warn",
+        "sort/destructuring-properties": "warn",
+        "sort/import-members": "warn",
         "sort/imports": [
           "warn",
           {
@@ -19,7 +19,6 @@ module.exports = {
               { type: "dependency", order: 2 },
               { type: "other", order: 3 },
             ],
-            separator: "",
           },
         ],
         "sort/object-properties": "warn",
@@ -27,9 +26,9 @@ module.exports = {
     },
   },
   rules: {
-    "destructured-properties": sortObjectPatterns,
-    "imported-variables": sortImportSpecifiers,
-    imports: sortImports,
-    "object-properties": sortObjectProperties,
+    "destructuring-properties": destructuringProperties,
+    "import-members": importMembers,
+    "imports": imports,
+    "object-properties": objectProperties,
   },
 }

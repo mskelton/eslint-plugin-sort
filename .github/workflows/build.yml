@@ -5,27 +5,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x]
+        node-version: [14.x, 16.x]
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: mskelton/setup-yarn@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn install --immutable
       - run: yarn test
       - run: yarn ts
   release:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: "12"
-      - run: yarn install --immutable
+      - uses: mskelton/setup-yarn@v1
       - run: yarn build
-      - uses: cycjimmy/semantic-release-action@v2.3.0
+      - run: yarn semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,3 +1,5 @@
 {
-  "semi": false
+  "semi": false,
+  "proseWrap": "always",
+  "quoteProps": "consistent"
 }
