@@ -1,31 +1,28 @@
-import { Rule, SourceCode } from "eslint"
-import {
-  Directive,
-  ImportDeclaration,
-  ModuleDeclaration,
-  Program,
-  Statement,
-} from "estree"
+import { Rule } from "eslint"
+import { ImportDeclaration } from "estree"
 import { isResolved } from "../resolver"
-import { getSortValue, getTextRange, getTextWithComments } from "../utils"
+import {
+  enumerate,
+  filterNodes,
+  getName,
+  getNodeRange,
+  getNodeText,
+  isUnsorted,
+} from "../utils"
 
-type Options = {
-  groups: SortGroup[]
-  separator: string
-}
-
-export type SortGroup = {
+interface SortGroup {
   order: number
   type?: "dependency" | "side-effect" | "other"
   regex?: string
 }
 
-const isImport = (
-  node: Directive | Statement | ModuleDeclaration
-): node is ImportDeclaration => node.type === "ImportDeclaration"
-
+/**
+ * Returns the order of a given node based on the sort groups configured in the
+ * rule options. If no sort groups are configured (default), the order returned
+ * is always 0.
+ */
 function getSortGroup(sortGroups: SortGroup[], node: ImportDeclaration) {
-  const source = getSortValue(node.source)
+  const source = getName(node.source)
 
   for (const { regex, type, order } of sortGroups) {
     switch (type) {
@@ -46,149 +43,87 @@ function getSortGroup(sortGroups: SortGroup[], node: ImportDeclaration) {
     }
   }
 
-  return Infinity
-}
-
-type GroupedNode = {
-  node: ImportDeclaration
-  group: number
-}
-
-function sortFn(a: GroupedNode, b: GroupedNode) {
-  if (a.group > b.group) return 1
-  if (a.group < b.group) return -1
-
-  const aText = getSortValue(a.node.source)
-  const bText = getSortValue(b.node.source)
-
-  if (aText > bText) return 1
-  if (aText < bText) return -1
-
   return 0
 }
 
-const getText = (source: SourceCode, node: ImportDeclaration) =>
-  source.getText().slice(...getTextRange(node, node))
-
-const mapSortGroups =
-  (sortGroups: SortGroup[]) => (node: ImportDeclaration) => ({
-    node,
-    group: getSortGroup(sortGroups, node),
-  })
-
-function autofix(
-  context: Rule.RuleContext,
-  imports: ImportDeclaration[],
-  lastUnsortedNode: ImportDeclaration,
-  options: Options
-) {
-  const source = context.getSourceCode()
-
-  context.report({
-    node: lastUnsortedNode,
-    messageId: "unsortedImports",
-    fix(fixer) {
-      const text = imports
-        .map(mapSortGroups(options.groups))
-        .sort(sortFn)
-        .reduce((acc, { node, group }, index, arr) => {
-          // If the current import was the first import before sorting, don't
-          // move the comments as we don't know if they are for the import or
-          // the file header comments.
-          const text =
-            node === imports[0]
-              ? getText(source, node)
-              : getTextWithComments(source, node)
-
-          // When the next sort group begins, add the separator. If it is the
-          // first sort group, don't add the separator.
-          const previousGroup = arr[index - 1]
-          const separator =
-            previousGroup && previousGroup.group !== group
-              ? options.separator
-              : ""
-
-          return (
-            acc +
-            separator +
-            text +
-            // All imports except the last should be separated by a single
-            // newline. This has no affect on the separator.
-            (index < arr.length - 1 ? "\n" : "")
-          )
-        }, "")
-
-      return fixer.replaceTextRange(
-        getTextRange(imports[0], imports[imports.length - 1]),
-        text
-      )
-    },
-  })
-}
-
-function sort(
-  imports: ImportDeclaration[],
-  context: Rule.RuleContext,
-  options: Options
-) {
-  let lastUnsortedNode: ImportDeclaration | null = null
-
-  // If there are less than two imports, there is nothing to sort.
-  if (imports.length < 2) {
-    return
-  }
-
-  imports.map(mapSortGroups(options.groups)).reduce((previous, current) => {
-    if (sortFn(current, previous) < 0) {
-      context.report({
-        node: current.node,
-        messageId: "unsorted",
-        data: {
-          a: getSortValue(current.node.source),
-          b: getSortValue(previous.node.source),
-        },
-      })
-
-      lastUnsortedNode = current.node
-    }
-
-    return current
-  })
-
-  // If we fixed each set of unsorted imports, it would require multiple runs to
-  // fix if there are multiple unsorted imports. Instead, we add a add special
-  // error with an autofix rule which will sort all imports at once.
-  if (lastUnsortedNode) {
-    autofix(context, imports, lastUnsortedNode, options)
-  }
-}
+const getSortValue = (node: ImportDeclaration) =>
+  getName(node.source).toLowerCase()
 
 export default {
   create(context) {
+    const options = {
+      groups: [],
+      separator: "\n",
+      ...context.options[0],
+    }
+
     return {
-      Program(node) {
-        const options = {
-          groups: [],
-          separator: "\n",
-          ...context.options[0],
+      Program(program) {
+        const nodes = filterNodes(program.body, "ImportDeclaration")
+
+        // If there are one or fewer imports, there is nothing to sort
+        if (nodes.length < 2) {
+          return
         }
 
-        sort((node as Program).body.filter(isImport), context, options)
+        const sorted = nodes.slice().sort((a, b) => {
+          return (
+            // First sort by sort group
+            getSortGroup(options.groups, a) - getSortGroup(options.groups, b) ||
+            // Then sort by import name
+            getSortValue(a).localeCompare(getSortValue(b))
+          )
+        })
+
+        if (isUnsorted(nodes, sorted)) {
+          const source = context.getSourceCode()
+
+          // When sorting, the comments for the first node are not copied as
+          // we cannot determine if they are comments for the entire file or
+          // just the first import.
+          const isFirst = (node: ImportDeclaration) => node === nodes[0]
+
+          context.report({
+            node: nodes[0],
+            messageId: "unsorted",
+            *fix(fixer) {
+              for (const [node, complement] of enumerate(nodes, sorted)) {
+                yield fixer.replaceTextRange(
+                  getNodeRange(source, node, !isFirst(node)),
+                  getNodeText(source, complement, !isFirst(complement))
+                )
+              }
+            },
+          })
+        }
       },
     }
   },
   meta: {
     fixable: "code",
+    type: "suggestion",
     messages: {
-      unsorted: "Expected '{{a}}' to be before '{{b}}'.",
-      invalidSeparators: "Expected imports to be sorted.",
+      unsorted: "Imports should be sorted.",
+      invalidSeparators: "Invalid separator between sort groups.",
     },
     schema: [
       {
         type: "object",
         properties: {
-          groups: { type: "array" },
           separator: { type: "string" },
+          groups: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                type: { enum: ["side-effect", "dependency", "other"] },
+                regex: { type: "string" },
+                order: { type: "number" },
+              },
+              required: ["order"],
+              additionalProperties: false,
+            },
+          },
         },
       },
     ],

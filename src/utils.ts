@@ -70,46 +70,24 @@ export const getTextRange = (
 /**
  * Returns an AST range for a node and it's preceding comments.
  */
-export function getNodeRange(source: SourceCode, node: Node) {
-  return getTextRange(source.getCommentsBefore(node)[0] ?? node, node)
+export function getNodeRange(
+  source: SourceCode,
+  node: Node,
+  includeComments = true
+) {
+  return getTextRange(
+    (includeComments && source.getCommentsBefore(node)[0]) || node,
+    node
+  )
 }
 
 /**
  * Returns a node's text with it's preceding comments.
  */
-export function getNodeText(source: SourceCode, node: Node) {
-  return source.getText().slice(...getNodeRange(source, node))
-}
-
-// TODO:
-
-export function getTextWithComments(source: SourceCode, node: Node) {
-  return source
-    .getText()
-    .slice(...getTextRange(source.getCommentsBefore(node)[0] || node, node))
-}
-
-export const getTextBetweenNodes = (
+export function getNodeText(
   source: SourceCode,
-  left: Node,
-  right: Node
-) => {
-  const nextComments = right ? source.getCommentsBefore(right) : []
-  const nextNodeStart = nextComments[0] || right
-
-  const text = source
-    .getText()
-    .slice(
-      left.range![1],
-      nextNodeStart ? nextNodeStart.range![0] : left.range![1]
-    )
-
-  return text
-}
-
-export function getNodeGroupRange(source: SourceCode, nodes: Node[]) {
-  return getTextRange(
-    source.getCommentsBefore(nodes[0])[0] || nodes[0],
-    nodes[nodes.length - 1]
-  )
+  node: Node,
+  includeComments = true
+) {
+  return source.getText().slice(...getNodeRange(source, node, includeComments))
 }
