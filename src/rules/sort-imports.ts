@@ -70,12 +70,11 @@ function sortFn(a: GroupedNode, b: GroupedNode) {
 const getText = (source: SourceCode, node: ImportDeclaration) =>
   source.getText().slice(...getTextRange(node, node))
 
-const mapSortGroups = (sortGroups: SortGroup[]) => (
-  node: ImportDeclaration
-) => ({
-  node,
-  group: getSortGroup(sortGroups, node),
-})
+const mapSortGroups =
+  (sortGroups: SortGroup[]) => (node: ImportDeclaration) => ({
+    node,
+    group: getSortGroup(sortGroups, node),
+  })
 
 function autofix(
   context: Rule.RuleContext,
