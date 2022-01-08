@@ -8,14 +8,18 @@ module.exports = {
     recommended: {
       plugins: ["sort"],
       rules: {
-        "sort/destructured-properties": "warn",
-        "sort/imported-variables": "warn",
+        "sort/destructuring-properties": "warn",
+        "sort/import-members": "warn",
         "sort/imports": [
           "warn",
           {
             groups: [
               { type: "side-effect", order: 1 },
-              { regex: "^\\.+\\/", order: 4 },
+              {
+                name: "relative",
+                regex: "^\\.+\\/",
+                order: 4,
+              },
               { type: "dependency", order: 2 },
               { type: "other", order: 3 },
             ],
@@ -27,9 +31,9 @@ module.exports = {
     },
   },
   rules: {
-    "destructured-properties": sortObjectPatterns,
-    "imported-variables": sortImportSpecifiers,
-    imports: sortImports,
+    "destructuring-properties": sortObjectPatterns,
+    "import-members": sortImportSpecifiers,
+    "imports": sortImports,
     "object-properties": sortObjectProperties,
   },
 }
