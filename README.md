@@ -160,14 +160,11 @@ This configuration would result in the following output.
 
 ```js
 import "index.css"
-
 import React from "react"
 import { createStore } from "redux"
-
 import c from "c"
 import a from "../a"
 import b from "./b"
-
 import image1 from "my-library/static/image.svg"
 import image2 from "static/image.jpg"
 import image3 from "static/image.png"
@@ -192,23 +189,3 @@ group.
 The configuration example above shows how this works where the static asset
 imports are the second sort group even though they have the highest order and
 are thus the last sort group in the resulting code.
-
-#### Custom Separator
-
-If you are using sort groups, you have the option to provide a custom separator
-between sort groups. For example, the following configuration would separate
-groups by newlines.
-
-```json
-{
-  "sort/imports": [
-    "warn",
-    {
-      "groups": [
-        // ...
-      ],
-      "separator": "\n"
-    }
-  ]
-}
-```

@@ -23,7 +23,6 @@ module.exports = {
               { type: "dependency", order: 2 },
               { type: "other", order: 3 },
             ],
-            separator: "",
           },
         ],
         "sort/object-properties": "warn",

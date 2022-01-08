@@ -51,11 +51,7 @@ const getSortValue = (node: ImportDeclaration) =>
 
 export default {
   create(context) {
-    const options = {
-      groups: [],
-      separator: "\n",
-      ...context.options[0],
-    }
+    const groups = context.options[0]?.groups ?? []
 
     return {
       Program(program) {
@@ -66,14 +62,13 @@ export default {
           return
         }
 
-        const sorted = nodes.slice().sort((a, b) => {
-          return (
+        const sorted = nodes.slice().sort(
+          (a, b) =>
             // First sort by sort group
-            getSortGroup(options.groups, a) - getSortGroup(options.groups, b) ||
+            getSortGroup(groups, a) - getSortGroup(groups, b) ||
             // Then sort by import name
             getSortValue(a).localeCompare(getSortValue(b))
-          )
-        })
+        )
 
         if (isUnsorted(nodes, sorted)) {
           const source = context.getSourceCode()
@@ -104,13 +99,11 @@ export default {
     type: "suggestion",
     messages: {
       unsorted: "Imports should be sorted.",
-      invalidSeparators: "Invalid separator between sort groups.",
     },
     schema: [
       {
         type: "object",
         properties: {
-          separator: { type: "string" },
           groups: {
             type: "array",
             items: {

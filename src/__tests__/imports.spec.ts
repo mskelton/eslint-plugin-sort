@@ -41,23 +41,18 @@ ruleTester.run("sort/imports", rule, {
       code: `
         import 'index.css'
         import 'side-effect'
-
         import a from "dependency-b"
         import b from "dependency-c"
-
         import c from "a.png"
         import d from "b.jpg"
-
         import e from "a"
         import f from "b"
         import g from "c"
-
         import h from "../b"
         import i from "./b"
       `.trim(),
       options: [
         {
-          separator: "\n",
           groups: [
             { type: "side-effect", order: 1 },
             { regex: "\\.(png|jpg)$", order: 3 },
@@ -152,15 +147,12 @@ ruleTester.run("sort/imports", rule, {
         import b from "dependency-c"
         import h from "../b"
         import g from "c"
-
         import i from "./b"
         import f from "b"
         import c from "a.png"
         import 'side-effect'
         import 'index.css'
-
         import d from "b.jpg"
-
         import a from "dependency-b"
         import e from "a"
       `.trim(),
@@ -195,84 +187,34 @@ ruleTester.run("sort/imports", rule, {
         import b from "dependency-c"
         import h from "../b"
         import g from "c"
-
         import i from "./b"
         import f from "b"
         import c from "a.png"
         import 'side-effect'
         import 'index.css'
-
         import d from "b.jpg"
-
         import a from "dependency-b"
         import e from "a"
       `.trim(),
       output: `
         import a from "dependency-b"
         import b from "dependency-c"
-
         import h from "../b"
         import i from "./b"
         import e from "a"
         import f from "b"
         import g from "c"
-
         import c from "a.png"
         import d from "b.jpg"
-
         import 'index.css'
         import 'side-effect'
       `.trim(),
       errors: [{ messageId: "unsorted" }],
       options: [
         {
-          separator: "\n",
           groups: [
             { type: "side-effect", order: 4 },
             { regex: "\\.(png|jpg)$", order: 3 },
-            { type: "dependency", order: 1 },
-            { type: "other", order: 2 },
-          ],
-        },
-      ],
-    },
-
-    // Invalid separators but valid sort
-    {
-      code: `
-        import c from "dependency-c"
-
-        import b from "../b"
-      `.trim(),
-      output: `
-        import c from "dependency-c"
-        import b from "../b"
-      `.trim(),
-      errors: [{ messageId: "invalidSeparators" }],
-      options: [
-        {
-          groups: [
-            { type: "dependency", order: 1 },
-            { type: "other", order: 2 },
-          ],
-        },
-      ],
-    },
-    {
-      code: `
-        import c from "dependency-c"
-        import b from "../b"
-      `.trim(),
-      output: `
-        import c from "dependency-c"
-
-        import b from "../b"
-      `.trim(),
-      errors: [{ messageId: "invalidSeparators" }],
-      options: [
-        {
-          separator: "\n",
-          groups: [
             { type: "dependency", order: 1 },
             { type: "other", order: 2 },
           ],
