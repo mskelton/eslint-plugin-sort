@@ -1,117 +1,69 @@
 import { Rule } from "eslint"
-import { ObjectExpression, Property } from "estree"
+import { Property, SpreadElement } from "estree"
 import {
-  getNodeGroupRange,
-  getSorter,
-  getSortValue,
-  getTextBetweenNodes,
-  getTextWithComments,
+  alphaSorter,
+  enumerate,
+  getName,
+  getNodeRange,
+  getNodeText,
   isUnsorted,
 } from "../utils"
 
 /**
- * When sorting object properties, we have to sort the groups of nodes between
- * spread elements since changing the location of the spread elements will
- * affect runtime. This method will split object properties into groups of nodes
- * between spread elements which can then be safely sorted.
+ * When sorting object properties, we can only sort properties between spread
+ * elements as re-arranging spread elements can have runtime side effects.
+ *
+ * This function will return a 2d array of nodes where each sub-array is a set
+ * of consecutive nodes between spread elements that can be sorted.
  */
-function getNodeGroupsBetweenSpreads(node: ObjectExpression) {
-  return (
-    node.properties
-      .reduce(
-        (acc, property) => {
-          if (property.type === "SpreadElement") {
-            acc.push([])
-          } else {
-            acc[acc.length - 1].push(property)
-          }
+function groupNodes(properties: (Property | SpreadElement)[]) {
+  const groups: Property[][] = [[]]
 
-          return acc
-        },
-        [[]] as Property[][]
-      )
-      // We only need to sort when there is more than one property
-      .filter((group) => group.length > 1)
-  )
-}
-
-function autofix(context: Rule.RuleContext, node: ObjectExpression) {
-  const source = context.getSourceCode()
-
-  context.report({
-    node,
-    messageId: "unsortedProperties",
-    fix(fixer) {
-      return getNodeGroupsBetweenSpreads(node).map((nodes, index) => {
-        const text = nodes
-          .slice()
-          .sort(getSorter((node) => getSortValue(node.key).toLowerCase()))
-          .reduce((acc, currentNode, idx, group) => {
-            // The last node in the group should not get the text between itself
-            // and the next property as the next property is a spread element
-            // and is not part of the replaced text range.
-            const endIndex = index + (idx < group.length - 1 ? 1 : 0)
-
-            return (
-              acc +
-              getTextWithComments(source, currentNode) +
-              getTextBetweenNodes(
-                source,
-                node.properties[index],
-                node.properties[endIndex]
-              )
-            )
-          }, "")
-
-        return fixer.replaceTextRange(getNodeGroupRange(source, nodes), text)
-      })
-    },
-  })
-}
-
-function sort(node: ObjectExpression, context: Rule.RuleContext) {
-  let unsorted = false
-
-  getNodeGroupsBetweenSpreads(node).forEach((group) => {
-    group.reduce((previousNode, currentNode) => {
-      if (isUnsorted(previousNode.key, currentNode.key)) {
-        context.report({
-          node: currentNode,
-          messageId: "unsorted",
-          data: {
-            a: getSortValue(currentNode.key),
-            b: getSortValue(previousNode.key),
-          },
-        })
-
-        unsorted = true
-      }
-
-      return currentNode
-    })
+  properties.forEach((property) => {
+    if (property.type === "Property") {
+      groups[groups.length - 1].push(property)
+    } else {
+      groups.push([])
+    }
   })
 
-  // If we fixed each set of unsorted nodes, it would require multiple runs to
-  // fix if there are multiple unsorted nodes. Instead, we add a add special
-  // error with an autofix rule which will sort all specifiers at once.
-  if (unsorted) {
-    autofix(context, node)
-  }
+  return groups.filter((group) => group.length > 1)
 }
 
 export default {
   create(context) {
     return {
-      ObjectExpression(node) {
-        sort(node as ObjectExpression, context)
+      ObjectExpression(expression) {
+        for (const nodes of groupNodes(expression.properties)) {
+          const sorted = nodes
+            .slice()
+            .sort(alphaSorter((node) => getName(node.key).toLowerCase()))
+
+          if (isUnsorted(nodes, sorted)) {
+            const source = context.getSourceCode()
+
+            context.report({
+              node: nodes[0],
+              messageId: "unsorted",
+              *fix(fixer) {
+                for (const [node, complement] of enumerate(nodes, sorted)) {
+                  yield fixer.replaceTextRange(
+                    getNodeRange(source, node),
+                    getNodeText(source, complement)
+                  )
+                }
+              },
+            })
+          }
+        }
       },
     }
   },
   meta: {
+    type: "suggestion",
     fixable: "code",
     messages: {
-      unsorted: "Expected '{{a}}' to be before '{{b}}'.",
-      unsortedProperties: "Expected object properties to be sorted.",
+      unsorted: "Object properties should be sorted alphabetically.",
     },
   },
 } as Rule.RuleModule

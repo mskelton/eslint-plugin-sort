@@ -5,8 +5,8 @@ import { Comment, Expression, Node } from "estree"
  * Returns true if any node in the source array is different from the same
  * positioned node in the sorted array.
  */
-export function isUnsorted(nodes: Node[], complements: Node[]) {
-  return nodes.some((node, i) => node !== complements[i])
+export function isUnsorted(nodes: Node[], sorted: Node[]) {
+  return nodes.some((node, i) => node !== sorted[i])
 }
 
 /**

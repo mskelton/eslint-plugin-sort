@@ -20,18 +20,18 @@ export default {
           return
         }
 
-        const complements = nodes
+        const sorted = nodes
           .slice()
           .sort(alphaSorter((node) => getName(node.key).toLowerCase()))
 
-        if (isUnsorted(nodes, complements)) {
+        if (isUnsorted(nodes, sorted)) {
           const source = context.getSourceCode()
 
           context.report({
             node: nodes[0],
             messageId: "unsorted",
             *fix(fixer) {
-              for (const [node, complement] of enumerate(nodes, complements)) {
+              for (const [node, complement] of enumerate(nodes, sorted)) {
                 yield fixer.replaceTextRange(
                   getNodeRange(source, node),
                   getNodeText(source, complement)

@@ -85,22 +85,22 @@ ruleTester.run("sort/object-properties", rule, {
     {
       code: "var a = {e:2, d:1, ...c, b:4, a:3}",
       output: "var a = {d:1, e:2, ...c, a:3, b:4}",
-      errors: [{ messageId: "unsorted" }],
+      errors: [{ messageId: "unsorted" }, { messageId: "unsorted" }],
     },
     {
       code: "var a = {b:2, a:1, ...c, e:4, d:3}",
       output: "var a = {a:1, b:2, ...c, d:3, e:4}",
-      errors: [{ messageId: "unsorted" }],
+      errors: [{ messageId: "unsorted" }, { messageId: "unsorted" }],
     },
     {
       code: "var a = {f:2, e:1, ...d, ...c, b:4, a:3}",
       output: "var a = {e:1, f:2, ...d, ...c, a:3, b:4}",
-      errors: [{ messageId: "unsorted" }],
+      errors: [{ messageId: "unsorted" }, { messageId: "unsorted" }],
     },
     {
       code: "var a = {g:2, f:1, ...d, a:3, ...c, c:5, b:4}",
       output: "var a = {f:1, g:2, ...d, a:3, ...c, b:4, c:5}",
-      errors: [{ messageId: "unsorted" }],
+      errors: [{ messageId: "unsorted" }, { messageId: "unsorted" }],
     },
 
     // Bracket notation
@@ -171,7 +171,7 @@ ruleTester.run("sort/object-properties", rule, {
           b: 5
         }
       `.trim(),
-      errors: [{ messageId: "unsorted" }],
+      errors: [{ messageId: "unsorted" }, { messageId: "unsorted" }],
     },
   ],
 })
