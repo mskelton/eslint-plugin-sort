@@ -1,6 +1,5 @@
 import { RuleTester } from "eslint"
 import rule from "../rules/destructuring-properties"
-import { heredoc } from "./utils"
 
 const ruleTester = new RuleTester({
   parserOptions: {
@@ -28,7 +27,7 @@ ruleTester.run("sort/destructured-properties", rule, {
     "let {...rest} = {}",
 
     // Comments
-    heredoc(`
+    `
       let {
         // a
         a,
@@ -37,7 +36,7 @@ ruleTester.run("sort/destructured-properties", rule, {
         // rest
         ...rest
       } = {}
-    `),
+    `.trim(),
   ],
   invalid: [
     {
@@ -86,28 +85,28 @@ ruleTester.run("sort/destructured-properties", rule, {
 
     // Comments
     {
-      code: heredoc(`
-      let {
-        // c
-        c,
-        // b
-        b,
-        a,
-        // rest
-        ...rest
-      } = {}
-      `),
-      output: heredoc(`
-      let {
-        a,
-        // b
-        b,
-        // c
-        c,
-        // rest
-        ...rest
-      } = {}
-      `),
+      code: `
+        let {
+          // c
+          c,
+          // b
+          b,
+          a,
+          // rest
+          ...rest
+        } = {}
+      `.trim(),
+      output: `
+        let {
+          a,
+          // b
+          b,
+          // c
+          c,
+          // rest
+          ...rest
+        } = {}
+      `.trim(),
       errors: [{ messageId: "unsorted" }],
     },
   ],

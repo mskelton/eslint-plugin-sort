@@ -1,6 +1,5 @@
 import { RuleTester } from "eslint"
 import rule from "../rules/import-members"
-import { heredoc } from "./utils"
 
 const ruleTester = new RuleTester({
   parserOptions: {
@@ -30,7 +29,7 @@ ruleTester.run("sort/imported-variables", rule, {
     "import {a as b, b as a} from 'a'",
 
     // Comments
-    heredoc(`
+    `
       import {
         // a
         a,
@@ -38,7 +37,7 @@ ruleTester.run("sort/imported-variables", rule, {
         b,
         c
       } from 'a'
-    `),
+    `.trim(),
   ],
   invalid: [
     {
@@ -87,7 +86,7 @@ ruleTester.run("sort/imported-variables", rule, {
 
     // Comments
     {
-      code: heredoc(`
+      code: `
         import {
           c,
           // b
@@ -95,8 +94,8 @@ ruleTester.run("sort/imported-variables", rule, {
           // a
           a
         } from 'a'
-      `),
-      output: heredoc(`
+      `.trim(),
+      output: `
         import {
           // a
           a,
@@ -104,7 +103,7 @@ ruleTester.run("sort/imported-variables", rule, {
           b,
           c
         } from 'a'
-      `),
+      `.trim(),
       errors: [{ messageId: "unsorted" }],
     },
   ],
