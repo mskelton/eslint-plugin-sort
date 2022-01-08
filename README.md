@@ -37,9 +37,10 @@ recommended configuration. This will enable all available rules as warnings.
 ✔: Enabled in the `recommended` configuration.\
 🔧: Fixable with [`eslint --fix`](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems).
 
-|  ✔  | 🔧  | Rule                                                                    | Description                      |
-| :-: | :-: | ----------------------------------------------------------------------- | -------------------------------- |
-|  ✔  | 🔧  | [sort/destructuring-properties](docs/rules/destructuring-properties.md) | Destructuring Properties Sorting |
-|  ✔  | 🔧  | [sort/import-members](docs/rules/import-members.md)                     | Import Member Sorting            |
-|  ✔  | 🔧  | [sort/imports](docs/rules/imports.md)                                   | Import Sorting                   |
-|  ✔  | 🔧  | [sort/object-properties](docs/rules/object-properties.md)               | Object Property Sorting          |
+|  ✔  | 🔧  | Rule                                                                    | Description                           |
+| :-: | :-: | ----------------------------------------------------------------------- | ------------------------------------- |
+|  ✔  | 🔧  | [sort/destructuring-properties](docs/rules/destructuring-properties.md) | Sorts object destructuring properties |
+|  ✔  | 🔧  | [sort/import-members](docs/rules/import-members.md)                     | Sorts import members                  |
+|  ✔  | 🔧  | [sort/imports](docs/rules/imports.md)                                   | Sorts imports                         |
+|  ✔  | 🔧  | [sort/object-properties](docs/rules/object-properties.md)               | Sorts object properties               |
+|     | 🔧  | [sort/type-properties](docs/rules/type-properties.md)                   | Sorts TypeScript type properties      |
