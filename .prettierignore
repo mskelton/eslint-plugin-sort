@@ -1,5 +1,6 @@
-lib/
-
-# Yarn 2 auto generated files
+# Yarn auto generated files
 .yarn/
 .yarnrc.yml
+
+# Outputs
+lib/
