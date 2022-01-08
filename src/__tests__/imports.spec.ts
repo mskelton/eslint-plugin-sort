@@ -236,5 +236,48 @@ ruleTester.run("sort/imports", rule, {
         },
       ],
     },
+
+    // Invalid separators but valid sort
+    {
+      code: `
+        import c from "dependency-c"
+
+        import b from "../b"
+      `.trim(),
+      output: `
+        import c from "dependency-c"
+        import b from "../b"
+      `.trim(),
+      errors: [{ messageId: "invalidSeparators" }],
+      options: [
+        {
+          groups: [
+            { type: "dependency", order: 1 },
+            { type: "other", order: 2 },
+          ],
+        },
+      ],
+    },
+    {
+      code: `
+        import c from "dependency-c"
+        import b from "../b"
+      `.trim(),
+      output: `
+        import c from "dependency-c"
+
+        import b from "../b"
+      `.trim(),
+      errors: [{ messageId: "invalidSeparators" }],
+      options: [
+        {
+          separator: "\n",
+          groups: [
+            { type: "dependency", order: 1 },
+            { type: "other", order: 2 },
+          ],
+        },
+      ],
+    },
   ],
 })

@@ -181,7 +181,7 @@ export default {
     fixable: "code",
     messages: {
       unsorted: "Expected '{{a}}' to be before '{{b}}'.",
-      unsortedImports: "Expected imports to be sorted.",
+      invalidSeparators: "Expected imports to be sorted.",
     },
     schema: [
       {
