@@ -8,7 +8,7 @@ const ruleTester = new RuleTester({
   },
 })
 
-ruleTester.run("sort/imported-variables", rule, {
+ruleTester.run("sort/import-members", rule, {
   valid: [
     "import {} from 'a'",
     "import {a} from 'a'",

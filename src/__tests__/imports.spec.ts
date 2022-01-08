@@ -35,7 +35,7 @@ const ruleTester = new RuleTester({
   },
 })
 
-ruleTester.run("sort/imported-variables", rule, {
+ruleTester.run("sort/imports", rule, {
   valid: [
     // Basic
     valid("a"),

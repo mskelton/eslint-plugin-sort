@@ -7,7 +7,7 @@ const ruleTester = new RuleTester({
   },
 })
 
-ruleTester.run("sort/destructured-properties", rule, {
+ruleTester.run("sort/object-properties", rule, {
   valid: [
     "var a = {}",
     "var a = {a: 1}",
