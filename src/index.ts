@@ -1,7 +1,7 @@
-import sortImports from "./rules/sort-imports"
-import sortImportSpecifiers from "./rules/sort-import-specifiers"
-import sortObjectPatterns from "./rules/sort-object-patterns"
-import sortObjectProperties from "./rules/sort-object-properties"
+import imports from "./rules/imports"
+import importMembers from "./rules/import-members"
+import destructuringProperties from "./rules/destructuring-properties"
+import objectProperties from "./rules/object-properties"
 
 module.exports = {
   configs: {
@@ -31,9 +31,9 @@ module.exports = {
     },
   },
   rules: {
-    "destructuring-properties": sortObjectPatterns,
-    "import-members": sortImportSpecifiers,
-    "imports": sortImports,
-    "object-properties": sortObjectProperties,
+    "destructuring-properties": destructuringProperties,
+    "import-members": importMembers,
+    "imports": imports,
+    "object-properties": objectProperties,
   },
 }

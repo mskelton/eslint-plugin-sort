@@ -1,5 +1,5 @@
 import { RuleTester } from "eslint"
-import rule from "../rules/sort-object-properties"
+import rule from "../rules/object-properties"
 import { invalidFixture, validFixture } from "./utils"
 
 const messages = rule.meta!.messages! as Record<

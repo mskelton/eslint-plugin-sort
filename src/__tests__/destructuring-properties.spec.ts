@@ -1,18 +1,22 @@
 import { RuleTester } from "eslint"
-import rule from "../rules/sort-import-specifiers"
+import rule from "../rules/destructuring-properties"
 import { invalidFixture, validFixture } from "./utils"
 
 const messages = rule.meta!.messages! as Record<
-  "unsorted" | "unsortedSpecifiers",
+  "unsorted" | "unsortedPattern",
   string
 >
 
-const valid = (input: string) => ({ code: `import ${input} from 'a'` })
+const valid = (input: string) => ({ code: `let ${input} = {}` })
 
-const invalid = (input: string, output: string, ...errors: string[]) => ({
-  code: `import ${input} from 'a'`,
+const invalid = (
+  input: string,
+  output: string,
+  ...errors: string[]
+): RuleTester.InvalidTestCase => ({
+  code: `let ${input} = {}`,
   errors,
-  output: `import ${output} from 'a'`,
+  output: `let ${output} = {}`,
 })
 
 const error = (a: string, b: string) =>
@@ -21,11 +25,10 @@ const error = (a: string, b: string) =>
 const ruleTester = new RuleTester({
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: "module",
   },
 })
 
-ruleTester.run("sort/imported-variables", rule, {
+ruleTester.run("sort/destructured-properties", rule, {
   valid: [
     // Basic
     valid("{}"),
@@ -38,29 +41,28 @@ ruleTester.run("sort/imported-variables", rule, {
     valid("{a, B, c, D}"),
     valid("{_, A, b}"),
 
-    // Default and namespace imports
-    valid("React"),
-    valid("* as React"),
-    valid("React, {a, b}"),
+    // Aliases
+    valid("{a: b, b: a}"),
 
-    // Import aliases
-    valid("{a as b, b as a}"),
+    // Rest element
+    valid("{a, b, ...c}"),
+    valid("{...rest}"),
 
     // Comments
-    validFixture("import-specifiers/valid-comments"),
+    validFixture("object-patterns/valid-comments"),
   ],
   invalid: [
     // Basic
     invalid(
       "{c, a, b}",
       "{a, b, c}",
-      messages.unsortedSpecifiers,
+      messages.unsortedPattern,
       error("a", "c")
     ),
     invalid(
       "{b, a, _}",
       "{_, a, b}",
-      messages.unsortedSpecifiers,
+      messages.unsortedPattern,
       error("a", "b"),
       error("_", "a")
     ),
@@ -69,39 +71,39 @@ ruleTester.run("sort/imported-variables", rule, {
     invalid(
       "{b, A, _}",
       "{_, A, b}",
-      messages.unsortedSpecifiers,
+      messages.unsortedPattern,
       error("A", "b"),
       error("_", "A")
     ),
     invalid(
       "{D, a, c, B}",
       "{a, B, c, D}",
-      messages.unsortedSpecifiers,
+      messages.unsortedPattern,
       error("a", "D"),
       error("B", "c")
     ),
 
-    // Default and namespace imports
+    // Aliases
     invalid(
-      "React, {c, a, b}",
-      "React, {a, b, c}",
-      messages.unsortedSpecifiers,
-      error("a", "c")
+      "{b: a, a: b}",
+      "{a: b, b: a}",
+      messages.unsortedPattern,
+      error("a", "b")
     ),
 
-    // Import aliases
+    // Rest element
     invalid(
-      "{b as a, a as b}",
-      "{a as b, b as a}",
-      messages.unsortedSpecifiers,
-      error("a", "b")
+      "{c, a, b, ...rest}",
+      "{a, b, c, ...rest}",
+      messages.unsortedPattern,
+      error("a", "c")
     ),
 
     // All properties are sorted with a single sort
     invalid(
       "{z,y,x,w,v,u,t,s,r,q,p}",
       "{p,q,r,s,t,u,v,w,x,y,z}",
-      messages.unsortedSpecifiers,
+      messages.unsortedPattern,
       error("y", "z"),
       error("x", "y"),
       error("w", "x"),
@@ -115,8 +117,8 @@ ruleTester.run("sort/imported-variables", rule, {
     ),
 
     // Comments
-    invalidFixture("import-specifiers/invalid-comments", [
-      messages.unsortedSpecifiers,
+    invalidFixture("object-patterns/invalid-comments", [
+      messages.unsortedPattern,
       error("b", "c"),
       error("a", "b"),
     ]),
