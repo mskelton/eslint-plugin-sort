@@ -1,26 +1,6 @@
 import { RuleTester } from "eslint"
 import rule from "../rules/destructuring-properties"
-import { invalidFixture, validFixture } from "./utils"
-
-const messages = rule.meta!.messages! as Record<
-  "unsorted" | "unsortedPattern",
-  string
->
-
-const valid = (input: string) => ({ code: `let ${input} = {}` })
-
-const invalid = (
-  input: string,
-  output: string,
-  ...errors: string[]
-): RuleTester.InvalidTestCase => ({
-  code: `let ${input} = {}`,
-  errors,
-  output: `let ${output} = {}`,
-})
-
-const error = (a: string, b: string) =>
-  messages.unsorted.replace("{{a}}", a).replace("{{b}}", b)
+import { heredoc } from "./utils"
 
 const ruleTester = new RuleTester({
   parserOptions: {
@@ -31,96 +11,106 @@ const ruleTester = new RuleTester({
 ruleTester.run("sort/destructured-properties", rule, {
   valid: [
     // Basic
-    valid("{}"),
-    valid("{a}"),
-    valid("{a, b, c}"),
-    valid("{_, a, b}"),
-    valid("{p,q,r,s,t,u,v,w,x,y,z}"),
+    "let {} = {}",
+    "let {a} = {}",
+    "let {a, b, c} = {}",
+    "let {_, a, b} = {}",
+    "let {p,q,r,s,t,u,v,w,x,y,z} = {}",
 
     // Case insensitive
-    valid("{a, B, c, D}"),
-    valid("{_, A, b}"),
+    "let {a, B, c, D} = {}",
+    "let {_, A, b} = {}",
 
     // Aliases
-    valid("{a: b, b: a}"),
+    "let {a: b, b: a} = {}",
 
     // Rest element
-    valid("{a, b, ...c}"),
-    valid("{...rest}"),
+    "let {a, b, ...c} = {}",
+    "let {...rest} = {}",
 
     // Comments
-    validFixture("object-patterns/valid-comments"),
+    heredoc(`
+      let {
+        // a
+        a,
+        // b
+        b,
+        // rest
+        ...rest
+      } = {}
+    `),
   ],
   invalid: [
     // Basic
-    invalid(
-      "{c, a, b}",
-      "{a, b, c}",
-      messages.unsortedPattern,
-      error("a", "c")
-    ),
-    invalid(
-      "{b, a, _}",
-      "{_, a, b}",
-      messages.unsortedPattern,
-      error("a", "b"),
-      error("_", "a")
-    ),
+    {
+      code: "let {c, a, b} = {}",
+      output: "let {a, b, c} = {}",
+      errors: [{ messageId: "unsorted" }],
+    },
+    {
+      code: "let {b, a, _} = {}",
+      output: "let {_, a, b} = {}",
+      errors: [{ messageId: "unsorted" }],
+    },
 
     // Case insensitive
-    invalid(
-      "{b, A, _}",
-      "{_, A, b}",
-      messages.unsortedPattern,
-      error("A", "b"),
-      error("_", "A")
-    ),
-    invalid(
-      "{D, a, c, B}",
-      "{a, B, c, D}",
-      messages.unsortedPattern,
-      error("a", "D"),
-      error("B", "c")
-    ),
+    {
+      code: "let {b, A, _} = {}",
+      output: "let {_, A, b} = {}",
+      errors: [{ messageId: "unsorted" }],
+    },
+    {
+      code: "let {D, a, c, B} = {}",
+      output: "let {a, B, c, D} = {}",
+      errors: [{ messageId: "unsorted" }],
+    },
 
     // Aliases
-    invalid(
-      "{b: a, a: b}",
-      "{a: b, b: a}",
-      messages.unsortedPattern,
-      error("a", "b")
-    ),
+    {
+      code: "let {b: a, a: b} = {}",
+      output: "let {a: b, b: a} = {}",
+      errors: [{ messageId: "unsorted" }],
+    },
 
     // Rest element
-    invalid(
-      "{c, a, b, ...rest}",
-      "{a, b, c, ...rest}",
-      messages.unsortedPattern,
-      error("a", "c")
-    ),
+    {
+      code: "let {c, a, b, ...rest} = {}",
+      output: "let {a, b, c, ...rest} = {}",
+      errors: [{ messageId: "unsorted" }],
+    },
 
     // All properties are sorted with a single sort
-    invalid(
-      "{z,y,x,w,v,u,t,s,r,q,p}",
-      "{p,q,r,s,t,u,v,w,x,y,z}",
-      messages.unsortedPattern,
-      error("y", "z"),
-      error("x", "y"),
-      error("w", "x"),
-      error("v", "w"),
-      error("u", "v"),
-      error("t", "u"),
-      error("s", "t"),
-      error("r", "s"),
-      error("q", "r"),
-      error("p", "q")
-    ),
+    {
+      code: "let {z,y,x,w,v,u,t,s,r,q,p} = {}",
+      output: "let {p,q,r,s,t,u,v,w,x,y,z} = {}",
+      errors: [{ messageId: "unsorted" }],
+    },
 
     // Comments
-    invalidFixture("object-patterns/invalid-comments", [
-      messages.unsortedPattern,
-      error("b", "c"),
-      error("a", "b"),
-    ]),
+    {
+      code: heredoc(`
+      let {
+        // c
+        c,
+        // b
+        b,
+        a,
+        // rest
+        ...rest
+      } = {}
+      `),
+      output: heredoc(`
+      let {
+        a,
+        // b
+        b,
+        // c
+        c,
+        // rest
+        ...rest
+      } = {}
+      `),
+      errors: [{ messageId: "unsorted" }],
+    },
   ],
 })

@@ -2,7 +2,6 @@ jest.mock("../resolver")
 
 import { RuleTester } from "eslint"
 import rule, { SortGroup } from "../rules/imports"
-import { invalidFixture, validFixture } from "./utils"
 
 const messages = rule.meta!.messages! as Record<
   "unsorted" | "unsortedImports",
