@@ -30,6 +30,9 @@
   "peerDependencies": {
     "eslint": ">=6"
   },
+  "dependencies": {
+    "@typescript-eslint/experimental-utils": "^5.9.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.16.7",
     "@babel/core": "^7.16.7",
