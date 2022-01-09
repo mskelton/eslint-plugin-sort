@@ -40,6 +40,7 @@ recommended configuration. This will enable all available rules as warnings.
 |  ✔  | 🔧  | Rule                                                                    | Description                           |
 | :-: | :-: | ----------------------------------------------------------------------- | ------------------------------------- |
 |  ✔  | 🔧  | [sort/destructuring-properties](docs/rules/destructuring-properties.md) | Sorts object destructuring properties |
+|  ✔  | 🔧  | [sort/exports](docs/rules/exports.md)                                   | Sorts exports                         |
 |  ✔  | 🔧  | [sort/import-members](docs/rules/import-members.md)                     | Sorts import members                  |
 |  ✔  | 🔧  | [sort/imports](docs/rules/imports.md)                                   | Sorts imports                         |
 |  ✔  | 🔧  | [sort/object-properties](docs/rules/object-properties.md)               | Sorts object properties               |
