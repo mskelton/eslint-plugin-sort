@@ -2,6 +2,7 @@ import imports from "./rules/imports"
 import importMembers from "./rules/import-members"
 import destructuringProperties from "./rules/destructuring-properties"
 import objectProperties from "./rules/object-properties"
+import typeProperties from "./rules/type-properties"
 
 module.exports = {
   configs: {
@@ -30,5 +31,6 @@ module.exports = {
     "import-members": importMembers,
     "imports": imports,
     "object-properties": objectProperties,
+    "type-properties": typeProperties,
   },
 }

@@ -16,6 +16,18 @@ ruleTester.run("sort/type-properties", rule, {
     "type A = {a:string, B:string, c:string, D:string}",
     "type A = {_:string, A:string, b:string}",
 
+    // Weights
+    `
+      interface A {
+        new(f: string): void
+        (e: string): void
+        b: boolean
+        c: boolean
+        d(): void
+        [a: string]: unknown
+      }
+    `,
+
     // Comments
     `
       interface A {
@@ -40,20 +52,49 @@ ruleTester.run("sort/type-properties", rule, {
 
     // Case insensitive
     {
-      code: "type A = {b, A, _:string}",
-      output: "type A = {_, A, b:string}",
+      code: "type A = {b: symbol; A: number; _: string}",
+      output: "type A = {_: string; A: number; b: symbol}",
       errors: [{ messageId: "unsorted" }],
     },
     {
-      code: "type A = {D, a, c, B:string}",
-      output: "type A = {a, B, c, D:string}",
+      code: "type A = {D:number, a:boolean, c:string, B:string}",
+      output: "type A = {a:boolean, B:string, c:string, D:number}",
       errors: [{ messageId: "unsorted" }],
     },
 
     // All properties are sorted with a single sort
     {
       code: "interface A {z:string,y:number,x:boolean,w:symbol,v:string}",
-      output: "interface A {v:string,w:symbol,x:string,y:number,z:string}",
+      output: "interface A {v:string,w:symbol,x:boolean,y:number,z:string}",
+      errors: [{ messageId: "unsorted" }],
+    },
+
+    // Weights
+    {
+      code: `
+        interface A {
+          b: boolean
+          (e: string): void
+          [a: string]: unknown
+          [b: string]: boolean
+          d(): void
+          c: boolean
+          [\`c\${o}g\`]: boolean
+          new(f: string): void
+        }
+      `,
+      output: `
+        interface A {
+          new(f: string): void
+          (e: string): void
+          b: boolean
+          c: boolean
+          [\`c\${o}g\`]: boolean
+          d(): void
+          [a: string]: unknown
+          [b: string]: boolean
+        }
+      `,
       errors: [{ messageId: "unsorted" }],
     },
 
@@ -69,7 +110,7 @@ ruleTester.run("sort/type-properties", rule, {
         }
       `.trim(),
       output: `
-        type A = {
+        interface A {
           a: string
           // b
           b: number

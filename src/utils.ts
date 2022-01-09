@@ -1,11 +1,11 @@
 import { AST, SourceCode } from "eslint"
-import { Comment, Expression, Node } from "estree"
+import { Expression, Node } from "estree"
 
 /**
  * Returns true if any node in the source array is different from the same
  * positioned node in the sorted array.
  */
-export function isUnsorted(nodes: Node[], sorted: Node[]) {
+export function isUnsorted<T>(nodes: T[], sorted: T[]) {
   return nodes.some((node, i) => node !== sorted[i])
 }
 
@@ -55,17 +55,25 @@ export const filterNodes = <T extends Node, U extends T["type"]>(
  * Function that returns a simple alphanumeric sort function. The return value
  * of this function should be passed to `Array.prototype.sort()`.
  */
-export function alphaSorter<T extends Node>(sortFn: (node: T) => string) {
+export function alphaSorter<T>(sortFn: (node: T) => string) {
   return (a: T, b: T) => sortFn(a).localeCompare(sortFn(b))
+}
+
+/**
+ * The `getTextRange` function only requires the `range` property, so with a
+ * simple constraint we can share the function for both ESTree and TSESTree.
+ */
+interface Rangewise {
+  range?: [number, number]
 }
 
 /**
  * Returns an AST range between two nodes.
  */
-export const getTextRange = (
-  left: Node | Comment,
-  right: Node | Comment
-): AST.Range => [left.range![0], right.range![1]]
+export const getTextRange = (left: Rangewise, right: Rangewise): AST.Range => [
+  left.range![0],
+  right.range![1],
+]
 
 /**
  * Returns an AST range for a node and it's preceding comments.
