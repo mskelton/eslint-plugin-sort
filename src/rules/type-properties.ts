@@ -3,7 +3,7 @@ import {
   ESLintUtils,
   TSESTree,
 } from "@typescript-eslint/experimental-utils"
-import { getName, getNodeRange, getNodeText } from "../ts-utils"
+import { getName, getNodeRange, getNodeText, isDelimiter } from "../ts-utils"
 import { docsURL, enumerate, isUnsorted } from "../utils"
 
 /**
@@ -42,7 +42,7 @@ export default ESLintUtils.RuleCreator.withoutDocs({
     function getRangeWithoutDelimiter(node: TSESTree.Node): TSESTree.Range {
       const range = getNodeRange(source, node)
 
-      return source.getLastToken(node)?.type === "Punctuator"
+      return isDelimiter(source.getLastToken(node))
         ? [range[0], range[1] - 1]
         : range
     }

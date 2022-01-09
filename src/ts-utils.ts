@@ -40,3 +40,9 @@ export function getNodeRange(source: TSESLint.SourceCode, node: TSESTree.Node) {
 export function getNodeText(source: TSESLint.SourceCode, node: TSESTree.Node) {
   return source.getText().slice(...getNodeRange(source, node))
 }
+
+/**
+ * Returns true if the token is a delimiter (comma or semicolon).
+ */
+export const isDelimiter = (token: TSESTree.Token | null) =>
+  token?.type === "Punctuator" && (token.value === "," || token.value === ";")
