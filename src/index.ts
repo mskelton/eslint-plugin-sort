@@ -13,7 +13,7 @@ module.exports = {
       rules: {
         "sort/destructuring-properties": "warn",
         "sort/exports": "warn",
-        "sort/import-members": "warn",
+        "sort/export-members": "warn",
         "sort/imports": [
           "warn",
           {
@@ -25,6 +25,7 @@ module.exports = {
             ],
           },
         ],
+        "sort/import-members": "warn",
         "sort/object-properties": "warn",
       },
     },
