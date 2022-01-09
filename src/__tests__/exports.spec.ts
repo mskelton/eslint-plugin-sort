@@ -50,6 +50,8 @@ ruleTester.run("sort/exports", rule, {
     // All types of exports
     {
       code: `
+        const mark = ''
+
         export { c } from 'c'
         export default React
         export * from 'b'
@@ -57,6 +59,8 @@ ruleTester.run("sort/exports", rule, {
         export { a } from 'a'
       `,
       output: `
+        const mark = ''
+
         export { a } from 'a'
         export * from 'b'
         export { c } from 'c'

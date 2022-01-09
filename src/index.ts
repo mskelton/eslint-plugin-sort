@@ -1,8 +1,9 @@
-import imports from "./rules/imports"
-import importMembers from "./rules/import-members"
-import destructuringProperties from "./rules/destructuring-properties"
-import objectProperties from "./rules/object-properties"
-import typeProperties from "./rules/type-properties"
+import sortDestructuringProperties from "./rules/destructuring-properties"
+import sortExports from "./rules/exports"
+import sortImportMembers from "./rules/import-members"
+import sortImports from "./rules/imports"
+import sortObjectProperties from "./rules/object-properties"
+import sortTypeProperties from "./rules/type-properties"
 
 module.exports = {
   configs: {
@@ -10,6 +11,7 @@ module.exports = {
       plugins: ["sort"],
       rules: {
         "sort/destructuring-properties": "warn",
+        "sort/exports": "warn",
         "sort/import-members": "warn",
         "sort/imports": [
           "warn",
@@ -27,10 +29,11 @@ module.exports = {
     },
   },
   rules: {
-    "destructuring-properties": destructuringProperties,
-    "import-members": importMembers,
-    "imports": imports,
-    "object-properties": objectProperties,
-    "type-properties": typeProperties,
+    "destructuring-properties": sortDestructuringProperties,
+    "exports": sortExports,
+    "import-members": sortImportMembers,
+    "imports": sortImports,
+    "object-properties": sortObjectProperties,
+    "type-properties": sortTypeProperties,
   },
 }

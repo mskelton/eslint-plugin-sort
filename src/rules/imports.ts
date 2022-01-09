@@ -53,6 +53,7 @@ const getSortValue = (node: ImportDeclaration) =>
 export default {
   create(context) {
     const groups = context.options[0]?.groups ?? []
+    const source = context.getSourceCode()
 
     return {
       Program(program) {
@@ -72,8 +73,6 @@ export default {
         )
 
         if (isUnsorted(nodes, sorted)) {
-          const source = context.getSourceCode()
-
           // When sorting, the comments for the first node are not copied as
           // we cannot determine if they are comments for the entire file or
           // just the first import.
