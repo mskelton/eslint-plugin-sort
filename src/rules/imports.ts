@@ -56,7 +56,7 @@ export default {
 
     return {
       Program(program) {
-        const nodes = filterNodes(program.body, "ImportDeclaration")
+        const nodes = filterNodes(program.body, ["ImportDeclaration"])
 
         // If there are one or fewer imports, there is nothing to sort
         if (nodes.length < 2) {

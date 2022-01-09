@@ -14,7 +14,7 @@ export default {
   create(context) {
     return {
       ObjectPattern(pattern) {
-        const nodes = filterNodes(pattern.properties, "Property")
+        const nodes = filterNodes(pattern.properties, ["Property"])
 
         // If there are one or fewer properties, there is nothing to sort
         if (nodes.length < 2) {

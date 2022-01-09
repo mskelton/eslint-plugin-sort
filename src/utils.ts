@@ -48,8 +48,11 @@ export function getName(node?: Expression): string {
  */
 export const filterNodes = <T extends Node, U extends T["type"]>(
   nodes: T[],
-  type: U
-) => nodes.filter((node): node is Extract<T, { type: U }> => node.type === type)
+  types: U[]
+) =>
+  nodes.filter((node): node is Extract<T, { type: U }> =>
+    types.includes(node.type as U)
+  )
 
 /**
  * Function that returns a simple alphanumeric sort function. The return value
