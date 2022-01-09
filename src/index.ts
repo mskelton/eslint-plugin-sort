@@ -1,7 +1,8 @@
 import sortDestructuringProperties from "./rules/destructuring-properties"
 import sortExports from "./rules/exports"
-import sortImportMembers from "./rules/import-members"
+import sortExportMembers from "./rules/export-members"
 import sortImports from "./rules/imports"
+import sortImportMembers from "./rules/import-members"
 import sortObjectProperties from "./rules/object-properties"
 import sortTypeProperties from "./rules/type-properties"
 
@@ -31,8 +32,9 @@ module.exports = {
   rules: {
     "destructuring-properties": sortDestructuringProperties,
     "exports": sortExports,
-    "import-members": sortImportMembers,
+    "export-members": sortExportMembers,
     "imports": sortImports,
+    "import-members": sortImportMembers,
     "object-properties": sortObjectProperties,
     "type-properties": sortTypeProperties,
   },

@@ -41,7 +41,8 @@ recommended configuration. This will enable all available rules as warnings.
 | :-: | :-: | ----------------------------------------------------------------------- | ------------------------------------- |
 |  ✔  | 🔧  | [sort/destructuring-properties](docs/rules/destructuring-properties.md) | Sorts object destructuring properties |
 |  ✔  | 🔧  | [sort/exports](docs/rules/exports.md)                                   | Sorts exports                         |
-|  ✔  | 🔧  | [sort/import-members](docs/rules/import-members.md)                     | Sorts import members                  |
+|  ✔  | 🔧  | [sort/export-members](docs/rules/export-members.md)                     | Sorts export members                  |
 |  ✔  | 🔧  | [sort/imports](docs/rules/imports.md)                                   | Sorts imports                         |
+|  ✔  | 🔧  | [sort/import-members](docs/rules/import-members.md)                     | Sorts import members                  |
 |  ✔  | 🔧  | [sort/object-properties](docs/rules/object-properties.md)               | Sorts object properties               |
 |     | 🔧  | [sort/type-properties](docs/rules/type-properties.md)                   | Sorts TypeScript type properties      |
