@@ -27,5 +27,5 @@ let { a: b, b: a } = {}
 ## When Not To Use It
 
 This rule is a formatting preference and not following it won't negatively
-affect the quality of your code. If alphabetizing object properties isn't a part
-of your coding standards, then you can leave this rule off.
+affect the quality of your code. If alphabetizing destructuring properties isn't
+a part of your coding standards, then you can leave this rule off.
