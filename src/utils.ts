@@ -2,11 +2,11 @@ import { AST, SourceCode } from "eslint"
 import { Expression, Node } from "estree"
 
 /**
- * Returns true if any node in the source array is different from the same
+ * Returns the first node in the source array that is different from the same
  * positioned node in the sorted array.
  */
 export function isUnsorted<T>(nodes: T[], sorted: T[]) {
-  return nodes.some((node, i) => node !== sorted[i])
+  return nodes.find((node, i) => node !== sorted[i])
 }
 
 /**

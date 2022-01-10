@@ -51,9 +51,10 @@ export default {
             getSortValue(a).localeCompare(getSortValue(b))
         )
 
-        if (isUnsorted(nodes, sorted)) {
+        const firstUnsortedNode = isUnsorted(nodes, sorted)
+        if (firstUnsortedNode) {
           context.report({
-            node: nodes[0],
+            node: firstUnsortedNode,
             messageId: "unsorted",
             *fix(fixer) {
               for (const [node, complement] of enumerate(nodes, sorted)) {

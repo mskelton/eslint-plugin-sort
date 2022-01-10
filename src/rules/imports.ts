@@ -72,14 +72,15 @@ export default {
             getSortValue(a).localeCompare(getSortValue(b))
         )
 
-        if (isUnsorted(nodes, sorted)) {
+        const firstUnsortedNode = isUnsorted(nodes, sorted)
+        if (firstUnsortedNode) {
           // When sorting, the comments for the first node are not copied as
           // we cannot determine if they are comments for the entire file or
           // just the first import.
           const isFirst = (node: ImportDeclaration) => node === nodes[0]
 
           context.report({
-            node: nodes[0],
+            node: firstUnsortedNode,
             messageId: "unsorted",
             *fix(fixer) {
               for (const [node, complement] of enumerate(nodes, sorted)) {

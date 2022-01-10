@@ -33,6 +33,8 @@ function groupNodes(properties: (Property | SpreadElement)[]) {
 
 export default {
   create(context) {
+    const source = context.getSourceCode()
+
     return {
       ObjectExpression(expression) {
         for (const nodes of groupNodes(expression.properties)) {
@@ -40,11 +42,10 @@ export default {
             .slice()
             .sort(alphaSorter((node) => getName(node.key).toLowerCase()))
 
-          if (isUnsorted(nodes, sorted)) {
-            const source = context.getSourceCode()
-
+          const firstUnsortedNode = isUnsorted(nodes, sorted)
+          if (firstUnsortedNode) {
             context.report({
-              node: nodes[0],
+              node: firstUnsortedNode,
               messageId: "unsorted",
               *fix(fixer) {
                 for (const [node, complement] of enumerate(nodes, sorted)) {

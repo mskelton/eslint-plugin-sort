@@ -12,6 +12,8 @@ import {
 
 export default {
   create(context) {
+    const source = context.getSourceCode()
+
     return {
       ObjectPattern(pattern) {
         const nodes = filterNodes(pattern.properties, ["Property"])
@@ -25,11 +27,10 @@ export default {
           .slice()
           .sort(alphaSorter((node) => getName(node.key).toLowerCase()))
 
-        if (isUnsorted(nodes, sorted)) {
-          const source = context.getSourceCode()
-
+        const firstUnsortedNode = isUnsorted(nodes, sorted)
+        if (firstUnsortedNode) {
           context.report({
-            node: nodes[0],
+            node: firstUnsortedNode,
             messageId: "unsorted",
             *fix(fixer) {
               for (const [node, complement] of enumerate(nodes, sorted)) {
