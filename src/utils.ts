@@ -1,4 +1,4 @@
-import { AST, SourceCode } from "eslint"
+import { AST, Rule, SourceCode } from "eslint"
 import { Expression, Node } from "estree"
 
 /**
@@ -108,3 +108,32 @@ export function getNodeText(
  */
 export const docsURL = (ruleName: string) =>
   `https://github.com/mskelton/eslint-plugin-sort/blob/main/docs/rules/${ruleName}.md`
+
+/**
+ * Reports an `unsorted` error if there are one or more unsorted nodes. The
+ * error is attached to the first unsorted node to make it more obvious why
+ * the error is reported.
+ */
+export function report(
+  context: Rule.RuleContext,
+  nodes: Node[],
+  sorted: Node[]
+) {
+  const source = context.getSourceCode()
+  const firstUnsortedNode = isUnsorted(nodes, sorted)
+
+  if (firstUnsortedNode) {
+    context.report({
+      node: firstUnsortedNode,
+      messageId: "unsorted",
+      *fix(fixer) {
+        for (const [node, complement] of enumerate(nodes, sorted)) {
+          yield fixer.replaceTextRange(
+            getNodeRange(source, node),
+            getNodeText(source, complement)
+          )
+        }
+      },
+    })
+  }
+}

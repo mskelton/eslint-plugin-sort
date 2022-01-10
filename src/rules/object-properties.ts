@@ -1,14 +1,6 @@
 import { Rule } from "eslint"
 import { Property, SpreadElement } from "estree"
-import {
-  alphaSorter,
-  docsURL,
-  enumerate,
-  getName,
-  getNodeRange,
-  getNodeText,
-  isUnsorted,
-} from "../utils"
+import { alphaSorter, docsURL, getName, report } from "../utils"
 
 /**
  * When sorting object properties, we can only sort properties between spread
@@ -33,8 +25,6 @@ function groupNodes(properties: (Property | SpreadElement)[]) {
 
 export default {
   create(context) {
-    const source = context.getSourceCode()
-
     return {
       ObjectExpression(expression) {
         for (const nodes of groupNodes(expression.properties)) {
@@ -42,21 +32,7 @@ export default {
             .slice()
             .sort(alphaSorter((node) => getName(node.key).toLowerCase()))
 
-          const firstUnsortedNode = isUnsorted(nodes, sorted)
-          if (firstUnsortedNode) {
-            context.report({
-              node: firstUnsortedNode,
-              messageId: "unsorted",
-              *fix(fixer) {
-                for (const [node, complement] of enumerate(nodes, sorted)) {
-                  yield fixer.replaceTextRange(
-                    getNodeRange(source, node),
-                    getNodeText(source, complement)
-                  )
-                }
-              },
-            })
-          }
+          report(context, nodes, sorted)
         }
       },
     }

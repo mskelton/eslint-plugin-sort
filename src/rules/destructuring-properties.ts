@@ -1,19 +1,8 @@
 import { Rule } from "eslint"
-import {
-  alphaSorter,
-  docsURL,
-  enumerate,
-  filterNodes,
-  getName,
-  getNodeRange,
-  getNodeText,
-  isUnsorted,
-} from "../utils"
+import { alphaSorter, docsURL, filterNodes, getName, report } from "../utils"
 
 export default {
   create(context) {
-    const source = context.getSourceCode()
-
     return {
       ObjectPattern(pattern) {
         const nodes = filterNodes(pattern.properties, ["Property"])
@@ -27,21 +16,7 @@ export default {
           .slice()
           .sort(alphaSorter((node) => getName(node.key).toLowerCase()))
 
-        const firstUnsortedNode = isUnsorted(nodes, sorted)
-        if (firstUnsortedNode) {
-          context.report({
-            node: firstUnsortedNode,
-            messageId: "unsorted",
-            *fix(fixer) {
-              for (const [node, complement] of enumerate(nodes, sorted)) {
-                yield fixer.replaceTextRange(
-                  getNodeRange(source, node),
-                  getNodeText(source, complement)
-                )
-              }
-            },
-          })
-        }
+        report(context, nodes, sorted)
       },
     }
   },

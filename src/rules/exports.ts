@@ -1,14 +1,6 @@
 import { Rule } from "eslint"
 import { ImportDeclaration, ModuleDeclaration } from "estree"
-import {
-  docsURL,
-  enumerate,
-  filterNodes,
-  getName,
-  getNodeRange,
-  getNodeText,
-  isUnsorted,
-} from "../utils"
+import { docsURL, filterNodes, getName, report } from "../utils"
 
 type Export = Exclude<ModuleDeclaration, ImportDeclaration>
 
@@ -28,8 +20,6 @@ function getSortValue(node: Export) {
 
 export default {
   create(context) {
-    const source = context.getSourceCode()
-
     return {
       Program(program) {
         const nodes = filterNodes(program.body, [
@@ -51,21 +41,7 @@ export default {
             getSortValue(a).localeCompare(getSortValue(b))
         )
 
-        const firstUnsortedNode = isUnsorted(nodes, sorted)
-        if (firstUnsortedNode) {
-          context.report({
-            node: firstUnsortedNode,
-            messageId: "unsorted",
-            *fix(fixer) {
-              for (const [node, complement] of enumerate(nodes, sorted)) {
-                yield fixer.replaceTextRange(
-                  getNodeRange(source, node),
-                  getNodeText(source, complement)
-                )
-              }
-            },
-          })
-        }
+        report(context, nodes, sorted)
       },
     }
   },
