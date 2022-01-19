@@ -12,7 +12,18 @@ module.exports = {
       plugins: ["sort"],
       rules: {
         "sort/destructuring-properties": "warn",
-        "sort/exports": "warn",
+        "sort/exports": [
+          "warn",
+          {
+            groups: [
+              { type: "default", order: 5 },
+              { type: "sourceless", order: 4 },
+              { regex: "^\\.+\\/", order: 3 },
+              { type: "dependency", order: 1 },
+              { type: "other", order: 2 },
+            ],
+          },
+        ],
         "sort/export-members": "warn",
         "sort/imports": [
           "warn",
