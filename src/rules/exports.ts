@@ -1,15 +1,53 @@
+import { ExportDefaultDeclaration } from "@typescript-eslint/types/dist/ast-spec"
 import { Rule } from "eslint"
 import { ImportDeclaration, ModuleDeclaration } from "estree"
+import { isResolved } from "../resolver"
 import { docsURL, filterNodes, getName, report } from "../utils"
 
 type Export = Exclude<ModuleDeclaration, ImportDeclaration>
 
+interface SortGroup {
+  order: number
+  type?: "default" | "sourceless" | "dependency" | "other"
+  regex?: string
+}
+
 /**
- * Returns the node's sort weight. The sort weight is used to separate types
- * of nodes into groups and then sort in each individual group.
+ * Returns the order of a given node based on the sort groups configured in the
+ * rule options. If no sort groups are configured (default), the order returned
+ * is always 0.
  */
-function getWeight(node: Export) {
-  return node.type === "ExportDefaultDeclaration" ? 2 : node.source ? 0 : 1
+function getSortGroup(
+  sortGroups: SortGroup[],
+  node: Exclude<Export, ExportDefaultDeclaration>
+) {
+  const source = getSortValue(node)
+  const isDefaultExport = node.type === "ExportDefaultDeclaration"
+
+  for (const { regex, type, order } of sortGroups) {
+    switch (type) {
+      case "default":
+        if (isDefaultExport) return order
+        break
+
+      case "sourceless":
+        if (!isDefaultExport && !node.source) return order
+        break
+
+      case "dependency":
+        if (isResolved(source)) return order
+        break
+
+      case "other":
+        return order
+    }
+
+    if (regex && new RegExp(regex).test(source)) {
+      return order
+    }
+  }
+
+  return 0
 }
 
 function getSortValue(node: Export) {
@@ -20,6 +58,8 @@ function getSortValue(node: Export) {
 
 export default {
   create(context) {
+    const groups = context.options[0]?.groups ?? []
+
     return {
       Program(program) {
         const nodes = filterNodes(program.body, [
@@ -35,8 +75,8 @@ export default {
 
         const sorted = nodes.slice().sort(
           (a, b) =>
-            // First sort by weight
-            getWeight(a) - getWeight(b) ||
+            // First, sort by sort group
+            getSortGroup(groups, a) - getSortGroup(groups, b) ||
             // Then sort by path
             getSortValue(a).localeCompare(getSortValue(b))
         )
@@ -54,5 +94,27 @@ export default {
     messages: {
       unsorted: "Exports should be sorted alphabetically.",
     },
+    schema: [
+      {
+        type: "object",
+        properties: {
+          groups: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                type: {
+                  enum: ["default", "sourceless", "dependency", "other"],
+                },
+                regex: { type: "string" },
+                order: { type: "number" },
+              },
+              required: ["order"],
+              additionalProperties: false,
+            },
+          },
+        },
+      },
+    ],
   },
 } as Rule.RuleModule

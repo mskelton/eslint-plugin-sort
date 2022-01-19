@@ -1,3 +1,5 @@
+jest.mock("../resolver")
+
 import { RuleTester } from "eslint"
 import rule from "../rules/exports"
 
@@ -33,6 +35,33 @@ ruleTester.run("sort/exports", rule, {
       // c
       export { c } from "./c"
     `.trim(),
+
+    // Sort groups
+    {
+      code: `
+        const mark = ''
+
+        export default React
+        export { relA } from './a'
+        export { relB } from './b'
+        export { depA } from 'dependency-a'
+        export { depB } from 'dependency-b'
+        export * from 'a'
+        export { b } from 'b'
+        export { mark }
+      `.trim(),
+      options: [
+        {
+          groups: [
+            { type: "default", order: 1 },
+            { type: "sourceless", order: 5 },
+            { regex: "^\\.+\\/", order: 2 },
+            { type: "dependency", order: 3 },
+            { type: "other", order: 4 },
+          ],
+        },
+      ],
+    },
   ],
   invalid: [
     {
@@ -61,11 +90,11 @@ ruleTester.run("sort/exports", rule, {
       output: `
         const mark = ''
 
+        export default React
+        export { mark }
         export { a } from 'a'
         export * from 'b'
         export { c } from 'c'
-        export { mark }
-        export default React
       `,
       errors: [{ messageId: "unsorted" }],
     },
@@ -88,6 +117,82 @@ ruleTester.run("sort/exports", rule, {
         // c
         export { c } from "c"
       `.trim(),
+      errors: [{ messageId: "unsorted" }],
+    },
+
+    // Sort groups
+    {
+      code: `
+        const mark = ''
+
+        export { depB } from 'dependency-b'
+        export { mark }
+        export default React
+        export { relB } from './b'
+        export * from 'a'
+        export { relA } from './a'
+        export { depA } from 'dependency-a'
+        export { b } from 'b'
+      `.trim(),
+      output: `
+        const mark = ''
+
+        export { relA } from './a'
+        export { relB } from './b'
+        export * from 'a'
+        export { b } from 'b'
+        export { depA } from 'dependency-a'
+        export { depB } from 'dependency-b'
+        export { mark }
+        export default React
+    `.trim(),
+      options: [
+        {
+          groups: [
+            { type: "default", order: 3 },
+            { type: "sourceless", order: 2 },
+            { type: "other", order: 1 },
+          ],
+        },
+      ],
+      errors: [{ messageId: "unsorted" }],
+    },
+    {
+      code: `
+        const mark = ''
+
+        export { depB } from 'dependency-b'
+        export { mark }
+        export default React
+        export { relB } from './b'
+        export * from 'a'
+        export { relA } from './a'
+        export { depA } from 'dependency-a'
+        export { b } from 'b'
+      `.trim(),
+      output: `
+        const mark = ''
+
+        export default React
+        export { relA } from './a'
+        export { relB } from './b'
+        export { depA } from 'dependency-a'
+        export { depB } from 'dependency-b'
+        export * from 'a'
+        export { b } from 'b'
+        export { mark }
+    `.trim(),
+      options: [
+        {
+          groups: [
+            { type: "default", order: 1 },
+            { type: "sourceless", order: 5 },
+            { regex: "^\\.+\\/", order: 2 },
+            { type: "dependency", order: 3 },
+            { type: "other", order: 4 },
+          ],
+        },
+      ],
       errors: [{ messageId: "unsorted" }],
     },
   ],
