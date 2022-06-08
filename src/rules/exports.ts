@@ -1,4 +1,3 @@
-import { ExportDefaultDeclaration } from "@typescript-eslint/types/dist/ast-spec"
 import { Rule } from "eslint"
 import { ImportDeclaration, ModuleDeclaration } from "estree"
 import { isResolved } from "../resolver"
@@ -17,10 +16,7 @@ interface SortGroup {
  * rule options. If no sort groups are configured (default), the order returned
  * is always 0.
  */
-function getSortGroup(
-  sortGroups: SortGroup[],
-  node: Exclude<Export, ExportDefaultDeclaration>
-) {
+function getSortGroup(sortGroups: SortGroup[], node: Export) {
   const source = getSortValue(node)
   const isDefaultExport = node.type === "ExportDefaultDeclaration"
 
