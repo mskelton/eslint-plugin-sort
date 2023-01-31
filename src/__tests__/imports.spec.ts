@@ -1,8 +1,12 @@
 import { jest } from "@jest/globals"
 import { RuleTester } from "eslint"
 
-jest.unstable_mockModule("../resolver", () => ({
-  isResolved: (source: string) => source.startsWith("dependency-"),
+jest.unstable_mockModule("isomorphic-resolve", () => ({
+  default(source: string) {
+    if (!source.startsWith("dependency-")) {
+      throw new Error(`Cannot resolve "${source}"`)
+    }
+  },
 }))
 
 const { default: rule } = await import("../rules/imports.js")
