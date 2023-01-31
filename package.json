@@ -35,6 +35,7 @@
     "eslint": ">=6"
   },
   "dependencies": {
+    "isomorphic-resolve": "^1.0.0",
     "@typescript-eslint/experimental-utils": "^5.49.0"
   },
   "devDependencies": {

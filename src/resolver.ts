@@ -1,6 +1,8 @@
+import resolve from "isomorphic-resolve"
+
 export function isResolved(source: string) {
   try {
-    require.resolve(source)
+    resolve(source)
     return true
   } catch (e) {
     return false

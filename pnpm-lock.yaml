@@ -11,6 +11,7 @@ specifiers:
   '@typescript-eslint/parser': ^5.49.0
   eslint: ^8.33.0
   eslint-config-prettier: ^8.6.0
+  isomorphic-resolve: ^1.0.0
   jest: ^29.4.1
   prettier: ^2.8.3
   semantic-release: ^20.1.0
@@ -20,6 +21,7 @@ specifiers:
 
 dependencies:
   '@typescript-eslint/experimental-utils': 5.49.0_4vsywjlpuriuw3tl5oq6zy5a64
+  isomorphic-resolve: 1.0.0
 
 devDependencies:
   '@jest/globals': 29.4.1
@@ -2736,6 +2738,10 @@ packages:
 
   /isexe/2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
+
+  /isomorphic-resolve/1.0.0:
+    resolution: {integrity: sha512-FWn6176keSYAapzv5P6ZzLdbCXj5uaG49h1y+EXRNqZm2RBztzBOYqCMmSe4Dmo+bIvk7sX/SN4pI/3QmfH3aw==}
+    dev: false
 
   /issue-parser/6.0.0:
     resolution: {integrity: sha512-zKa/Dxq2lGsBIXQ7CUZWTHfvxPC2ej0KfO7fIPqLlHB9J2hJ7rGhZ5rilhuufylr4RXYPzJUeFjKxz305OsNlA==}
