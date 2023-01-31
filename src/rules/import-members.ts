@@ -1,5 +1,5 @@
 import { Rule } from "eslint"
-import { alphaSorter, docsURL, filterNodes, report } from "../utils"
+import { alphaSorter, docsURL, filterNodes, report } from "../utils.js"
 
 export default {
   create(context) {

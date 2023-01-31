@@ -1,7 +1,7 @@
 import { Rule } from "eslint"
 import { ImportDeclaration, ModuleDeclaration } from "estree"
-import { isResolved } from "../resolver"
-import { docsURL, filterNodes, getName, report } from "../utils"
+import { isResolved } from "../resolver.js"
+import { docsURL, filterNodes, getName, report } from "../utils.js"
 
 type Export = Exclude<ModuleDeclaration, ImportDeclaration>
 

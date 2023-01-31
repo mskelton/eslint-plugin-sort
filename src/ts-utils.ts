@@ -3,7 +3,7 @@ import {
   TSESLint,
   TSESTree,
 } from "@typescript-eslint/experimental-utils"
-import { getTextRange } from "./utils"
+import { getTextRange } from "./utils.js"
 
 /**
  * Get's the string name of a node used for sorting or errors.

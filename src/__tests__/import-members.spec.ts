@@ -1,5 +1,5 @@
 import { RuleTester } from "eslint"
-import rule from "../rules/import-members"
+import rule from "../rules/import-members.js"
 
 const ruleTester = new RuleTester({
   parserOptions: {

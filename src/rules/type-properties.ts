@@ -3,8 +3,8 @@ import {
   ESLintUtils,
   TSESTree,
 } from "@typescript-eslint/experimental-utils"
-import { getName, getNodeRange, getNodeText, isDelimiter } from "../ts-utils"
-import { docsURL, enumerate, isUnsorted } from "../utils"
+import { getName, getNodeRange, getNodeText, isDelimiter } from "../ts-utils.js"
+import { docsURL, enumerate, isUnsorted } from "../utils.js"
 
 /**
  * Returns the node's sort weight. The sort weight is used to separate types

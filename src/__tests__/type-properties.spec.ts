@@ -1,5 +1,5 @@
 import { ESLintUtils } from "@typescript-eslint/experimental-utils"
-import rule from "../rules/type-properties"
+import rule from "../rules/type-properties.js"
 
 const ruleTester = new ESLintUtils.RuleTester({
   parser: "@typescript-eslint/parser",

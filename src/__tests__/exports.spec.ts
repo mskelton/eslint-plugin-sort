@@ -1,8 +1,11 @@
-jest.mock("../resolver")
-
 import { RuleTester } from "eslint"
-import rule from "../rules/exports"
+import { jest } from "@jest/globals"
 
+jest.unstable_mockModule("../resolver.js", () => ({
+  isResolved: (source: string) => source.startsWith("dependency-"),
+}))
+
+const { default: rule } = await import("../rules/exports.js")
 const ruleTester = new RuleTester({
   parserOptions: {
     ecmaVersion: 2018,

@@ -1,8 +1,6 @@
 {
   "extends": "@mskelton/tsconfig",
   "compilerOptions": {
-    "module": "CommonJS",
-    "moduleResolution": "classic",
     "rootDir": "src",
     "noEmit": true
   }

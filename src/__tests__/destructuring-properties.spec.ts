@@ -1,5 +1,5 @@
 import { RuleTester } from "eslint"
-import rule from "../rules/destructuring-properties"
+import rule from "../rules/destructuring-properties.js"
 
 const ruleTester = new RuleTester({
   parserOptions: {
