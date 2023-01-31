@@ -10,6 +10,9 @@ export default {
       {
         isolatedModules: true,
         useESM: true,
+        diagnostics: {
+          ignoreCodes: ["TS151001"],
+        },
       },
     ],
   },
