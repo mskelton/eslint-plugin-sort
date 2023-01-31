@@ -5,20 +5,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x, 16.x]
+        node-version: [16.x, 18.x]
     steps:
-      - uses: mskelton/setup-yarn@v1
+      - uses: mskelton/setup-pnpm@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn test
-      - run: yarn ts
+      - run: pnpm test
+      - run: pnpm ts
   release:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: mskelton/setup-yarn@v1
-      - run: yarn build
-      - run: yarn semantic-release
+      - uses: mskelton/setup-pnpm@v1
+      - run: pnpm build
+      - run: pnpm semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -20,6 +20,12 @@ npm install -D eslint-plugin-sort
 yarn add -D eslint-plugin-sort
 ```
 
+### pnpm
+
+```sh
+pnpm add -D eslint-plugin-sort
+```
+
 ## Usage
 
 After installing, add `sort` to your list of ESLint plugins and extend the
