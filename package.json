@@ -16,16 +16,20 @@
     "fix"
   ],
   "scripts": {
-    "build": "tsup ./src/index.ts --format esm",
+    "build": "tsup ./src/index.ts --format cjs,esm",
     "format": "prettier --write .",
     "lint": "eslint . --ext .ts",
     "test": "NODE_OPTIONS=--experimental-vm-modules pnpm jest",
     "ts": "tsc"
   },
   "type": "module",
-  "exports": "./dist/index.js",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./index.cjs"
+  },
   "files": [
-    "dist"
+    "dist",
+    "index.cjs"
   ],
   "peerDependencies": {
     "eslint": ">=6"
