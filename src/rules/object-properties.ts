@@ -64,12 +64,12 @@ export default {
     const order = context.options[0] || "asc"
     const options = context.options[1]
 
-    const isCaseInsensitive = options && options.caseSensitive === false
-    const isNaturalOrder = options && options.natural
+    const isCaseSensitive = options?.caseSensitive
+    const isNaturalOrder = options?.natural
 
     const sorter =
       sorters[
-        `${order}${isCaseInsensitive ? "I" : ""}${isNaturalOrder ? "N" : ""}`
+        `${order}${isCaseSensitive ? "" : "I"}${isNaturalOrder ? "N" : ""}`
       ]
 
     return {

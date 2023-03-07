@@ -83,7 +83,7 @@ ruleTester.run("sort/object-properties", rule, {
     },
     // Case insensitive
     {
-      code: "var a = {B:2, D:4, a:1, c:3}",
+      code: "var a = {a:1, B:2, c:3, D:4}",
       options: ["asc", { caseSensitive: true }],
     },
     {
