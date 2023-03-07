@@ -36,7 +36,7 @@ The 1st option is `"asc"` or `"desc"`.
 - `"asc"` (default) - enforce properties to be in ascending order.
 - `"desc"` - enforce properties to be in descending order.
 
-The 2nd option is an object which has 3 properties.
+The 2nd option is an object which has 2 properties.
 
 - `caseSensitive` - if `true`, enforce properties to be in case-sensitive order.
   Default is `false`.
