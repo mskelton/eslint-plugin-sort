@@ -23,6 +23,29 @@ var a = { b: 1, C: 2 }
 var a = { b: { x: 1, y: 2 }, C: 1 }
 ```
 
+## Options
+
+```json
+{
+  "sort-keys": ["error", "asc", { "caseSensitive": false, "natural": false }]
+}
+```
+
+The 1st option is `"asc"` or `"desc"`.
+
+- `"asc"` (default) - enforce properties to be in ascending order.
+- `"desc"` - enforce properties to be in descending order.
+
+The 2nd option is an object which has 3 properties.
+
+- `caseSensitive` - if `true`, enforce properties to be in case-sensitive order.
+  Default is `false`.
+- `natural` - if `true`, enforce properties to be in natural order. Default is
+  `false`. Natural Order compares strings containing combination of letters and
+  numbers in the way a human being would sort. It basically sorts numerically,
+  instead of sorting alphabetically. So the number 10 comes after the number 3
+  in Natural Sorting.
+
 ## When Not To Use It
 
 This rule is a formatting preference and not following it won't negatively
