@@ -55,14 +55,6 @@ export const filterNodes = <T extends Node, U extends T["type"]>(
   )
 
 /**
- * Function that returns a simple alphanumeric sort function. The return value
- * of this function should be passed to `Array.prototype.sort()`.
- */
-export function alphaSorter<T>(sortFn: (node: T) => string) {
-  return (a: T, b: T) => sortFn(a).localeCompare(sortFn(b))
-}
-
-/**
  * The `getTextRange` function only requires the `range` property, so with a
  * simple constraint we can share the function for both ESTree and TSESTree.
  */
