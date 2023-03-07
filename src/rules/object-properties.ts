@@ -69,7 +69,7 @@ export default {
 
     const sorter =
       sorters[
-        `${order}${isCaseInsensitive ? "I" : ""}${isNaturalOrder ? "N" : ""}}`
+        `${order}${isCaseInsensitive ? "I" : ""}${isNaturalOrder ? "N" : ""}`
       ]
 
     return {
