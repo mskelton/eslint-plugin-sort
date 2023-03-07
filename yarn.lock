@@ -2797,6 +2797,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/natural-compare@npm:^1.4.0":
+  version: 1.4.1
+  resolution: "@types/natural-compare@npm:1.4.1"
+  checksum: 30c6fc7a99b64f113c085bfea1ab98142e47240d3869d222048b597ea17e44e532634eb38adbea8850e69415f7e7ccc90161f247ea87521d9f804dc8389f3824
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:*":
   version: 14.14.31
   resolution: "@types/node@npm:14.14.31"
@@ -4402,6 +4409,7 @@ __metadata:
     "@mskelton/tsconfig": ^1.1.1
     "@types/eslint": ^8.4.3
     "@types/jest": ^28.1.1
+    "@types/natural-compare": ^1.4.0
     "@types/node": ^17.0.41
     "@typescript-eslint/eslint-plugin": ^5.27.1
     "@typescript-eslint/experimental-utils": ^5.27.1
@@ -4410,6 +4418,7 @@ __metadata:
     eslint: ^8.17.0
     eslint-config-prettier: ^8.5.0
     jest: ^28.1.1
+    natural-compare: ^1.4.0
     prettier: ^2.6.2
     semantic-release: ^19.0.2
     typescript: ^4.7.3
