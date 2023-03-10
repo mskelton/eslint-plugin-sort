@@ -38,7 +38,8 @@ export default {
     },
     schema: [
       {
-        type: "object",
+        additionalProperties: false,
+        default: { caseSensitive: false, natural: true },
         properties: {
           caseSensitive: {
             type: "boolean",
@@ -49,7 +50,7 @@ export default {
             default: true,
           },
         },
-        additionalProperties: false,
+        type: "object",
       },
     ],
     type: "suggestion",

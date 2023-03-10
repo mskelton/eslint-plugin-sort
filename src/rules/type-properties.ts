@@ -107,7 +107,8 @@ export default ESLintUtils.RuleCreator.withoutDocs<
     },
     schema: [
       {
-        type: "object",
+        additionalProperties: false,
+        default: { caseSensitive: false, natural: true },
         properties: {
           caseSensitive: {
             type: "boolean",
@@ -118,7 +119,7 @@ export default ESLintUtils.RuleCreator.withoutDocs<
             default: true,
           },
         },
-        additionalProperties: false,
+        type: "object",
       },
     ],
     type: "suggestion",
