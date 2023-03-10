@@ -60,8 +60,8 @@ export const filterNodes = <T extends Node, U extends T["type"]>(
  * of this function should be passed to `Array.prototype.sort()`.
  */
 export const getSorter = ({
-  caseSensitive,
-  natural,
+  caseSensitive = false,
+  natural = true,
 }: {
   caseSensitive?: boolean
   natural?: boolean
