@@ -1,7 +1,6 @@
 import { Rule } from "eslint"
 import { Property, SpreadElement } from "estree"
-import { docsURL, getName, report } from "../utils"
-import naturalCompare from "natural-compare"
+import { docsURL, getName, getSorter, report } from "../utils"
 
 /**
  * When sorting object properties, we can only sort properties between spread
@@ -24,53 +23,13 @@ function groupNodes(properties: (Property | SpreadElement)[]) {
   return groups.filter((group) => group.length > 1)
 }
 
-/**
- * Functions which check that the given 2 names are in specific order.
- *
- * Postfix `I` is meant insensitive.
- * Postfix `N` is meant natural.
- *
- * Adapted from Eslint's sort-keys rule
- */
-const sorters: { [key in string]: (a: string, b: string) => number } = {
-  asc(a, b) {
-    return a.localeCompare(b)
-  },
-  ascI(a, b) {
-    return a.toLowerCase().localeCompare(b.toLowerCase())
-  },
-  ascN(a, b) {
-    return naturalCompare(a, b)
-  },
-  ascIN(a, b) {
-    return naturalCompare(a.toLowerCase(), b.toLowerCase())
-  },
-  desc(a, b) {
-    return sorters.asc(b, a)
-  },
-  descI(a, b) {
-    return sorters.ascI(b, a)
-  },
-  descN(a, b) {
-    return sorters.ascN(b, a)
-  },
-  descIN(a, b) {
-    return sorters.ascIN(b, a)
-  },
-}
-
 export default {
   create(context) {
-    const order = context.options[0] || "asc"
-    const options = context.options[1]
-
-    const isCaseSensitive = options?.caseSensitive
-    const isNaturalOrder = options?.natural
-
-    const sorter =
-      sorters[
-        `${order}${isCaseSensitive ? "" : "I"}${isNaturalOrder ? "N" : ""}`
-      ]
+    const options = context.options[0]
+    const sorter = getSorter({
+      caseSensitive: options?.caseSensitive,
+      natural: options?.natural,
+    })
 
     return {
       ObjectExpression(expression) {
@@ -96,9 +55,6 @@ export default {
     },
     schema: [
       {
-        enum: ["asc", "desc"],
-      },
-      {
         type: "object",
         properties: {
           caseSensitive: {
@@ -107,7 +63,7 @@ export default {
           },
           natural: {
             type: "boolean",
-            default: false,
+            default: true,
           },
         },
         additionalProperties: false,
