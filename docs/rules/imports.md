@@ -9,7 +9,7 @@ Sorts imports alphabetically and case insensitive in ascending order.
 
 Example of **incorrect** code for this rule:
 
-```js
+```javascript
 import c from "c"
 import b from "b"
 import a from "a"
@@ -17,7 +17,7 @@ import a from "a"
 
 Example of **correct** code for this rule:
 
-```js
+```javascript
 import a from "a"
 import b from "b"
 import c from "c"
@@ -28,6 +28,7 @@ import c from "c"
 This rule has an object with its properties as:
 
 - `"groups"` (default: `[]`)
+- `"separator"` (default: `""`)
 
 ### Groups
 
@@ -69,7 +70,7 @@ groups as well as a custom regex sort group.
 
 This configuration would result in the following output.
 
-```js
+```javascript
 import "index.css"
 import React from "react"
 import { createStore } from "redux"
@@ -100,6 +101,48 @@ group.
 The configuration example above shows how this works where the static asset
 imports are the second sort group even though they have the highest order and
 are thus the last sort group in the resulting code.
+
+### Separator
+
+You can customize the separator between sort groups using the `separator`
+option. By default, there is no separator but you can specify one or more
+newlines between sort groups.
+
+```json
+{
+  "sort/imports": [
+    "warn",
+    {
+      "groups": [
+        { "type": "side-effect", "order": 1 },
+        { "type": "other", "order": 3 }
+      ],
+      "separator": "\n"
+    }
+  ]
+}
+```
+
+This configuration would result in the following output.
+
+```javascript
+import "index.css"
+
+import React from "react"
+import { createStore } from "redux"
+import c from "c"
+
+import a from "../a"
+import b from "./b"
+
+import image1 from "my-library/static/image.svg"
+import image2 from "static/image.jpg"
+import image3 from "static/image.png"
+```
+
+Note that the separator only applies if you have defined sort groups.
+Additionally, extra newlines between imports in the _same sort group_ will be
+removed.
 
 ## When Not To Use It
 

@@ -1,9 +1,8 @@
-import { ESLintUtils, TSESLint } from "@typescript-eslint/experimental-utils"
+import { TSESLint } from "@typescript-eslint/experimental-utils"
 import rule from "../rules/type-properties.js"
+import { createTsRuleTester } from "../test-utils.js"
 
-const ruleTester = new ESLintUtils.RuleTester({
-  parser: "@typescript-eslint/parser",
-})
+const ruleTester = createTsRuleTester()
 
 const createValidCodeVariants = (
   code: string

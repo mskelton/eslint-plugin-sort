@@ -1,21 +1,10 @@
-import { RuleTester } from "eslint"
-import { jest } from "@jest/globals"
+import { vi } from "vitest"
+import { createRuleTester } from "../test-utils.js"
 
-jest.unstable_mockModule("isomorphic-resolve", () => ({
-  default(source: string) {
-    if (!source.startsWith("dependency-")) {
-      throw new Error(`Cannot resolve "${source}"`)
-    }
-  },
-}))
+vi.mock("isomorphic-resolve")
 
 const { default: rule } = await import("../rules/exports.js")
-const ruleTester = new RuleTester({
-  parserOptions: {
-    ecmaVersion: 2018,
-    sourceType: "module",
-  },
-})
+const ruleTester = createRuleTester()
 
 ruleTester.run("sort/exports", rule, {
   valid: [

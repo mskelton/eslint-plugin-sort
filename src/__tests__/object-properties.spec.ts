@@ -1,12 +1,7 @@
-import { RuleTester } from "eslint"
 import rule from "../rules/object-properties.js"
-import { createValidCodeVariants } from "../test-utils.js"
+import { createRuleTester, createValidCodeVariants } from "../test-utils.js"
 
-const ruleTester = new RuleTester({
-  parserOptions: {
-    ecmaVersion: 2018,
-  },
-})
+const ruleTester = createRuleTester()
 
 ruleTester.run("sort/object-properties", rule, {
   valid: [

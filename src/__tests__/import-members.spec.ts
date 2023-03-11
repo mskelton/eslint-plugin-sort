@@ -1,13 +1,7 @@
-import { RuleTester } from "eslint"
 import rule from "../rules/import-members.js"
-import { createValidCodeVariants } from "../test-utils.js"
+import { createRuleTester, createValidCodeVariants } from "../test-utils.js"
 
-const ruleTester = new RuleTester({
-  parserOptions: {
-    ecmaVersion: 2018,
-    sourceType: "module",
-  },
-})
+const ruleTester = createRuleTester()
 
 ruleTester.run("sort/import-members", rule, {
   valid: [

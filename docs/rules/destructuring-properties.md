@@ -10,7 +10,7 @@ insensitive in ascending order.
 
 Examples of **incorrect** code for this rule:
 
-```js
+```javascript
 let { b, c, a } = {}
 let { C, b } = {}
 let { b: a, a: b } = {}
@@ -18,7 +18,7 @@ let { b: a, a: b } = {}
 
 Examples of **correct** code for this rule:
 
-```js
+```javascript
 let { a, b, c } = {}
 let { b, C } = {}
 let { a: b, b: a } = {}

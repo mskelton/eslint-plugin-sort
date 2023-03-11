@@ -1,12 +1,44 @@
+import { ESLintUtils } from "@typescript-eslint/experimental-utils"
 import { RuleTester } from "eslint"
+import { it, describe } from "vitest"
 
-export const createValidCodeVariants = (
+export function createValidCodeVariants(
   code: string
-): RuleTester.ValidTestCase[] => {
+): RuleTester.ValidTestCase[] {
   return [
     { code, options: [{ caseSensitive: false, natural: false }] },
     { code, options: [{ caseSensitive: true, natural: false }] },
     { code, options: [{ caseSensitive: false, natural: true }] },
     { code, options: [{ caseSensitive: true, natural: true }] },
   ]
+}
+
+export function createRuleTester(
+  config: unknown = {
+    parserOptions: {
+      ecmaVersion: 2018,
+      sourceType: "module",
+    },
+  }
+) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tester = RuleTester as any
+  tester.describe = describe
+  tester.it = it
+  tester.itOnly = it.only
+
+  return new RuleTester(config)
+}
+
+export function createTsRuleTester(
+  config?: Partial<ConstructorParameters<typeof ESLintUtils.RuleTester>[0]>
+) {
+  ESLintUtils.RuleTester.describe = describe
+  ESLintUtils.RuleTester.it = it
+  ESLintUtils.RuleTester.itOnly = it.only
+
+  return new ESLintUtils.RuleTester({
+    parser: "@typescript-eslint/parser",
+    ...config,
+  })
 }

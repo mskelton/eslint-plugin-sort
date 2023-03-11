@@ -9,7 +9,7 @@ Sorts object properties alphabetically and case insensitive in ascending order.
 
 Examples of **incorrect** code for this rule:
 
-```js
+```javascript
 var a = { b: 1, c: 2, a: 3 }
 var a = { C: 1, b: 2 }
 var a = { C: 1, b: { y: 1, x: 2 } }
@@ -17,7 +17,7 @@ var a = { C: 1, b: { y: 1, x: 2 } }
 
 Examples of **correct** code for this rule:
 
-```js
+```javascript
 var a = { a: 1, b: 2, c: 3 }
 var a = { b: 1, C: 2 }
 var a = { b: { x: 1, y: 2 }, C: 1 }
