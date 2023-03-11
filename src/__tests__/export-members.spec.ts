@@ -1,5 +1,6 @@
 import { RuleTester } from "eslint"
 import rule from "../rules/export-members"
+import { createValidCodeVariants } from "../test-utils"
 
 const ruleTester = new RuleTester({
   parserOptions: {
@@ -10,34 +11,52 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("sort/export-members", rule, {
   valid: [
-    "export {} from 'a'",
-    "export {a} from 'a'",
-    "export {a, b, c} from 'a'",
-    "export {_, a, b} from 'a'",
-    "export {p,q,r,s,t,u,v,w,x,y,z} from 'a'",
-
-    // Case insensitive
-    "export {a, B, c, D} from 'a'",
-    "export {_, A, b} from 'a'",
+    ...createValidCodeVariants("export {} from 'a'"),
+    ...createValidCodeVariants("export { a } from 'a'"),
+    ...createValidCodeVariants("export { a, b, c } from 'a'"),
+    ...createValidCodeVariants("export { _, a, b } from 'a'"),
+    ...createValidCodeVariants(
+      "export { p, q, r, s, t, u, v, w, x, y, z } from 'a'"
+    ),
 
     // Default and namespace exports
-    "export default React",
-    "export * from 'a'",
+    ...createValidCodeVariants("export default React"),
+    ...createValidCodeVariants("export * from 'a'"),
 
     // Export aliases
-    "export {a as b, b as a} from 'a'",
+    ...createValidCodeVariants("export { a as b, b as a } from 'a'"),
 
     // Comments
-    `
-      export {
-        // a
-        a,
-        // b
-        b,
-        // c
-        c
-      } from 'a'
-    `.trim(),
+    ...createValidCodeVariants(
+      `
+        export {
+          // a
+          a,
+          // b
+          b,
+          // c
+          c
+        } from 'a'
+      `.trim()
+    ),
+
+    // Case sensitive
+    {
+      code: "export { a, B, C, c } from 'a'",
+      options: [{ caseSensitive: false, natural: false }],
+    },
+    {
+      code: "export { a, B, c, C } from 'a'",
+      options: [{ caseSensitive: true, natural: false }],
+    },
+    {
+      code: "export { a, B, C, c } from 'a'",
+      options: [{ caseSensitive: false, natural: true }],
+    },
+    {
+      code: "export { B, C, a, c } from 'a'",
+      options: [{ caseSensitive: true, natural: true }],
+    },
   ],
   invalid: [
     {

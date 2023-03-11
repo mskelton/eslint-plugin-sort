@@ -1,5 +1,6 @@
 import { AST, Rule, SourceCode } from "eslint"
 import { Expression, Node } from "estree"
+import naturalCompare from "natural-compare"
 
 /**
  * Returns the first node in the source array that is different from the same
@@ -55,11 +56,25 @@ export const filterNodes = <T extends Node, U extends T["type"]>(
   )
 
 /**
- * Function that returns a simple alphanumeric sort function. The return value
+ * Functions which check that the given 2 names are in specific order. The return value
  * of this function should be passed to `Array.prototype.sort()`.
  */
-export function alphaSorter<T>(sortFn: (node: T) => string) {
-  return (a: T, b: T) => sortFn(a).localeCompare(sortFn(b))
+export const getSorter = ({
+  caseSensitive = false,
+  natural = true,
+}: {
+  caseSensitive?: boolean
+  natural?: boolean
+}): ((a: string, b: string) => number) => {
+  if (caseSensitive && natural) {
+    return (a, b) => naturalCompare(a, b)
+  } else if (caseSensitive) {
+    return (a, b) => a.localeCompare(b)
+  } else if (natural) {
+    return (a, b) => naturalCompare(a.toLowerCase(), b.toLowerCase())
+  }
+
+  return (a, b) => a.toLowerCase().localeCompare(b.toLowerCase())
 }
 
 /**

@@ -1,6 +1,6 @@
 import { Rule } from "eslint"
 import { Property, SpreadElement } from "estree"
-import { alphaSorter, docsURL, getName, report } from "../utils"
+import { docsURL, getName, getSorter, report } from "../utils"
 
 /**
  * When sorting object properties, we can only sort properties between spread
@@ -25,12 +25,20 @@ function groupNodes(properties: (Property | SpreadElement)[]) {
 
 export default {
   create(context) {
+    const options = context.options[0]
+    const sorter = getSorter({
+      caseSensitive: options?.caseSensitive,
+      natural: options?.natural,
+    })
+
     return {
       ObjectExpression(expression) {
         for (const nodes of groupNodes(expression.properties)) {
           const sorted = nodes
             .slice()
-            .sort(alphaSorter((node) => getName(node.key).toLowerCase()))
+            .sort((nodeA, nodeB) =>
+              sorter(getName(nodeA.key), getName(nodeB.key))
+            )
 
           report(context, nodes, sorted)
         }
@@ -38,7 +46,6 @@ export default {
     }
   },
   meta: {
-    type: "suggestion",
     docs: {
       url: docsURL("object-properties"),
     },
@@ -46,5 +53,23 @@ export default {
     messages: {
       unsorted: "Object properties should be sorted alphabetically.",
     },
+    schema: [
+      {
+        additionalProperties: false,
+        default: { caseSensitive: false, natural: true },
+        properties: {
+          caseSensitive: {
+            type: "boolean",
+            default: false,
+          },
+          natural: {
+            type: "boolean",
+            default: true,
+          },
+        },
+        type: "object",
+      },
+    ],
+    type: "suggestion",
   },
 } as Rule.RuleModule
