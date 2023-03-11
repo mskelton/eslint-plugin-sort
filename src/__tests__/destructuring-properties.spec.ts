@@ -1,6 +1,6 @@
 import { RuleTester } from "eslint"
-import rule from "../rules/destructuring-properties"
-import { createValidCodeVariants } from "../test-utils"
+import rule from "../rules/destructuring-properties.js"
+import { createValidCodeVariants } from "../test-utils.js"
 
 const ruleTester = new RuleTester({
   parserOptions: {

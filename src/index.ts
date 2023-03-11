@@ -1,12 +1,12 @@
-import sortDestructuringProperties from "./rules/destructuring-properties"
-import sortExports from "./rules/exports"
-import sortExportMembers from "./rules/export-members"
-import sortImports from "./rules/imports"
-import sortImportMembers from "./rules/import-members"
-import sortObjectProperties from "./rules/object-properties"
-import sortTypeProperties from "./rules/type-properties"
+import sortDestructuringProperties from "./rules/destructuring-properties.js"
+import sortExports from "./rules/exports.js"
+import sortExportMembers from "./rules/export-members.js"
+import sortImports from "./rules/imports.js"
+import sortImportMembers from "./rules/import-members.js"
+import sortObjectProperties from "./rules/object-properties.js"
+import sortTypeProperties from "./rules/type-properties.js"
 
-module.exports = {
+const config = {
   configs: {
     recommended: {
       plugins: ["sort"],
@@ -51,3 +51,5 @@ module.exports = {
     "type-properties": sortTypeProperties,
   },
 }
+
+export default config as unknown

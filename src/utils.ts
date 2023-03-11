@@ -1,5 +1,5 @@
 import { AST, Rule, SourceCode } from "eslint"
-import { Expression, Node } from "estree"
+import { Expression, Identifier, Node, PrivateIdentifier } from "estree"
 import naturalCompare from "natural-compare"
 
 /**
@@ -23,9 +23,12 @@ export function enumerate<T>(a: T[], b: T[]) {
 /**
  * Get's the string name of a node used for sorting or errors.
  */
-export function getName(node?: Expression): string {
+export function getName(
+  node?: Expression | Identifier | PrivateIdentifier
+): string {
   switch (node?.type) {
     case "Identifier":
+    case "PrivateIdentifier":
       return node.name
 
     case "Literal":

@@ -1,6 +1,6 @@
 import { Rule } from "eslint"
 import { ImportDeclaration } from "estree"
-import { isResolved } from "../resolver"
+import { isResolved } from "../resolver.js"
 import {
   docsURL,
   enumerate,
@@ -9,7 +9,7 @@ import {
   getNodeRange,
   getNodeText,
   isUnsorted,
-} from "../utils"
+} from "../utils.js"
 
 interface SortGroup {
   order: number

@@ -1,6 +1,6 @@
 import { RuleTester } from "eslint"
-import rule from "../rules/export-members"
-import { createValidCodeVariants } from "../test-utils"
+import rule from "../rules/export-members.js"
+import { createValidCodeVariants } from "../test-utils.js"
 
 const ruleTester = new RuleTester({
   parserOptions: {

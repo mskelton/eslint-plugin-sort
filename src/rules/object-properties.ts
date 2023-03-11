@@ -1,6 +1,6 @@
 import { Rule } from "eslint"
 import { Property, SpreadElement } from "estree"
-import { docsURL, getName, getSorter, report } from "../utils"
+import { docsURL, getName, getSorter, report } from "../utils.js"
 
 /**
  * When sorting object properties, we can only sort properties between spread

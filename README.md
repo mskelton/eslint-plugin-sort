@@ -10,14 +10,20 @@ Auto-fixable sort rules for ESLint.
 
 ### npm
 
-```sh
+```bash
 npm install -D eslint-plugin-sort
 ```
 
 ### Yarn
 
-```sh
+```bash
 yarn add -D eslint-plugin-sort
+```
+
+### pnpm
+
+```bash
+pnpm add -D eslint-plugin-sort
 ```
 
 ## Usage
