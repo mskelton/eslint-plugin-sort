@@ -373,7 +373,7 @@ ruleTester.run("sort/imports", rule, {
       errors: [
         {
           messageId: "missingSeparator",
-          data: { separator: "\\n" },
+          data: { expected: "\\n" },
           line: 3,
           column: 1,
           endLine: 3,
@@ -493,7 +493,7 @@ ruleTester.run("sort/imports", rule, {
         },
         {
           messageId: "missingSeparator",
-          data: { separator: "\\n" },
+          data: { expected: "\\n" },
           line: 8,
           column: 1,
           endLine: 8,
@@ -566,6 +566,118 @@ ruleTester.run("sort/imports", rule, {
           line: 7,
           column: 1,
           endLine: 7,
+          endColumn: 1,
+        },
+      ],
+      options: [
+        {
+          groups: [
+            { regex: "\\.(png|jpg)$", order: 1 },
+            { type: "other", order: 2 },
+          ],
+          separator: "\n",
+        },
+      ],
+    },
+
+    // Separators + comments
+    {
+      name: "Adds separators when there are comments",
+      code: dedent`
+        // a
+        import y from "y.png"
+        // b
+        import z from "z.png"
+        // c
+        import c from "c"
+        // d
+        import d from "d"
+      `,
+      // This test doesn't have the correct output due to conflicting ranges,
+      // but we can at least test that the right errors are present.
+      output: dedent`
+        // a
+        import y from "y.png"
+        // b
+        import z from "z.png"
+
+        // c
+        import c from "c"
+        // d
+        import d from "d"
+      `,
+      errors: [
+        {
+          messageId: "missingSeparator",
+          data: { expected: "\\n" },
+          line: 5,
+          column: 1,
+          endLine: 5,
+          endColumn: 1,
+        },
+      ],
+      options: [
+        {
+          groups: [
+            { regex: "\\.(png|jpg)$", order: 1 },
+            { type: "other", order: 2 },
+          ],
+          separator: "\n",
+        },
+      ],
+    },
+    {
+      name: "Removes extra newlines while preserving comment position",
+      code: dedent`
+        // a
+        import y from "y.png"
+
+        // b
+        import z from "z.png"
+
+
+        // c
+        import c from "c"
+
+        // d
+        import d from "d"
+      `,
+      // This test doesn't have the correct output due to conflicting ranges,
+      // but we can at least test that the right errors are present.
+      output: dedent`
+        // a
+        import y from "y.png"
+        // b
+        import z from "z.png"
+
+        // c
+        import c from "c"
+        // d
+        import d from "d"
+      `,
+      errors: [
+        {
+          messageId: "extraNewlines",
+          data: { newlines: "newline" },
+          line: 3,
+          column: 1,
+          endLine: 3,
+          endColumn: 1,
+        },
+        {
+          messageId: "incorrectSeparator",
+          data: { expected: "\\n", actual: "\\n\\n" },
+          line: 6,
+          column: 1,
+          endLine: 7,
+          endColumn: 1,
+        },
+        {
+          messageId: "extraNewlines",
+          data: { newlines: "newline" },
+          line: 10,
+          column: 1,
+          endLine: 10,
           endColumn: 1,
         },
       ],

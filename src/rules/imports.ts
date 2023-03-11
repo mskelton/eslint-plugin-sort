@@ -104,9 +104,17 @@ export default {
         for (let i = 1; i < nodes.length; i++) {
           const node = nodes[i]
           const prevNode = nodes[i - 1]
+
+          // If the node has preceding comments, we want to use the first
+          // comment as the starting position for both determining what the
+          // current separator is as well as the location for the report.
+          const nodeOrComment = source.getCommentsBefore(node)[0] ?? node
+
+          // Find the range between nodes (including comments) so we can pull
+          // the text and apply fixes to newlines between imports.
           const rangeBetween: AST.Range = [
             range.end(prevNode),
-            range.start(node),
+            range.start(nodeOrComment),
           ]
 
           // To make the separator option make more sense, we always assume a
@@ -117,7 +125,6 @@ export default {
           // stable even if there is extra spaces before imports.
           const actualSeparator = text
             .slice(...rangeBetween)
-            .replace(/\n[^\n]+/g, "") // Remove lines with content (e.g. comments)
             .replace(/[^\n]/g, "") // Remove all non-newline characters
             .replace("\n", "") // Remove the first newline
 
@@ -127,15 +134,10 @@ export default {
           // message to the second import since it makes more sense that it
           // wasn't spaced far enough from the first one (reading order top down).
           const startLine = (prevNode.loc?.end.line ?? 0) + 1
+          const endLine = (nodeOrComment.loc?.start.line ?? 0) - 1
           const loc: AST.SourceLocation = {
-            start: {
-              line: startLine,
-              column: 0,
-            },
-            end: {
-              line: Math.max((node.loc?.start.line ?? 0) - 1, startLine),
-              column: 0,
-            },
+            start: { line: startLine, column: 0 },
+            end: { line: Math.max(endLine, startLine), column: 0 },
           }
 
           const isSameGroup =
@@ -152,21 +154,15 @@ export default {
                 data: {
                   newlines: pluralize("newline", actualSeparator.length),
                 },
-                fix(fixer) {
-                  return fixer.replaceTextRange(rangeBetween, "\n")
-                },
+                fix: (fixer) => fixer.replaceTextRange(rangeBetween, "\n"),
               })
             }
           } else if (separator !== "" && actualSeparator === "") {
             context.report({
               messageId: "missingSeparator",
               loc,
-              data: {
-                separator: rawString(separator),
-              },
-              fix(fixer) {
-                return fixer.insertTextBefore(node, separator)
-              },
+              data: { expected: rawString(separator) },
+              fix: (fixer) => fixer.insertTextAfter(prevNode, separator),
             })
           } else if (separator !== actualSeparator) {
             context.report({
@@ -176,9 +172,8 @@ export default {
                 actual: rawString(actualSeparator),
                 expected: rawString(separator),
               },
-              fix(fixer) {
-                return fixer.replaceTextRange(rangeBetween, separator + "\n")
-              },
+              fix: (fixer) =>
+                fixer.replaceTextRange(rangeBetween, separator + "\n"),
             })
           }
         }
@@ -195,7 +190,7 @@ export default {
       incorrectSeparator:
         "Expected `{{expected}}` to separate import groups but found `{{actual}}`.",
       extraNewlines: "Unexpected {{newlines}} between imports.",
-      missingSeparator: "Missing `{{separator}}` between import groups.",
+      missingSeparator: "Missing `{{expected}}` between import groups.",
       unsorted: "Imports should be sorted.",
     },
     schema: [

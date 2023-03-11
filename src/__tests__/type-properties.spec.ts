@@ -9,14 +9,12 @@ const createValidCodeVariants = (
 ): TSESLint.RunTests<
   "unsorted",
   [{ caseSensitive?: boolean; natural?: boolean }]
->["valid"] => {
-  return [
-    { code, options: [{ caseSensitive: false, natural: false }] },
-    { code, options: [{ caseSensitive: true, natural: false }] },
-    { code, options: [{ caseSensitive: false, natural: true }] },
-    { code, options: [{ caseSensitive: true, natural: true }] },
-  ]
-}
+>["valid"] => [
+  { code, options: [{ caseSensitive: false, natural: false }] },
+  { code, options: [{ caseSensitive: true, natural: false }] },
+  { code, options: [{ caseSensitive: false, natural: true }] },
+  { code, options: [{ caseSensitive: true, natural: true }] },
+]
 
 ruleTester.run("sort/type-properties", rule, {
   valid: [

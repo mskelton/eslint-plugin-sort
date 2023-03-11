@@ -115,6 +115,8 @@ newlines between sort groups.
     {
       "groups": [
         { "type": "side-effect", "order": 1 },
+        { "regex": "\\.(png|jpg|svg)$", "order": 4 },
+        { "type": "dependency", "order": 2 },
         { "type": "other", "order": 3 }
       ],
       "separator": "\n"
