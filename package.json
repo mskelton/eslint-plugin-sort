@@ -31,7 +31,8 @@
     "eslint": ">=6"
   },
   "dependencies": {
-    "@typescript-eslint/experimental-utils": "^5.27.1"
+    "@typescript-eslint/experimental-utils": "^5.27.1",
+    "natural-compare": "^1.4.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.10",
@@ -49,7 +50,6 @@
     "eslint": "^8.17.0",
     "eslint-config-prettier": "^8.5.0",
     "jest": "^28.1.1",
-    "natural-compare": "^1.4.0",
     "prettier": "^2.6.2",
     "semantic-release": "^19.0.2",
     "typescript": "^4.7.3"
