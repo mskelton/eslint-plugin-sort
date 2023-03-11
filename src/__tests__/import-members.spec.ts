@@ -1,5 +1,6 @@
 import { RuleTester } from "eslint"
 import rule from "../rules/import-members.js"
+import { createValidCodeVariants } from "../test-utils.js"
 
 const ruleTester = new RuleTester({
   parserOptions: {
@@ -10,26 +11,25 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("sort/import-members", rule, {
   valid: [
-    "import {} from 'a'",
-    "import {a} from 'a'",
-    "import {a, b, c} from 'a'",
-    "import {_, a, b} from 'a'",
-    "import {p,q,r,s,t,u,v,w,x,y,z} from 'a'",
-
-    // Case insensitive
-    "import {a, B, c, D} from 'a'",
-    "import {_, A, b} from 'a'",
+    ...createValidCodeVariants("import {} from 'a'"),
+    ...createValidCodeVariants("import { a } from 'a'"),
+    ...createValidCodeVariants("import { a, b, c } from 'a'"),
+    ...createValidCodeVariants("import { _, a, b } from 'a'"),
+    ...createValidCodeVariants(
+      "import { p, q, r, s, t, u, v, w, x, y, z } from 'a'"
+    ),
 
     // Default and namespace imports
-    "import React from 'a'",
-    "import * as React from 'a'",
-    "import React, {a, b} from 'a'",
+    ...createValidCodeVariants("import React from 'a'"),
+    ...createValidCodeVariants("import * as React from 'a'"),
+    ...createValidCodeVariants("import React, { a, b } from 'a'"),
 
     // Import aliases
-    "import {a as b, b as a} from 'a'",
+    ...createValidCodeVariants("import { a as b, b as a } from 'a'"),
 
     // Comments
-    `
+    ...createValidCodeVariants(
+      `
       import {
         // a
         a,
@@ -37,7 +37,26 @@ ruleTester.run("sort/import-members", rule, {
         b,
         c
       } from 'a'
-    `.trim(),
+    `.trim()
+    ),
+
+    // Case sensitive
+    {
+      code: "import { a, B, C, c } from 'a'",
+      options: [{ caseSensitive: false, natural: false }],
+    },
+    {
+      code: "import { a, B, c, C } from 'a'",
+      options: [{ caseSensitive: true, natural: false }],
+    },
+    {
+      code: "import { a, B, C, c } from 'a'",
+      options: [{ caseSensitive: false, natural: true }],
+    },
+    {
+      code: "import { B, C, a, c } from 'a'",
+      options: [{ caseSensitive: true, natural: true }],
+    },
   ],
   invalid: [
     {

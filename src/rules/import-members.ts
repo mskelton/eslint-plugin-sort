@@ -1,8 +1,14 @@
 import { Rule } from "eslint"
-import { alphaSorter, docsURL, filterNodes, report } from "../utils.js"
+import { docsURL, filterNodes, getSorter, report } from "../utils.js"
 
 export default {
   create(context) {
+    const options = context.options[0]
+    const sorter = getSorter({
+      caseSensitive: options?.caseSensitive,
+      natural: options?.natural,
+    })
+
     return {
       ImportDeclaration(decl) {
         const nodes = filterNodes(decl.specifiers, ["ImportSpecifier"])
@@ -14,20 +20,39 @@ export default {
 
         const sorted = nodes
           .slice()
-          .sort(alphaSorter((node) => node.imported.name.toLowerCase()))
+          .sort((nodeA, nodeB) =>
+            sorter(nodeA.imported.name, nodeB.imported.name)
+          )
 
         report(context, nodes, sorted)
       },
     }
   },
   meta: {
-    type: "suggestion",
-    fixable: "code",
     docs: {
       url: docsURL("import-members"),
     },
+    fixable: "code",
     messages: {
       unsorted: "Import members should be sorted alphabetically.",
     },
+    schema: [
+      {
+        additionalProperties: false,
+        default: { caseSensitive: false, natural: true },
+        properties: {
+          caseSensitive: {
+            type: "boolean",
+            default: false,
+          },
+          natural: {
+            type: "boolean",
+            default: true,
+          },
+        },
+        type: "object",
+      },
+    ],
+    type: "suggestion",
   },
 } as Rule.RuleModule

@@ -1,5 +1,6 @@
 import { RuleTester } from "eslint"
 import rule from "../rules/object-properties.js"
+import { createValidCodeVariants } from "../test-utils.js"
 
 const ruleTester = new RuleTester({
   parserOptions: {
@@ -9,48 +10,132 @@ const ruleTester = new RuleTester({
 
 ruleTester.run("sort/object-properties", rule, {
   valid: [
-    "var a = {}",
-    "var a = {a: 1}",
-    "var a = {a: 1, b: 2, c: 3}",
-    "var a = {_:1, a:2, b:3}",
-    "var a = {1:'a', 2:'b'}",
+    // Empty object
+    ...createValidCodeVariants("var a = {}"),
 
-    // Case insensitive
-    "var a = {a:1, B:2, c:3, D:4}",
-    "var a = {_:1, A:2, b:3}",
+    // Single property
+    ...createValidCodeVariants("var a = { a: 1 }"),
+
+    // Multiple properties
+    ...createValidCodeVariants("var a = { a: 1, b: 2, c: 3 }"),
+
+    // Multiple properties with special characters
+    ...createValidCodeVariants("var a = { _: 1, a: 2, b: 3 }"),
 
     // Bracket notation
-    "var a = {['a']: 1, ['b']: 2}",
-    "var a = {[1]: 'a', [2]: 'b'}",
+    ...createValidCodeVariants("var a = { ['a']: 1, ['b']: 2 }"),
+    ...createValidCodeVariants("var a = { [1]: 'a', [2]: 'b' }"),
 
     // Template literals
-    "var a = {[`a`]: 1, [`b`]: 2}",
-    "var a = {[`a${b}c${d}`]: 1, [`a${c}e${g}`]: 2}",
-    "var a = {[`${a}b${c}d`]: 1, [`${a}c${e}g`]: 2}",
+    ...createValidCodeVariants("var a = { [`a`]: 1, [`b`]: 2 }"),
+    ...createValidCodeVariants(
+      "var a = { [`a${b}c${d}`]: 1, [`a${c}e${g}`]: 2 }"
+    ),
+    ...createValidCodeVariants(
+      "var a = { [`${a}b${c}d`]: 1, [`${a}c${e}g`]: 2 }"
+    ),
 
     // Spread elements
-    "var a = {a:1, b:2, ...c, d:3, e:4}",
-    "var a = {d:1, e:2, ...c, a:3, b:4}",
-    "var a = {e:1, f:2, ...d, ...c, a:3, b:4}",
-    "var a = {f:1, g:2, ...d, a:3, ...c, b:4, c:5}",
+    ...createValidCodeVariants("var a = { a: 1, b: 2, ...c, d: 3, e: 4 }"),
+    ...createValidCodeVariants("var a = { d: 1, e: 2, ...c, a: 3, b: 4 }"),
+    ...createValidCodeVariants(
+      "var a = { e: 1, f: 2, ...d, ...c, a: 3, b: 4 }"
+    ),
+    ...createValidCodeVariants(
+      "var a = { f: 1, g: 2, ...d, a: 3, ...c, b: 4, c: 5 }"
+    ),
 
     // Nested properties
-    "var a = {a:1, b:{x:2, y:3}, c:4}",
+    ...createValidCodeVariants("var a = { a: 1, b: { x: 2, y: 3 }, c: 4 }"),
 
     // Comments
-    `
-      var a = {
-        // c
-        c: 1,
-        // d
-        d: 2,
-        ...spread1,
-        // spread 2
-        ...spread2,
-        a: 3,
-        b: 4
-      }
-    `.trim(),
+    ...createValidCodeVariants(
+      `
+        var a = {
+          // c
+          c: 1,
+          // d
+          d: 2,
+          ...spread1,
+          // spread 2
+          ...spread2,
+          a: 3,
+          b: 4
+        }
+      `.trim()
+    ),
+
+    // Numeric properties
+    {
+      code: "var a = { 1: 'a', 11: 'b', 2: 'c' }",
+      options: [{ caseSensitive: false, natural: false }],
+    },
+    {
+      code: "var a = { 1: 'a', 11: 'b', 2: 'c' }",
+      options: [{ caseSensitive: true, natural: false }],
+    },
+    {
+      code: "var a = { 1: 'a', 2: 'c', 11: 'b' }",
+      options: [{ caseSensitive: false, natural: true }],
+    },
+    {
+      code: "var a = { 1: 'a', 2: 'c', 11: 'b' }",
+      options: [{ caseSensitive: true, natural: true }],
+    },
+
+    // Numeric properties + bracket notation
+    {
+      code: "var a = { [1]: 'a', [11]: 'b', [2]: 'c' }",
+      options: [{ caseSensitive: false, natural: false }],
+    },
+    {
+      code: "var a = { [1]: 'a', [11]: 'b', [2]: 'c' }",
+      options: [{ caseSensitive: true, natural: false }],
+    },
+    {
+      code: "var a = { [1]: 'a', [2]: 'c', [11]: 'b' }",
+      options: [{ caseSensitive: false, natural: true }],
+    },
+    {
+      code: "var a = { [1]: 'a', [2]: 'c', [11]: 'b' }",
+      options: [{ caseSensitive: true, natural: true }],
+    },
+
+    // Case sensitive
+    {
+      code: "var a = { a: 1, B: 2, c: 3, C: 4 }",
+      options: [{ caseSensitive: false, natural: false }],
+    },
+    {
+      code: "var a = { a: 1, B: 2, c: 3, C: 4 }",
+      options: [{ caseSensitive: true, natural: false }],
+    },
+    {
+      code: "var a = { a: 1, B: 2, c: 3, C: 4 }",
+      options: [{ caseSensitive: false, natural: true }],
+    },
+    {
+      code: "var a = { B: 2, C: 4, a: 1, c: 3 }",
+      options: [{ caseSensitive: true, natural: true }],
+    },
+
+    // Case sensitive + bracket notation
+    {
+      code: "var a = { ['a']: 1, ['B']: 2, ['c']: 3, ['C']: 4 }",
+      options: [{ caseSensitive: false, natural: false }],
+    },
+    {
+      code: "var a = { ['a']: 1, ['B']: 2, ['c']: 3, ['C']: 4, }",
+      options: [{ caseSensitive: true, natural: false }],
+    },
+    {
+      code: "var a = { ['a']: 1, ['B']: 2, ['c']: 3, ['C']: 4 }",
+      options: [{ caseSensitive: false, natural: true }],
+    },
+    {
+      code: "var a = { ['B']: 2, ['C']: 4, ['a']: 1, ['c']: 3 }",
+      options: [{ caseSensitive: true, natural: true }],
+    },
   ],
   invalid: [
     {
