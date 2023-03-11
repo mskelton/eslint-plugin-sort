@@ -92,8 +92,8 @@ interface Rangewise {
  * Returns an AST range between two nodes.
  */
 export const getTextRange = (left: Rangewise, right: Rangewise): AST.Range => [
-  left.range![0],
-  right.range![1],
+  range.start(left),
+  range.end(right),
 ]
 
 /**
@@ -155,3 +155,11 @@ export function report(
     })
   }
 }
+
+export const range = {
+  start: (node: Rangewise) => node.range![0],
+  end: (node: Rangewise) => node.range![1],
+}
+
+export const pluralize = (word: string, count: number) =>
+  word + (count === 1 ? "" : "s")

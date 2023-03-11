@@ -1,6 +1,7 @@
 import {
   AST_NODE_TYPES,
   ESLintUtils,
+  TSESLint,
   TSESTree,
 } from "@typescript-eslint/experimental-utils"
 import { getName, getNodeRange, getNodeText, isDelimiter } from "../ts-utils.js"
@@ -125,4 +126,4 @@ export default ESLintUtils.RuleCreator.withoutDocs<
     type: "suggestion",
   },
   defaultOptions: [{}],
-})
+}) as TSESLint.RuleModule<string, unknown[]>

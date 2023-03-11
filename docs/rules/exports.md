@@ -9,7 +9,7 @@ Sorts exports alphabetically and case insensitive in ascending order.
 
 Example of **incorrect** code for this rule:
 
-```js
+```javascript
 export { c } from "./c"
 export default React
 export * from "./b"
@@ -19,7 +19,7 @@ export { a } from "./a"
 
 Example of **correct** code for this rule:
 
-```js
+```javascript
 export { a } from "./a"
 export * from "./b"
 export { c } from "./c"
@@ -77,7 +77,7 @@ groups as well as a custom regex sort group.
 
 This configuration would result in the following output.
 
-```js
+```javascript
 export { a }
 export { useState } from "react"
 export App from "~/components"

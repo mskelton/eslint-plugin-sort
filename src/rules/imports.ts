@@ -1,4 +1,4 @@
-import { Rule } from "eslint"
+import { Rule, AST } from "eslint"
 import { ImportDeclaration } from "estree"
 import { isResolved } from "../resolver.js"
 import {
@@ -9,6 +9,8 @@ import {
   getNodeRange,
   getNodeText,
   isUnsorted,
+  pluralize,
+  range,
 } from "../utils.js"
 
 interface SortGroup {
@@ -50,9 +52,14 @@ function getSortGroup(sortGroups: SortGroup[], node: ImportDeclaration) {
 const getSortValue = (node: ImportDeclaration) =>
   getName(node.source).toLowerCase()
 
+const rawString = (str: string) =>
+  JSON.stringify(str).slice(1, -1).replace(/\\n/g, "\\n")
+
 export default {
   create(context) {
-    const groups = context.options[0]?.groups ?? []
+    const options = context.options[0]
+    const groups = options?.groups ?? []
+    const separator = options?.separator ?? ""
     const source = context.getSourceCode()
 
     return {
@@ -92,6 +99,89 @@ export default {
             },
           })
         }
+
+        const text = source.getText()
+        for (let i = 1; i < nodes.length; i++) {
+          const node = nodes[i]
+          const prevNode = nodes[i - 1]
+          const rangeBetween: AST.Range = [
+            range.end(prevNode),
+            range.start(node),
+          ]
+
+          // To make the separator option make more sense, we always assume a
+          // single newline will be present between imports. This means that
+          // we have to remove the first newline before determining if the
+          // current separator matches the configured separator.
+          // We also remove all non-newline spaces to make the comparison
+          // stable even if there is extra spaces before imports.
+          const actualSeparator = text
+            .slice(...rangeBetween)
+            .replace(/\n[^\n]+/g, "") // Remove lines with content (e.g. comments)
+            .replace(/[^\n]/g, "") // Remove all non-newline characters
+            .replace("\n", "") // Remove the first newline
+
+          // To make the errors more readable, we want to report the location
+          // of the newline between the imports, rather than the imports
+          // themselves. When there is no existing space between, we add the
+          // message to the second import since it makes more sense that it
+          // wasn't spaced far enough from the first one (reading order top down).
+          const startLine = (prevNode.loc?.end.line ?? 0) + 1
+          const loc: AST.SourceLocation = {
+            start: {
+              line: startLine,
+              column: 0,
+            },
+            end: {
+              line: Math.max((node.loc?.start.line ?? 0) - 1, startLine),
+              column: 0,
+            },
+          }
+
+          const isSameGroup =
+            getSortGroup(groups, sorted[i - 1]) ===
+            getSortGroup(groups, sorted[i])
+
+          // For imports in the same group, we don't care about the configured
+          // separator, there should only ever be a single newline.
+          if (isSameGroup || separator === "") {
+            if (actualSeparator !== "") {
+              context.report({
+                messageId: "extraNewlines",
+                loc,
+                data: {
+                  newlines: pluralize("newline", actualSeparator.length),
+                },
+                fix(fixer) {
+                  return fixer.replaceTextRange(rangeBetween, "\n")
+                },
+              })
+            }
+          } else if (separator !== "" && actualSeparator === "") {
+            context.report({
+              messageId: "missingSeparator",
+              loc,
+              data: {
+                separator: rawString(separator),
+              },
+              fix(fixer) {
+                return fixer.insertTextBefore(node, separator)
+              },
+            })
+          } else if (separator !== actualSeparator) {
+            context.report({
+              messageId: "incorrectSeparator",
+              loc,
+              data: {
+                actual: rawString(actualSeparator),
+                expected: rawString(separator),
+              },
+              fix(fixer) {
+                return fixer.replaceTextRange(rangeBetween, separator + "\n")
+              },
+            })
+          }
+        }
       },
     }
   },
@@ -102,12 +192,20 @@ export default {
       url: docsURL("imports"),
     },
     messages: {
+      incorrectSeparator:
+        "Expected `{{expected}}` to separate import groups but found `{{actual}}`.",
+      extraNewlines: "Unexpected {{newlines}} between imports.",
+      missingSeparator: "Missing `{{separator}}` between import groups.",
       unsorted: "Imports should be sorted.",
     },
     schema: [
       {
         type: "object",
         properties: {
+          separator: {
+            type: "string",
+            default: "",
+          },
           groups: {
             type: "array",
             items: {

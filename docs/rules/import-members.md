@@ -9,7 +9,7 @@ Sorts import members alphabetically and case insensitive in ascending order.
 
 Examples of **incorrect** code for this rule:
 
-```js
+```javascript
 import { b, c, a } from "a"
 import { C, b } from "a"
 import { b as a, a as b } from "a"
@@ -17,7 +17,7 @@ import { b as a, a as b } from "a"
 
 Examples of **correct** code for this rule:
 
-```js
+```javascript
 import { a, b, c } from "a"
 import { b, C } from "a"
 import { a as b, b as a } from "a"

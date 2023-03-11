@@ -9,7 +9,7 @@ Sorts export members alphabetically and case insensitive in ascending order.
 
 Examples of **incorrect** code for this rule:
 
-```js
+```javascript
 export { b, c, a } from "a"
 export { C, b } from "a"
 export { b as a, a as b } from "a"
@@ -17,7 +17,7 @@ export { b as a, a as b } from "a"
 
 Examples of **correct** code for this rule:
 
-```js
+```javascript
 export { a, b, c } from "a"
 export { b, C } from "a"
 export { a as b, b as a } from "a"
