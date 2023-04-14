@@ -39,6 +39,48 @@ ruleTester.run("sort/imports", rule, {
       `,
     },
 
+    // Case sensitivity and natural sort
+    {
+      code: `
+        import { a1 } from 'a1'
+        import { a12 } from 'a12'
+        import { a2 } from 'a2'
+        import { b } from 'b'
+        import { C } from 'C'
+      `,
+      options: [{ caseSensitive: false, natural: false }],
+    },
+    {
+      code: `
+        import { C } from 'C'
+        import { a1 } from 'a1'
+        import { a12 } from 'a12'
+        import { a2 } from 'a2'
+        import { b } from 'b'
+      `,
+      options: [{ caseSensitive: true, natural: false }],
+    },
+    {
+      code: `
+        import { a1 } from 'a1'
+        import { a2 } from 'a2'
+        import { a12 } from 'a12'
+        import { b } from 'b'
+        import { C } from 'C'
+      `,
+      options: [{ caseSensitive: false, natural: true }],
+    },
+    {
+      code: `
+        import { C } from 'C'
+        import { a1 } from 'a1'
+        import { a2 } from 'a2'
+        import { a12 } from 'a12'
+        import { b } from 'b'
+      `,
+      options: [{ caseSensitive: true, natural: true }],
+    },
+
     // Sort groups
     {
       name: "Sort groups",
@@ -159,6 +201,80 @@ ruleTester.run("sort/imports", rule, {
         import b from "b"
         import c from "c"
       `,
+      errors: [{ messageId: "unsorted" }],
+    },
+
+    // Case sensitivity and natural sort
+    {
+      code: dedent`
+        import { a2 } from 'a2'
+        import { C } from 'C'
+        import { a1 } from 'a1'
+        import { b } from 'b'
+        import { a12 } from 'a12'
+      `,
+      output: dedent`
+        import { a1 } from 'a1'
+        import { a12 } from 'a12'
+        import { a2 } from 'a2'
+        import { b } from 'b'
+        import { C } from 'C'
+      `,
+      options: [{ caseSensitive: false, natural: false }],
+      errors: [{ messageId: "unsorted" }],
+    },
+    {
+      code: dedent`
+        import { a2 } from 'a2'
+        import { b } from 'b'
+        import { a1 } from 'a1'
+        import { a12 } from 'a12'
+        import { C } from 'C'
+      `,
+      output: dedent`
+        import { C } from 'C'
+        import { a1 } from 'a1'
+        import { a12 } from 'a12'
+        import { a2 } from 'a2'
+        import { b } from 'b'
+      `,
+      options: [{ caseSensitive: true, natural: false }],
+      errors: [{ messageId: "unsorted" }],
+    },
+    {
+      code: dedent`
+        import { a12 } from 'a12'
+        import { C } from 'C'
+        import { b } from 'b'
+        import { a2 } from 'a2'
+        import { a1 } from 'a1'
+      `,
+      output: dedent`
+        import { a1 } from 'a1'
+        import { a2 } from 'a2'
+        import { a12 } from 'a12'
+        import { b } from 'b'
+        import { C } from 'C'
+      `,
+      options: [{ caseSensitive: false, natural: true }],
+      errors: [{ messageId: "unsorted" }],
+    },
+    {
+      code: dedent`
+        import { a2 } from 'a2'
+        import { b } from 'b'
+        import { a1 } from 'a1'
+        import { C } from 'C'
+        import { a12 } from 'a12'
+      `,
+      output: dedent`
+        import { C } from 'C'
+        import { a1 } from 'a1'
+        import { a2 } from 'a2'
+        import { a12 } from 'a12'
+        import { b } from 'b'
+      `,
+      options: [{ caseSensitive: true, natural: true }],
       errors: [{ messageId: "unsorted" }],
     },
 

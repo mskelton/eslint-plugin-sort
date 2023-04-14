@@ -4,10 +4,7 @@ import { docsURL, getSorter, report } from "../utils.js"
 export default {
   create(context) {
     const options = context.options[0]
-    const sorter = getSorter({
-      caseSensitive: options?.caseSensitive,
-      natural: options?.natural,
-    })
+    const sorter = getSorter(options)
 
     return {
       ExportNamedDeclaration({ specifiers: nodes }) {

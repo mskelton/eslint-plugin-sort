@@ -8,6 +8,7 @@ import {
   getName,
   getNodeRange,
   getNodeText,
+  getSorter,
   isUnsorted,
   pluralize,
   range,
@@ -49,8 +50,7 @@ function getSortGroup(sortGroups: SortGroup[], node: ImportDeclaration) {
   return 0
 }
 
-const getSortValue = (node: ImportDeclaration) =>
-  getName(node.source).toLowerCase()
+const getSortValue = (node: ImportDeclaration) => getName(node.source)
 
 const rawString = (str: string) =>
   JSON.stringify(str).slice(1, -1).replace(/\\n/g, "\\n")
@@ -60,6 +60,7 @@ export default {
     const options = context.options[0]
     const groups = options?.groups ?? []
     const separator = options?.separator ?? ""
+    const sorter = getSorter(options)
     const source = context.getSourceCode()
 
     return {
@@ -76,7 +77,7 @@ export default {
             // First sort by sort group
             getSortGroup(groups, a) - getSortGroup(groups, b) ||
             // Then sort by import name
-            getSortValue(a).localeCompare(getSortValue(b))
+            sorter(getSortValue(a), getSortValue(b))
         )
 
         const firstUnsortedNode = isUnsorted(nodes, sorted)

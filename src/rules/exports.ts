@@ -1,7 +1,7 @@
 import { Rule } from "eslint"
 import { ImportDeclaration, ModuleDeclaration } from "estree"
 import { isResolved } from "../resolver.js"
-import { docsURL, filterNodes, getName, report } from "../utils.js"
+import { docsURL, filterNodes, getName, getSorter, report } from "../utils.js"
 
 type Export = Exclude<ModuleDeclaration, ImportDeclaration>
 
@@ -54,7 +54,9 @@ function getSortValue(node: Export) {
 
 export default {
   create(context) {
-    const groups = context.options[0]?.groups ?? []
+    const options = context.options[0]
+    const groups = options?.groups ?? []
+    const sorter = getSorter(options)
 
     return {
       Program(program) {
@@ -71,10 +73,10 @@ export default {
 
         const sorted = nodes.slice().sort(
           (a, b) =>
-            // First, sort by sort group
+            // First sort by sort group
             getSortGroup(groups, a) - getSortGroup(groups, b) ||
-            // Then sort by path
-            getSortValue(a).localeCompare(getSortValue(b))
+            // Then sort by export name
+            sorter(getSortValue(a), getSortValue(b))
         )
 
         report(context, nodes, sorted)

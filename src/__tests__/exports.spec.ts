@@ -1,3 +1,4 @@
+import dedent from "dedent"
 import { vi } from "vitest"
 import { createRuleTester } from "../test-utils.js"
 
@@ -32,9 +33,51 @@ ruleTester.run("sort/exports", rule, {
       export { c } from "./c"
     `.trim(),
 
+    // Case sensitivity and natural sort
+    {
+      code: dedent`
+        export { a1 } from 'a1'
+        export { a12 } from 'a12'
+        export { a2 } from 'a2'
+        export { b } from 'b'
+        export { C } from 'C'
+      `,
+      options: [{ caseSensitive: false, natural: false }],
+    },
+    {
+      code: dedent`
+        export { C } from 'C'
+        export { a1 } from 'a1'
+        export { a12 } from 'a12'
+        export { a2 } from 'a2'
+        export { b } from 'b'
+      `,
+      options: [{ caseSensitive: true, natural: false }],
+    },
+    {
+      code: dedent`
+        export { a1 } from 'a1'
+        export { a2 } from 'a2'
+        export { a12 } from 'a12'
+        export { b } from 'b'
+        export { C } from 'C'
+      `,
+      options: [{ caseSensitive: false, natural: true }],
+    },
+    {
+      code: dedent`
+        export { C } from 'C'
+        export { a1 } from 'a1'
+        export { a2 } from 'a2'
+        export { a12 } from 'a12'
+        export { b } from 'b'
+      `,
+      options: [{ caseSensitive: true, natural: true }],
+    },
+
     // Sort groups
     {
-      code: `
+      code: dedent`
         const mark = ''
 
         export default React
@@ -61,11 +104,11 @@ ruleTester.run("sort/exports", rule, {
   ],
   invalid: [
     {
-      code: `
+      code: dedent`
         export { b } from 'b'
         export { a } from 'a'
       `,
-      output: `
+      output: dedent`
         export { a } from 'a'
         export { b } from 'b'
       `,
@@ -74,7 +117,7 @@ ruleTester.run("sort/exports", rule, {
 
     // All types of exports
     {
-      code: `
+      code: dedent`
         const mark = ''
 
         export { c } from 'c'
@@ -83,7 +126,7 @@ ruleTester.run("sort/exports", rule, {
         export { mark }
         export { a } from 'a'
       `,
-      output: `
+      output: dedent`
         const mark = ''
 
         export default React
@@ -95,9 +138,83 @@ ruleTester.run("sort/exports", rule, {
       errors: [{ messageId: "unsorted" }],
     },
 
+    // Case sensitivity and natural sort
+    {
+      code: dedent`
+        export { a2 } from 'a2'
+        export { C } from 'C'
+        export { a1 } from 'a1'
+        export { b } from 'b'
+        export { a12 } from 'a12'
+      `,
+      output: dedent`
+        export { a1 } from 'a1'
+        export { a12 } from 'a12'
+        export { a2 } from 'a2'
+        export { b } from 'b'
+        export { C } from 'C'
+      `,
+      options: [{ caseSensitive: false, natural: false }],
+      errors: [{ messageId: "unsorted" }],
+    },
+    {
+      code: dedent`
+        export { a2 } from 'a2'
+        export { b } from 'b'
+        export { a1 } from 'a1'
+        export { a12 } from 'a12'
+        export { C } from 'C'
+      `,
+      output: dedent`
+        export { C } from 'C'
+        export { a1 } from 'a1'
+        export { a12 } from 'a12'
+        export { a2 } from 'a2'
+        export { b } from 'b'
+      `,
+      options: [{ caseSensitive: true, natural: false }],
+      errors: [{ messageId: "unsorted" }],
+    },
+    {
+      code: dedent`
+        export { a12 } from 'a12'
+        export { C } from 'C'
+        export { b } from 'b'
+        export { a2 } from 'a2'
+        export { a1 } from 'a1'
+      `,
+      output: dedent`
+        export { a1 } from 'a1'
+        export { a2 } from 'a2'
+        export { a12 } from 'a12'
+        export { b } from 'b'
+        export { C } from 'C'
+      `,
+      options: [{ caseSensitive: false, natural: true }],
+      errors: [{ messageId: "unsorted" }],
+    },
+    {
+      code: dedent`
+        export { a2 } from 'a2'
+        export { b } from 'b'
+        export { a1 } from 'a1'
+        export { C } from 'C'
+        export { a12 } from 'a12'
+      `,
+      output: dedent`
+        export { C } from 'C'
+        export { a1 } from 'a1'
+        export { a2 } from 'a2'
+        export { a12 } from 'a12'
+        export { b } from 'b'
+      `,
+      options: [{ caseSensitive: true, natural: true }],
+      errors: [{ messageId: "unsorted" }],
+    },
+
     // Comments
     {
-      code: `
+      code: dedent`
         // c
         export { c } from "c"
         // b
@@ -105,7 +222,7 @@ ruleTester.run("sort/exports", rule, {
         // a
         export { a } from "a"
       `.trim(),
-      output: `
+      output: dedent`
         // a
         export { a } from "a"
         // b
@@ -118,7 +235,7 @@ ruleTester.run("sort/exports", rule, {
 
     // Sort groups
     {
-      code: `
+      code: dedent`
         const mark = ''
 
         export { depB } from 'dependency-b'
@@ -130,7 +247,7 @@ ruleTester.run("sort/exports", rule, {
         export { depA } from 'dependency-a'
         export { b } from 'b'
       `.trim(),
-      output: `
+      output: dedent`
         const mark = ''
 
         export { relA } from './a'
@@ -154,7 +271,7 @@ ruleTester.run("sort/exports", rule, {
       errors: [{ messageId: "unsorted" }],
     },
     {
-      code: `
+      code: dedent`
         const mark = ''
 
         export { depB } from 'dependency-b'
@@ -166,7 +283,7 @@ ruleTester.run("sort/exports", rule, {
         export { depA } from 'dependency-a'
         export { b } from 'b'
       `.trim(),
-      output: `
+      output: dedent`
         const mark = ''
 
         export default React

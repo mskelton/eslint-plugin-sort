@@ -58,17 +58,18 @@ export const filterNodes = <T extends Node, U extends T["type"]>(
     types.includes(node.type as U)
   )
 
+export interface SorterOptions {
+  caseSensitive?: boolean
+  natural?: boolean
+}
+
 /**
- * Functions which check that the given 2 names are in specific order. The return value
- * of this function should be passed to `Array.prototype.sort()`.
+ * Returns a sort function that can sort strings based on the provided options.
  */
 export const getSorter = ({
   caseSensitive = false,
   natural = true,
-}: {
-  caseSensitive?: boolean
-  natural?: boolean
-}): ((a: string, b: string) => number) => {
+}: SorterOptions = {}): ((a: string, b: string) => number) => {
   if (caseSensitive && natural) {
     return (a, b) => naturalCompare(a, b)
   } else if (caseSensitive) {
