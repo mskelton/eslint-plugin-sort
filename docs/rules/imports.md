@@ -23,12 +23,23 @@ import b from "b"
 import c from "c"
 ```
 
-## Rule Options
+## Options
 
-This rule has an object with its properties as:
+This rule has an options object with the following defaults.
 
-- `"groups"` (default: `[]`)
-- `"separator"` (default: `""`)
+```json
+{
+  "sort/imports": [
+    "error",
+    {
+      "groups": [],
+      "separator": "",
+      "caseSensitive": false,
+      "natural": true
+    }
+  ]
+}
+```
 
 ### Groups
 
@@ -145,6 +156,17 @@ import image3 from "static/image.png"
 Note that the separator only applies if you have defined sort groups.
 Additionally, extra newlines between imports in the _same sort group_ will be
 removed.
+
+### `caseSensitive`
+
+If `true`, enforce imports to be in case-sensitive order.
+
+### `natural`
+
+If `true`, enforce imports to be in natural order. Natural order compares
+strings containing combination of letters and numbers in the way a human being
+would sort. For example, `a-10` would come after `a-3` when using natural
+ordering.
 
 ## When Not To Use It
 

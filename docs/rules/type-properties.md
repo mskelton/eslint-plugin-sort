@@ -46,19 +46,24 @@ type A = {
 
 ## Options
 
+This rule has an options object with the following defaults.
+
 ```json
 {
   "sort/type-properties": ["error", { "caseSensitive": false, "natural": true }]
 }
 ```
 
-- `caseSensitive` (default `false`) - if `true`, enforce properties to be in
-  case-sensitive order.
-- `natural` (default `true`) - if `true`, enforce properties to be in natural
-  order. Natural order compares strings containing combination of letters and
-  numbers in the way a human being would sort. It basically sorts numerically,
-  instead of sorting alphabetically. So the number 10 comes after the number 3
-  in natural sorting.
+### `caseSensitive`
+
+If `true`, enforce exports to be in case-sensitive order.
+
+### `natural`
+
+If `true`, enforce imports to be in natural order. Natural order compares
+strings containing combination of letters and numbers in the way a human being
+would sort. For example, `a-10` would come after `a-3` when using natural
+ordering.
 
 ## When Not To Use It
 

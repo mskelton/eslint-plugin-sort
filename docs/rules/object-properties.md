@@ -25,6 +25,8 @@ var a = { b: { x: 1, y: 2 }, C: 1 }
 
 ## Options
 
+This rule has an options object with the following defaults.
+
 ```json
 {
   "sort/object-properties": [

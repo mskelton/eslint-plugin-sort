@@ -27,11 +27,22 @@ export { mark }
 export default React
 ```
 
-## Rule Options
+## Options
 
-This rule has an object with its properties as:
+This rule has an options object with the following defaults.
 
-- `"groups"` (default: `[]`)
+```json
+{
+  "sort/exports": [
+    "error",
+    {
+      "groups": [],
+      "caseSensitive": false,
+      "natural": true
+    }
+  ]
+}
+```
 
 ### Groups
 
@@ -104,6 +115,17 @@ group.
 The configuration example above shows how this works where default exports are
 the first sort group even though they have the highest order and are thus the
 last sort group in the resulting code.
+
+### `caseSensitive`
+
+If `true`, enforce exports to be in case-sensitive order.
+
+### `natural`
+
+If `true`, enforce imports to be in natural order. Natural order compares
+strings containing combination of letters and numbers in the way a human being
+would sort. For example, `a-10` would come after `a-3` when using natural
+ordering.
 
 ## When Not To Use It
 
