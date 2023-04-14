@@ -5,6 +5,7 @@ import sortImports from "./rules/imports.js"
 import sortImportMembers from "./rules/import-members.js"
 import sortObjectProperties from "./rules/object-properties.js"
 import sortTypeProperties from "./rules/type-properties.js"
+import sortStringUnions from "./rules/string-unions.js"
 
 const config = {
   configs: {
@@ -49,6 +50,7 @@ const config = {
     "import-members": sortImportMembers,
     "object-properties": sortObjectProperties,
     "type-properties": sortTypeProperties,
+    "string-unions": sortStringUnions,
   },
 }
 
