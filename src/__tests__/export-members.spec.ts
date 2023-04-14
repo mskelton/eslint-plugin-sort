@@ -40,7 +40,7 @@ ruleTester.run("sort/export-members", rule, {
       options: [{ caseSensitive: false, natural: false }],
     },
     {
-      code: "export { a, B, c, C } from 'a'",
+      code: "export { B, C, a, c } from 'a'",
       options: [{ caseSensitive: true, natural: false }],
     },
     {

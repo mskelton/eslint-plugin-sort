@@ -72,7 +72,7 @@ export const getSorter = ({
   if (caseSensitive && natural) {
     return (a, b) => naturalCompare(a, b)
   } else if (caseSensitive) {
-    return (a, b) => a.localeCompare(b)
+    return (a, b) => (a < b ? -1 : a > b ? 1 : 0)
   } else if (natural) {
     return (a, b) => naturalCompare(a.toLowerCase(), b.toLowerCase())
   }

@@ -102,7 +102,7 @@ ruleTester.run("sort/object-properties", rule, {
       options: [{ caseSensitive: false, natural: false }],
     },
     {
-      code: "var a = { a: 1, B: 2, c: 3, C: 4 }",
+      code: "var a = { B: 2, C: 4, a: 1, c: 3 }",
       options: [{ caseSensitive: true, natural: false }],
     },
     {
@@ -120,7 +120,7 @@ ruleTester.run("sort/object-properties", rule, {
       options: [{ caseSensitive: false, natural: false }],
     },
     {
-      code: "var a = { ['a']: 1, ['B']: 2, ['c']: 3, ['C']: 4, }",
+      code: "var a = { ['B']: 2, ['C']: 4, ['a']: 1, ['c']: 3 }",
       options: [{ caseSensitive: true, natural: false }],
     },
     {

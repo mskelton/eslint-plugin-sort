@@ -80,7 +80,7 @@ ruleTester.run("sort/type-properties", rule, {
       options: [{ caseSensitive: false, natural: false }],
     },
     {
-      code: "type A = { a: 1, B: 2, c: 3, C: 4 }",
+      code: "type A = { B: 2, C: 4, a: 1, c: 3 }",
       options: [{ caseSensitive: true, natural: false }],
     },
     {

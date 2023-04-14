@@ -1,54 +1,31 @@
-# TypeScript Type Property Sorting (sort/type-properties)
+# TypeScript String Union Sorting (sort/string-unions)
 
 🔧 The `--fix` option on the command line can automatically fix the problems
 reported by this rule.
 
-Sorts TypeScript type properties alphabetically and case insensitive in
-ascending order.
+Sorts TypeScript string unions alphabetically and case insensitive in ascending
+order. This only applies to union types that are made up of entirely string
+keys, so mixed type unions will be ignored.
 
 ## Rule Details
 
 Examples of **incorrect** code for this rule:
 
 ```typescript
-interface A {
-  B: number
-  c: string
-  a: boolean
-}
-
-type A = {
-  b: number
-  a: {
-    y: string
-    x: boolean
-  }
-}
+type Fruit = "orange" | "apple" | "grape"
 ```
 
 Examples of **correct** code for this rule:
 
 ```typescript
-interface A {
-  a: boolean
-  B: number
-  c: string
-}
-
-type A = {
-  a: {
-    x: boolean
-    y: string
-  }
-  b: number
-}
+type Fruit = "apple" | "grape" | "orange"
 ```
 
 ## Options
 
 ```json
 {
-  "sort/type-properties": ["error", { "caseSensitive": false, "natural": true }]
+  "sort/string-unions": ["error", { "caseSensitive": false, "natural": true }]
 }
 ```
 
@@ -63,5 +40,5 @@ type A = {
 ## When Not To Use It
 
 This rule is a formatting preference and not following it won't negatively
-affect the quality of your code. If alphabetizing type properties isn't a part
-of your coding standards, then you can leave this rule off.
+affect the quality of your code. If alphabetizing string unions isn't a part of
+your coding standards, then you can leave this rule off.
