@@ -56,7 +56,7 @@ ruleTester.run("sort/destructuring-properties", rule, {
       options: [{ caseSensitive: false, natural: false }],
     },
     {
-      code: "let { a: A, B: b, c: C, C: c } = {}",
+      code: "let { B: b, C: c, a: A, c: C } = {}",
       options: [{ caseSensitive: true, natural: false }],
     },
     {

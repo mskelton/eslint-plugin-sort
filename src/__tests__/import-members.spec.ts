@@ -40,7 +40,7 @@ ruleTester.run("sort/import-members", rule, {
       options: [{ caseSensitive: false, natural: false }],
     },
     {
-      code: "import { a, B, c, C } from 'a'",
+      code: "import { B, C, a, c } from 'a'",
       options: [{ caseSensitive: true, natural: false }],
     },
     {

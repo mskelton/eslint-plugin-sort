@@ -32,7 +32,7 @@ ruleTester.run("sort/string-unions", rule, {
       options: [{ caseSensitive: false, natural: false }],
     },
     {
-      code: "type A = 'a1' | 'A1' | 'a12' | 'a2' | 'B2'",
+      code: "type A = 'A1' | 'B1' | 'a1' | 'a12' | 'a2'",
       options: [{ caseSensitive: true, natural: false }],
     },
     {
@@ -70,7 +70,7 @@ ruleTester.run("sort/string-unions", rule, {
     },
     {
       code: "type A = 'a1' | 'B2' | 'a2' | 'a12'",
-      output: "type A = 'a1' | 'a12' | 'a2' | 'B2'",
+      output: "type A = 'B2' | 'a1' | 'a12' | 'a2'",
       options: [{ caseSensitive: true, natural: false }],
       errors: [{ messageId: "unsorted" }],
     },
