@@ -100,11 +100,11 @@ createRuleTester().run("sort/imports", rule, {
       options: [
         {
           groups: [
-            { type: "side-effect", order: 1 },
-            { regex: "\\.(png|jpg)$", order: 3 },
-            { regex: "^\\.+\\/", order: 5 },
-            { type: "dependency", order: 2 },
-            { type: "other", order: 4 },
+            { type: "side-effect", order: 10 },
+            { regex: "\\.(png|jpg)$", order: 30 },
+            { regex: "^\\.+\\/", order: 50 },
+            { type: "dependency", order: 20 },
+            { type: "other", order: 40 },
           ],
         },
       ],
@@ -146,8 +146,8 @@ createRuleTester().run("sort/imports", rule, {
       options: [
         {
           groups: [
-            { regex: "\\.(png|jpg)$", order: 1 },
-            { type: "other", order: 2 },
+            { regex: "\\.(png|jpg)$", order: 10 },
+            { type: "other", order: 20 },
           ],
           separator: "\n",
         },
@@ -301,11 +301,11 @@ createRuleTester().run("sort/imports", rule, {
       options: [
         {
           groups: [
-            { type: "side-effect", order: 1 },
-            { regex: "\\.(png|jpg)$", order: 3 },
-            { regex: "^\\.+\\/", order: 5 },
-            { type: "dependency", order: 2 },
-            { type: "other", order: 4 },
+            { type: "side-effect", order: 10 },
+            { regex: "\\.(png|jpg)$", order: 30 },
+            { regex: "^\\.+\\/", order: 50 },
+            { type: "dependency", order: 20 },
+            { type: "other", order: 40 },
           ],
         },
       ],
@@ -342,11 +342,11 @@ createRuleTester().run("sort/imports", rule, {
       options: [
         {
           groups: [
-            { type: "side-effect", order: 1 },
-            { regex: "\\.(png|jpg)$", order: 3 },
-            { regex: "^\\.+\\/", order: 5 },
-            { type: "dependency", order: 2 },
-            { type: "other", order: 4 },
+            { type: "side-effect", order: 10 },
+            { regex: "\\.(png|jpg)$", order: 30 },
+            { regex: "^\\.+\\/", order: 50 },
+            { type: "dependency", order: 20 },
+            { type: "other", order: 40 },
           ],
         },
       ],
@@ -383,10 +383,10 @@ createRuleTester().run("sort/imports", rule, {
       options: [
         {
           groups: [
-            { type: "side-effect", order: 4 },
-            { regex: "\\.(png|jpg)$", order: 3 },
-            { type: "dependency", order: 1 },
-            { type: "other", order: 2 },
+            { type: "side-effect", order: 40 },
+            { regex: "\\.(png|jpg)$", order: 30 },
+            { type: "dependency", order: 10 },
+            { type: "other", order: 20 },
           ],
         },
       ],
@@ -463,8 +463,8 @@ createRuleTester().run("sort/imports", rule, {
       options: [
         {
           groups: [
-            { regex: "\\.(png|jpg)$", order: 1 },
-            { type: "other", order: 2 },
+            { regex: "\\.(png|jpg)$", order: 10 },
+            { type: "other", order: 20 },
           ],
         },
       ],
@@ -499,8 +499,8 @@ createRuleTester().run("sort/imports", rule, {
       options: [
         {
           groups: [
-            { regex: "\\.(png|jpg)$", order: 1 },
-            { type: "other", order: 2 },
+            { regex: "\\.(png|jpg)$", order: 10 },
+            { type: "other", order: 20 },
           ],
           separator: "\n",
         },
@@ -554,8 +554,8 @@ createRuleTester().run("sort/imports", rule, {
       options: [
         {
           groups: [
-            { regex: "\\.(png|jpg)$", order: 1 },
-            { type: "other", order: 2 },
+            { regex: "\\.(png|jpg)$", order: 10 },
+            { type: "other", order: 20 },
           ],
           separator: "\n",
         },
@@ -627,8 +627,8 @@ createRuleTester().run("sort/imports", rule, {
       options: [
         {
           groups: [
-            { regex: "\\.(png|jpg)$", order: 1 },
-            { type: "other", order: 2 },
+            { regex: "\\.(png|jpg)$", order: 10 },
+            { type: "other", order: 20 },
           ],
           separator: "\n",
         },
@@ -688,8 +688,8 @@ createRuleTester().run("sort/imports", rule, {
       options: [
         {
           groups: [
-            { regex: "\\.(png|jpg)$", order: 1 },
-            { type: "other", order: 2 },
+            { regex: "\\.(png|jpg)$", order: 10 },
+            { type: "other", order: 20 },
           ],
           separator: "\n",
         },
@@ -735,8 +735,8 @@ createRuleTester().run("sort/imports", rule, {
       options: [
         {
           groups: [
-            { regex: "\\.(png|jpg)$", order: 1 },
-            { type: "other", order: 2 },
+            { regex: "\\.(png|jpg)$", order: 10 },
+            { type: "other", order: 20 },
           ],
           separator: "\n",
         },
@@ -800,8 +800,8 @@ createRuleTester().run("sort/imports", rule, {
       options: [
         {
           groups: [
-            { regex: "\\.(png|jpg)$", order: 1 },
-            { type: "other", order: 2 },
+            { regex: "\\.(png|jpg)$", order: 10 },
+            { type: "other", order: 20 },
           ],
           separator: "\n",
         },

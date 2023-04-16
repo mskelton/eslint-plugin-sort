@@ -18,11 +18,11 @@ const config = {
           "warn",
           {
             groups: [
-              { type: "default", order: 5 },
-              { type: "sourceless", order: 4 },
-              { regex: "^\\.+\\/", order: 3 },
-              { type: "dependency", order: 1 },
-              { type: "other", order: 2 },
+              { type: "default", order: 50 },
+              { type: "sourceless", order: 40 },
+              { regex: "^\\.+\\/", order: 30 },
+              { type: "dependency", order: 10 },
+              { type: "other", order: 20 },
             ],
           },
         ],
@@ -31,10 +31,10 @@ const config = {
           "warn",
           {
             groups: [
-              { type: "side-effect", order: 1 },
-              { regex: "^\\.+\\/", order: 4 },
-              { type: "dependency", order: 2 },
-              { type: "other", order: 3 },
+              { type: "side-effect", order: 10 },
+              { regex: "^\\.+\\/", order: 40 },
+              { type: "dependency", order: 20 },
+              { type: "other", order: 30 },
             ],
           },
         ],

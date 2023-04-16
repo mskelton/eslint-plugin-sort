@@ -92,11 +92,11 @@ createRuleTester().run("sort/exports", rule, {
       options: [
         {
           groups: [
-            { type: "default", order: 1 },
-            { type: "sourceless", order: 5 },
-            { regex: "^\\.+\\/", order: 2 },
-            { type: "dependency", order: 3 },
-            { type: "other", order: 4 },
+            { type: "default", order: 10 },
+            { type: "sourceless", order: 50 },
+            { regex: "^\\.+\\/", order: 20 },
+            { type: "dependency", order: 30 },
+            { type: "other", order: 40 },
           ],
         },
       ],
@@ -262,9 +262,9 @@ createRuleTester().run("sort/exports", rule, {
       options: [
         {
           groups: [
-            { type: "default", order: 3 },
-            { type: "sourceless", order: 2 },
-            { type: "other", order: 1 },
+            { type: "default", order: 30 },
+            { type: "sourceless", order: 20 },
+            { type: "other", order: 10 },
           ],
         },
       ],
@@ -298,11 +298,11 @@ createRuleTester().run("sort/exports", rule, {
       options: [
         {
           groups: [
-            { type: "default", order: 1 },
-            { type: "sourceless", order: 5 },
-            { regex: "^\\.+\\/", order: 2 },
-            { type: "dependency", order: 3 },
-            { type: "other", order: 4 },
+            { type: "default", order: 10 },
+            { type: "sourceless", order: 50 },
+            { regex: "^\\.+\\/", order: 20 },
+            { type: "dependency", order: 30 },
+            { type: "other", order: 40 },
           ],
         },
       ],
