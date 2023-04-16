@@ -52,4 +52,5 @@ recommended configuration. This will enable all available rules as warnings.
 |  ✔  | 🔧  | [sort/import-members](docs/rules/import-members.md)                     | Sorts import members                  |
 |  ✔  | 🔧  | [sort/object-properties](docs/rules/object-properties.md)               | Sorts object properties               |
 |     | 🔧  | [sort/type-properties](docs/rules/type-properties.md)                   | Sorts TypeScript type properties      |
+|     | 🔧  | [sort/string-enums](docs/rules/string-enums.md)                         | Sorts TypeScript string enums         |
 |     | 🔧  | [sort/string-unions](docs/rules/string-unions.md)                       | Sorts TypeScript string unions        |
