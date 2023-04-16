@@ -819,6 +819,7 @@ createRuleTester({
   },
 }).run("sort/imports", rule, {
   valid: [
+    // typeOrder
     {
       name: "typeOrder: keep",
       code: dedent`
@@ -847,8 +848,40 @@ createRuleTester({
         import { b } from 'b'
       `,
     },
+
+    // Sort groups
+    {
+      name: "Sort groups",
+      code: dedent`
+        import 'index.css'
+        import 'side-effect'
+        import a from "dependency-b"
+        import b from "dependency-c"
+        import type { A } from "dependency-a"
+        import c from "a.png"
+        import d from "b.jpg"
+        import e from "a"
+        import f from "b"
+        import g from "c"
+        import h from "../b"
+        import i from "./b"
+      `,
+      options: [
+        {
+          groups: [
+            { type: "side-effect", order: 10 },
+            { type: "type", order: 30 },
+            { regex: "\\.(png|jpg)$", order: 40 },
+            { regex: "^\\.+\\/", order: 60 },
+            { type: "dependency", order: 20 },
+            { type: "other", order: 50 },
+          ],
+        },
+      ],
+    },
   ],
   invalid: [
+    // typeOrder
     {
       name: "typeOrder: keep",
       code: dedent`
@@ -898,6 +931,41 @@ createRuleTester({
       `,
       options: [{ typeOrder: "first" }],
       errors: [{ messageId: "unsorted" }],
+    },
+
+    // Sort groups
+    {
+      name: "Sort groups",
+      code: dedent`
+        import c from "a.png"
+        import h from "../b"
+        import b from "dependency-c"
+        import type { A } from "dependency-a"
+        import d from "b.jpg"
+        import a from "dependency-b"
+        import i from "./b"
+      `,
+      output: dedent`
+        import a from "dependency-b"
+        import b from "dependency-c"
+        import type { A } from "dependency-a"
+        import c from "a.png"
+        import d from "b.jpg"
+        import h from "../b"
+        import i from "./b"
+      `,
+      errors: [{ messageId: "unsorted" }],
+      options: [
+        {
+          groups: [
+            { type: "type", order: 30 },
+            { regex: "\\.(png|jpg)$", order: 40 },
+            { regex: "^\\.+\\/", order: 60 },
+            { type: "dependency", order: 20 },
+            { type: "other", order: 50 },
+          ],
+        },
+      ],
     },
   ],
 })

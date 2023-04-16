@@ -18,9 +18,11 @@ import {
   TypeOrder,
 } from "../utils.js"
 
+const sortGroupsTypes = ["side-effect", "dependency", "type", "other"] as const
+
 interface SortGroup {
   order: number
-  type?: "dependency" | "side-effect" | "other"
+  type?: (typeof sortGroupsTypes)[number]
   regex?: string
 }
 
@@ -43,6 +45,12 @@ function getSortGroup(sortGroups: SortGroup[], node: ImportDeclaration) {
       case "side-effect":
         if (!node.specifiers.length) return order
         break
+
+      case "type": {
+        const { importKind } = node as { importKind?: string }
+        if (importKind === "type") return order
+        break
+      }
 
       case "dependency":
         if (isResolved(source)) return order
@@ -226,7 +234,7 @@ export default {
               type: "object",
               properties: {
                 type: {
-                  enum: ["side-effect", "dependency", "other"],
+                  enum: sortGroupsTypes,
                 },
                 regex: {
                   type: "string",

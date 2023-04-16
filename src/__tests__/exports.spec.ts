@@ -320,6 +320,7 @@ createRuleTester({
   },
 }).run("sort/exports", rule, {
   valid: [
+    // typeOrder
     {
       name: "typeOrder: keep",
       code: dedent`
@@ -348,8 +349,38 @@ createRuleTester({
         export { b } from 'b'
       `,
     },
+
+    // Sort groups
+    {
+      code: dedent`
+        const mark = ''
+
+        export default React
+        export { relA } from './a'
+        export { relB } from './b'
+        export { depA } from 'dependency-a'
+        export { depB } from 'dependency-b'
+        export type { A } from 'dependency-a'
+        export * from 'a'
+        export { b } from 'b'
+        export { mark }
+      `.trim(),
+      options: [
+        {
+          groups: [
+            { type: "default", order: 10 },
+            { type: "sourceless", order: 60 },
+            { type: "type", order: 40 },
+            { regex: "^\\.+\\/", order: 20 },
+            { type: "dependency", order: 30 },
+            { type: "other", order: 50 },
+          ],
+        },
+      ],
+    },
   ],
   invalid: [
+    // typeOrder
     {
       name: "typeOrder: keep",
       code: dedent`
@@ -398,6 +429,49 @@ createRuleTester({
         export { b } from 'b'
       `,
       options: [{ typeOrder: "first" }],
+      errors: [{ messageId: "unsorted" }],
+    },
+
+    // Sort groups
+    {
+      code: dedent`
+        const mark = ''
+
+        export type { A } from 'dependency-a'
+        export { depB } from 'dependency-b'
+        export { mark }
+        export default React
+        export { relB } from './b'
+        export * from 'a'
+        export { relA } from './a'
+        export { depA } from 'dependency-a'
+        export { b } from 'b'
+      `.trim(),
+      output: dedent`
+        const mark = ''
+
+        export * from 'a'
+        export { b } from 'b'
+        export { depA } from 'dependency-a'
+        export { depB } from 'dependency-b'
+        export { relA } from './a'
+        export { relB } from './b'
+        export type { A } from 'dependency-a'
+        export { mark }
+        export default React
+    `.trim(),
+      options: [
+        {
+          groups: [
+            { type: "default", order: 60 },
+            { type: "sourceless", order: 50 },
+            { type: "type", order: 40 },
+            { regex: "^\\.+\\/", order: 30 },
+            { type: "dependency", order: 20 },
+            { type: "other", order: 10 },
+          ],
+        },
+      ],
       errors: [{ messageId: "unsorted" }],
     },
   ],

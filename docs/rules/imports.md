@@ -57,6 +57,8 @@ There are three built-in sort groups you can use:
    - Imports which do not throw an error when calling `require.resolve`.
    - Useful for differentiating between path aliases (e.g. `components/Hello`)
      and dependencies (e.g. `react`)
+1. `type`
+   - TypeScript type only imports (e.g. `import type { Foo } from 'foo'`)
 1. `other`
    - Catch all sort group for any imports which did not match other sort groups.
 

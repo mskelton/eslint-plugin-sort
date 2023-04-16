@@ -63,6 +63,8 @@ There are four built-in sort groups you can use:
      source.
    - Useful for differentiating between path aliases (e.g. `components/Hello`)
      and dependencies (e.g. `react`).
+1. `type`
+   - TypeScript type only imports (e.g. `export type { Foo } from 'foo'`)
 1. `other`
    - Catch all sort group for any exports which did not match other sort groups.
 

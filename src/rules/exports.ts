@@ -15,9 +15,17 @@ import {
 
 type Export = Exclude<ModuleDeclaration, ImportDeclaration>
 
+const sortGroupsTypes = [
+  "default",
+  "sourceless",
+  "dependency",
+  "type",
+  "other",
+] as const
+
 interface SortGroup {
   order: number
-  type?: "default" | "sourceless" | "dependency" | "other"
+  type?: (typeof sortGroupsTypes)[number]
   regex?: string
 }
 
@@ -45,6 +53,12 @@ function getSortGroup(sortGroups: SortGroup[], node: Export) {
       case "sourceless":
         if (!isDefaultExport && !node.source) return order
         break
+
+      case "type": {
+        const { exportKind } = node as { exportKind?: string }
+        if (exportKind === "type") return order
+        break
+      }
 
       case "dependency":
         if (isResolved(source)) return order
@@ -127,7 +141,7 @@ export default {
               type: "object",
               properties: {
                 type: {
-                  enum: ["default", "sourceless", "dependency", "other"],
+                  enum: sortGroupsTypes,
                 },
                 regex: {
                   type: "string",
