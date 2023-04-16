@@ -34,6 +34,7 @@ This rule has an options object with the following defaults.
     {
       "groups": [],
       "separator": "",
+      "typeOrder": "keep",
       "caseSensitive": false,
       "natural": true
     }
@@ -156,6 +157,44 @@ import image3 from "static/image.png"
 Note that the separator only applies if you have defined sort groups.
 Additionally, extra newlines between imports in the _same sort group_ will be
 removed.
+
+### `typeOrder`
+
+When using `import type` in TypeScript files, type imports and regular imports
+may be two separate import statements. By default, the order of these statements
+is preserved, but you can customize this behavior.
+
+Examples of **incorrect** code with `"typeOrder": "first"`:
+
+```typescript
+import { foo } from "a"
+import type { Foo } from "a"
+```
+
+Examples of **correct** code with `"typeOrder": "first"`:
+
+```typescript
+import type { Foo } from "a"
+import { foo } from "a"
+```
+
+Examples of **incorrect** code with `"typeOrder": "last"`:
+
+```typescript
+import type { Foo } from "a"
+import { foo } from "a"
+```
+
+Examples of **correct** code with `"typeOrder": "last"`:
+
+```typescript
+import { foo } from "a"
+import type { Foo } from "a"
+```
+
+_Note: This option only applies after other sorting logic. So if you separate
+all type imports into their own section using the `"type"` sort group, this
+option will not have any impact._
 
 ### `caseSensitive`
 

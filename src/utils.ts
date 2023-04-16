@@ -164,3 +164,24 @@ export const range = {
 
 export const pluralize = (word: string, count: number) =>
   word + (count === 1 ? "" : "s")
+
+export type TypeOrder = "preserve" | "first" | "last"
+export type ImportOrExportKind = "type" | "value"
+
+/**
+ * Returns a weight for the given import/export kind.
+ */
+export function getImportOrExportKindWeight(
+  typeOrder: TypeOrder,
+  kind: ImportOrExportKind | undefined
+) {
+  if (typeOrder === "first") {
+    return kind === "type" ? -1 : 1
+  }
+
+  if (typeOrder === "last") {
+    return kind === "type" ? 1 : -1
+  }
+
+  return 0
+}

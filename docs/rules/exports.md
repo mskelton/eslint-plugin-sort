@@ -37,6 +37,7 @@ This rule has an options object with the following defaults.
     "error",
     {
       "groups": [],
+      "typeOrder": "preserve",
       "caseSensitive": false,
       "natural": true
     }
@@ -116,13 +117,51 @@ The configuration example above shows how this works where default exports are
 the first sort group even though they have the highest order and are thus the
 last sort group in the resulting code.
 
+### `typeOrder`
+
+When using `export type` in TypeScript files, type exports and regular exports
+may be two separate export statements. By default, the order of these statements
+is preserved, but you can customize this behavior.
+
+Examples of **incorrect** code with `"typeOrder": "first"`:
+
+```typescript
+export { foo } from "a"
+export type { Foo } from "a"
+```
+
+Examples of **correct** code with `"typeOrder": "first"`:
+
+```typescript
+export type { Foo } from "a"
+export { foo } from "a"
+```
+
+Examples of **incorrect** code with `"typeOrder": "last"`:
+
+```typescript
+export type { Foo } from "a"
+export { foo } from "a"
+```
+
+Examples of **correct** code with `"typeOrder": "last"`:
+
+```typescript
+export { foo } from "a"
+export type { Foo } from "a"
+```
+
+_Note: This option only applies after other sorting logic. So if you separate
+all type exports into their own section using the `"type"` sort group, this
+option will not have any impact._
+
 ### `caseSensitive`
 
 If `true`, enforce exports to be in case-sensitive order.
 
 ### `natural`
 
-If `true`, enforce imports to be in natural order. Natural order compares
+If `true`, enforce exports to be in natural order. Natural order compares
 strings containing combination of letters and numbers in the way a human being
 would sort. For example, `a-10` would come after `a-3` when using natural
 ordering.

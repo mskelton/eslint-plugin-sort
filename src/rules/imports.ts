@@ -5,19 +5,29 @@ import {
   docsURL,
   enumerate,
   filterNodes,
+  getImportOrExportKindWeight,
   getName,
   getNodeRange,
   getNodeText,
   getSorter,
+  ImportOrExportKind,
   isUnsorted,
   pluralize,
   range,
+  SorterOptions,
+  TypeOrder,
 } from "../utils.js"
 
 interface SortGroup {
   order: number
   type?: "dependency" | "side-effect" | "other"
   regex?: string
+}
+
+interface Options extends SorterOptions {
+  groups?: SortGroup[]
+  separator?: string
+  typeOrder?: TypeOrder
 }
 
 /**
@@ -50,6 +60,16 @@ function getSortGroup(sortGroups: SortGroup[], node: ImportDeclaration) {
   return 0
 }
 
+function getImportKindWeight(
+  options: Options | undefined,
+  node: ImportDeclaration
+) {
+  const typeOrder = options?.typeOrder ?? "preserve"
+  const kind = (node as { importKind?: ImportOrExportKind }).importKind
+
+  return getImportOrExportKindWeight(typeOrder, kind)
+}
+
 const getSortValue = (node: ImportDeclaration) => getName(node.source)
 
 const rawString = (str: string) =>
@@ -57,7 +77,7 @@ const rawString = (str: string) =>
 
 export default {
   create(context) {
-    const options = context.options[0]
+    const options = context.options[0] as Options | undefined
     const groups = options?.groups ?? []
     const separator = options?.separator ?? ""
     const sorter = getSorter(options)
@@ -77,7 +97,9 @@ export default {
             // First sort by sort group
             getSortGroup(groups, a) - getSortGroup(groups, b) ||
             // Then sort by import name
-            sorter(getSortValue(a), getSortValue(b))
+            sorter(getSortValue(a), getSortValue(b)) ||
+            // Finally sort by import kind
+            getImportKindWeight(options, a) - getImportKindWeight(options, b)
         )
 
         const firstUnsortedNode = isUnsorted(nodes, sorted)
@@ -198,22 +220,40 @@ export default {
       {
         type: "object",
         properties: {
-          separator: {
-            type: "string",
-            default: "",
-          },
           groups: {
             type: "array",
             items: {
               type: "object",
               properties: {
-                type: { enum: ["side-effect", "dependency", "other"] },
-                regex: { type: "string" },
-                order: { type: "number" },
+                type: {
+                  enum: ["side-effect", "dependency", "other"],
+                },
+                regex: {
+                  type: "string",
+                },
+                order: {
+                  type: "number",
+                },
               },
               required: ["order"],
               additionalProperties: false,
             },
+          },
+          separator: {
+            type: "string",
+            default: "",
+          },
+          typeOrder: {
+            enum: ["preserve", "first", "last"],
+            default: "preserve",
+          },
+          caseSensitive: {
+            type: "boolean",
+            default: false,
+          },
+          natural: {
+            type: "boolean",
+            default: true,
           },
         },
       },

@@ -1,3 +1,4 @@
+import { createRequire } from "node:module"
 import { vi } from "vitest"
 import dedent from "dedent"
 import { createRuleTester } from "../test-utils.js"
@@ -5,9 +6,8 @@ import { createRuleTester } from "../test-utils.js"
 vi.mock("isomorphic-resolve")
 
 const { default: rule } = await import("../rules/imports.js")
-const ruleTester = createRuleTester()
 
-ruleTester.run("sort/imports", rule, {
+createRuleTester().run("sort/imports", rule, {
   valid: [
     {
       name: "Programs without imports",
@@ -806,6 +806,98 @@ ruleTester.run("sort/imports", rule, {
           separator: "\n",
         },
       ],
+    },
+  ],
+})
+
+// TypeScript rules
+createRuleTester({
+  parser: createRequire(import.meta.url).resolve("@typescript-eslint/parser"),
+  parserOptions: {
+    ecmaVersion: 2018,
+    sourceType: "module",
+  },
+}).run("sort/imports", rule, {
+  valid: [
+    {
+      name: "typeOrder: keep",
+      code: dedent`
+        import { a } from 'a'
+        import type { a } from 'a'
+        import type { b } from 'b'
+        import { b } from 'b'
+      `,
+    },
+    {
+      name: "typeOrder: last",
+      code: dedent`
+        import { a } from 'a'
+        import type { a } from 'a'
+        import { b } from 'b'
+        import type { b } from 'b'
+      `,
+      options: [{ typeOrder: "last" }],
+    },
+    {
+      name: "typeOrder: first",
+      code: dedent`
+        import type { a } from 'a'
+        import { a } from 'a'
+        import type { b } from 'b'
+        import { b } from 'b'
+      `,
+    },
+  ],
+  invalid: [
+    {
+      name: "typeOrder: keep",
+      code: dedent`
+        import type { b } from 'b'
+        import { b } from 'b'
+        import { a } from 'a'
+        import type { a } from 'a'
+      `,
+      output: dedent`
+        import { a } from 'a'
+        import type { a } from 'a'
+        import type { b } from 'b'
+        import { b } from 'b'
+      `,
+      errors: [{ messageId: "unsorted" }],
+    },
+    {
+      name: "typeOrder: last",
+      code: dedent`
+        import type { a } from 'a'
+        import { a } from 'a'
+        import type { b } from 'b'
+        import { b } from 'b'
+      `,
+      output: dedent`
+        import { a } from 'a'
+        import type { a } from 'a'
+        import { b } from 'b'
+        import type { b } from 'b'
+      `,
+      options: [{ typeOrder: "last" }],
+      errors: [{ messageId: "unsorted" }],
+    },
+    {
+      name: "typeOrder: first",
+      code: dedent`
+        import { a } from 'a'
+        import type { a } from 'a'
+        import { b } from 'b'
+        import type { b } from 'b'
+      `,
+      output: dedent`
+        import type { a } from 'a'
+        import { a } from 'a'
+        import type { b } from 'b'
+        import { b } from 'b'
+      `,
+      options: [{ typeOrder: "first" }],
+      errors: [{ messageId: "unsorted" }],
     },
   ],
 })

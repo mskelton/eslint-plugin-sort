@@ -1,7 +1,17 @@
 import { Rule } from "eslint"
 import { ImportDeclaration, ModuleDeclaration } from "estree"
 import { isResolved } from "../resolver.js"
-import { docsURL, filterNodes, getName, getSorter, report } from "../utils.js"
+import {
+  docsURL,
+  filterNodes,
+  getImportOrExportKindWeight,
+  getName,
+  getSorter,
+  ImportOrExportKind,
+  report,
+  SorterOptions,
+  TypeOrder,
+} from "../utils.js"
 
 type Export = Exclude<ModuleDeclaration, ImportDeclaration>
 
@@ -9,6 +19,12 @@ interface SortGroup {
   order: number
   type?: "default" | "sourceless" | "dependency" | "other"
   regex?: string
+}
+
+interface Options extends SorterOptions {
+  groups?: SortGroup[]
+  separator?: string
+  typeOrder?: TypeOrder
 }
 
 /**
@@ -46,6 +62,13 @@ function getSortGroup(sortGroups: SortGroup[], node: Export) {
   return 0
 }
 
+function getExportKindWeight(options: Options | undefined, node: Export) {
+  const typeOrder = options?.typeOrder ?? "preserve"
+  const kind = (node as { exportKind?: ImportOrExportKind }).exportKind
+
+  return getImportOrExportKindWeight(typeOrder, kind)
+}
+
 function getSortValue(node: Export) {
   return node.type !== "ExportDefaultDeclaration" && node.source
     ? getName(node.source)
@@ -54,7 +77,7 @@ function getSortValue(node: Export) {
 
 export default {
   create(context) {
-    const options = context.options[0]
+    const options = context.options[0] as Options | undefined
     const groups = options?.groups ?? []
     const sorter = getSorter(options)
 
@@ -76,7 +99,9 @@ export default {
             // First sort by sort group
             getSortGroup(groups, a) - getSortGroup(groups, b) ||
             // Then sort by export name
-            sorter(getSortValue(a), getSortValue(b))
+            sorter(getSortValue(a), getSortValue(b)) ||
+            // Finally sort by export kind
+            getExportKindWeight(options, a) - getExportKindWeight(options, b)
         )
 
         report(context, nodes, sorted)
@@ -104,12 +129,28 @@ export default {
                 type: {
                   enum: ["default", "sourceless", "dependency", "other"],
                 },
-                regex: { type: "string" },
-                order: { type: "number" },
+                regex: {
+                  type: "string",
+                },
+                order: {
+                  type: "number",
+                },
               },
               required: ["order"],
               additionalProperties: false,
             },
+          },
+          typeOrder: {
+            enum: ["preserve", "first", "last"],
+            default: "preserve",
+          },
+          caseSensitive: {
+            type: "boolean",
+            default: false,
+          },
+          natural: {
+            type: "boolean",
+            default: true,
           },
         },
       },
