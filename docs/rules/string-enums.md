@@ -40,11 +40,11 @@ This rule has an options object with the following defaults.
 
 ### `caseSensitive`
 
-If `true`, enforce exports to be in case-sensitive order.
+If `true`, enforce string enums to be in case-sensitive order.
 
 ### `natural`
 
-If `true`, enforce imports to be in natural order. Natural order compares
+If `true`, enforce string enums to be in natural order. Natural order compares
 strings containing combination of letters and numbers in the way a human being
 would sort. For example, `A10` would come after `A3` when using natural
 ordering.
