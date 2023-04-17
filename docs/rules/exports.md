@@ -78,11 +78,11 @@ groups as well as a custom regex sort group.
     "warn",
     {
       "groups": [
-        { "type": "default", "order": 5 },
-        { "type": "sourceless", "order": 1 },
-        { "regex": "^~", "order": 3 },
-        { "type": "dependency", "order": 2 },
-        { "type": "other", "order": 4 }
+        { "type": "default", "order": 50 },
+        { "type": "sourceless", "order": 10 },
+        { "regex": "^~", "order": 30 },
+        { "type": "dependency", "order": 20 },
+        { "type": "other", "order": 40 }
       ]
     }
   ]
