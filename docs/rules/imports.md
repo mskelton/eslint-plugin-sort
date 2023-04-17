@@ -72,10 +72,10 @@ groups as well as a custom regex sort group.
     "warn",
     {
       "groups": [
-        { "type": "side-effect", "order": 1 },
-        { "regex": "\\.(png|jpg|svg)$", "order": 4 },
-        { "type": "dependency", "order": 2 },
-        { "type": "other", "order": 3 }
+        { "type": "side-effect", "order": 10 },
+        { "regex": "\\.(png|jpg|svg)$", "order": 40 },
+        { "type": "dependency", "order": 20 },
+        { "type": "other", "order": 30 }
       ]
     }
   ]
@@ -128,10 +128,10 @@ newlines between sort groups.
     "warn",
     {
       "groups": [
-        { "type": "side-effect", "order": 1 },
-        { "regex": "\\.(png|jpg|svg)$", "order": 4 },
-        { "type": "dependency", "order": 2 },
-        { "type": "other", "order": 3 }
+        { "type": "side-effect", "order": 10 },
+        { "regex": "\\.(png|jpg|svg)$", "order": 40 },
+        { "type": "dependency", "order": 20 },
+        { "type": "other", "order": 30 }
       ],
       "separator": "\n"
     }
