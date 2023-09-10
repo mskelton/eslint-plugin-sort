@@ -6,22 +6,17 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x, 18.x]
     steps:
-      - uses: mskelton/setup-pnpm@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: pnpm test
-      - run: pnpm ts
+      - uses: mskelton/setup-bun@v1
+      - run: bun test
+      - run: bun ts
   release:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: mskelton/setup-pnpm@v2
-      - run: pnpm build
-      - run: pnpm semantic-release
+      - uses: mskelton/setup-bun@v1
+      - run: bun run build
+      - run: bun semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

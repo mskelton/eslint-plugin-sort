@@ -1,9 +1,6 @@
 import { createRequire } from "node:module"
-import { vi } from "vitest"
 import dedent from "dedent"
 import { createRuleTester } from "../test-utils.js"
-
-vi.mock("isomorphic-resolve")
 
 const { default: rule } = await import("../rules/imports.js")
 

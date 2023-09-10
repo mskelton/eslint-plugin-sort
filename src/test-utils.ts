@@ -2,6 +2,10 @@ import { ESLintUtils } from "@typescript-eslint/experimental-utils"
 import { RuleTester } from "eslint"
 import { it, describe } from "vitest"
 
+globalThis.resolver = (source) => {
+  return source.startsWith("dependency-")
+}
+
 export function createValidCodeVariants(
   code: string
 ): RuleTester.ValidTestCase[] {
