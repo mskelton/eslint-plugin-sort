@@ -1,6 +1,7 @@
 {
   "extends": "@mskelton/tsconfig",
   "compilerOptions": {
+    "types": ["bun-types"],
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
     "rootDir": "src"

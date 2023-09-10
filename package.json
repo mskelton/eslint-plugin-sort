@@ -3,7 +3,6 @@
   "description": "Auto-fixable sort rules for ESLint.",
   "version": "0.0.0-semantically-released",
   "author": "Mark Skelton",
-  "packageManager": "pnpm@8.7.4",
   "repository": "github:mskelton/eslint-plugin-sort",
   "homepage": "https://github.com/mskelton/eslint-plugin-sort#readme",
   "bugs": {
@@ -47,9 +46,9 @@
     "@types/eslint": "^8.21.1",
     "@types/estree": "^1.0.0",
     "@types/natural-compare": "^1.4.1",
-    "@types/node": "^18.15.0",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
+    "bun-types": "^1.0.1",
     "dedent": "^0.7.0",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.7.0",
