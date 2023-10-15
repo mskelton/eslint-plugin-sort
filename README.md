@@ -26,10 +26,35 @@ yarn add -D eslint-plugin-sort
 pnpm add -D eslint-plugin-sort
 ```
 
+### bun
+
+```bash
+bun add -d eslint-plugin-sort
+```
+
 ## Usage
 
 After installing, add `sort` to your list of ESLint plugins and extend the
 recommended configuration. This will enable all available rules as warnings.
+
+[Flat config](https://eslint.org/docs/latest/use/configure/configuration-files-new)
+(**eslint.config.js**)
+
+```javascript
+import sort from "eslint-plugin-sort"
+
+export default [
+  sort.configs["flat/recommended"],
+  {
+    rules: {
+      // Customize rules...
+    },
+  },
+]
+```
+
+[Legacy config](https://eslint.org/docs/latest/use/configure/configuration-files)
+(**.eslintrc**)
 
 ```json
 {

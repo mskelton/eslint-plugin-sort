@@ -8,41 +8,8 @@ import sortTypeProperties from "./rules/type-properties.js"
 import sortStringUnions from "./rules/string-unions.js"
 import sortStringEnums from "./rules/string-enums.js"
 
-const config = {
-  configs: {
-    recommended: {
-      plugins: ["sort"],
-      rules: {
-        "sort/destructuring-properties": "warn",
-        "sort/exports": [
-          "warn",
-          {
-            groups: [
-              { type: "default", order: 50 },
-              { type: "sourceless", order: 40 },
-              { regex: "^\\.+\\/", order: 30 },
-              { type: "dependency", order: 10 },
-              { type: "other", order: 20 },
-            ],
-          },
-        ],
-        "sort/export-members": "warn",
-        "sort/imports": [
-          "warn",
-          {
-            groups: [
-              { type: "side-effect", order: 10 },
-              { regex: "^\\.+\\/", order: 40 },
-              { type: "dependency", order: 20 },
-              { type: "other", order: 30 },
-            ],
-          },
-        ],
-        "sort/import-members": "warn",
-        "sort/object-properties": "warn",
-      },
-    },
-  },
+const index = {
+  configs: {},
   rules: {
     "destructuring-properties": sortDestructuringProperties,
     "exports": sortExports,
@@ -56,4 +23,42 @@ const config = {
   },
 }
 
-export default config as unknown
+const createConfig = (flat: boolean) => ({
+  plugins: flat ? { sort: index } : ["sort"],
+  rules: {
+    "sort/destructuring-properties": "warn",
+    "sort/exports": [
+      "warn",
+      {
+        groups: [
+          { type: "default", order: 50 },
+          { type: "sourceless", order: 40 },
+          { regex: "^\\.+\\/", order: 30 },
+          { type: "dependency", order: 10 },
+          { type: "other", order: 20 },
+        ],
+      },
+    ],
+    "sort/export-members": "warn",
+    "sort/imports": [
+      "warn",
+      {
+        groups: [
+          { type: "side-effect", order: 10 },
+          { regex: "^\\.+\\/", order: 40 },
+          { type: "dependency", order: 20 },
+          { type: "other", order: 30 },
+        ],
+      },
+    ],
+    "sort/import-members": "warn",
+    "sort/object-properties": "warn",
+  },
+})
+
+index.configs = {
+  "recommended": createConfig(false),
+  "flat/recommended": createConfig(true),
+}
+
+export default index as unknown
