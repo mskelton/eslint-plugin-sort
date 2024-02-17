@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",
+    "@mskelton/semantic-release-config": "^1.0.1",
     "@mskelton/tsconfig": "^2.0.0",
     "@types/dedent": "^0.7.0",
     "@types/eslint": "^8.21.1",
