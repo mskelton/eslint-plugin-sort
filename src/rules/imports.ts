@@ -1,5 +1,5 @@
 import { Rule, AST } from "eslint"
-import { ImportDeclaration } from "estree"
+import * as ESTree from "estree"
 import { isResolved } from "../resolver.js"
 import {
   docsURL,
@@ -32,7 +32,7 @@ interface Options extends SorterOptions {
   typeOrder?: TypeOrder
 }
 
-const getSortValue = (node: ImportDeclaration) =>
+const getSortValue = (node: ESTree.ImportDeclaration) =>
   node.type === "ImportDeclaration"
     ? getName(node.source)
     : getName((node as any).moduleReference.expression)
@@ -42,7 +42,7 @@ const getSortValue = (node: ImportDeclaration) =>
  * rule options. If no sort groups are configured (default), the order returned
  * is always 0.
  */
-function getSortGroup(sortGroups: SortGroup[], node: ImportDeclaration) {
+function getSortGroup(sortGroups: SortGroup[], node: ESTree.ImportDeclaration) {
   const source = getSortValue(node)
 
   for (const { regex, type, order } of sortGroups) {
@@ -75,7 +75,7 @@ function getSortGroup(sortGroups: SortGroup[], node: ImportDeclaration) {
 
 function getImportKindWeight(
   options: Options | undefined,
-  node: ImportDeclaration
+  node: ESTree.ImportDeclaration
 ) {
   const typeOrder = options?.typeOrder ?? "preserve"
   const kind = (node as { importKind?: ImportOrExportKind }).importKind
@@ -106,6 +106,22 @@ export default {
           return
         }
 
+        // Ensure there is no code between imports. If there is, we'll bail
+        // out and not try to sort. Ideally we would move the code after the
+        // imports but it's not worth the complexity for such a niche case.
+        //
+        // Checking for this case is pretty simple, we just check if the
+        // distance between the first and last import is the same as the
+        // total number of import nodes.
+        const startNodeIndex = program.body.indexOf(nodes[0])
+        const endNodeIndex = program.body.indexOf(nodes.at(-1)!)
+        if (endNodeIndex - startNodeIndex !== nodes.length - 1) {
+          return context.report({
+            node: program,
+            messageId: "codeBetweenImports",
+          })
+        }
+
         const sorted = nodes.slice().sort(
           (a, b) =>
             // First sort by sort group
@@ -121,7 +137,7 @@ export default {
           // When sorting, the comments for the first node are not copied as
           // we cannot determine if they are comments for the entire file or
           // just the first import.
-          const isFirst = (node: ImportDeclaration) => node === nodes[0]
+          const isFirst = (node: ESTree.ImportDeclaration) => node === nodes[0]
 
           context.report({
             node: firstUnsortedNode,
@@ -224,6 +240,8 @@ export default {
       url: docsURL("imports"),
     },
     messages: {
+      codeBetweenImports:
+        "Unexpected code between imports. Sorting will be skipped.",
       incorrectSeparator:
         "Expected `{{expected}}` to separate import groups but found `{{actual}}`.",
       extraNewlines: "Unexpected {{newlines}} between imports.",

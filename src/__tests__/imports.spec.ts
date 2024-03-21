@@ -804,6 +804,22 @@ createRuleTester().run("sort/imports", rule, {
         },
       ],
     },
+
+    {
+      name: "Does not sort when there is code between imports",
+      errors: [{ messageId: "codeBetweenImports" }],
+      code: dedent`
+        import b from 'b'
+        const foo = 'foo'
+        const bar = 'bar'
+        import a from 'a'
+
+        import e from 'e'
+        const baz = 'baz'
+        import d from 'd'
+        import c from 'c'
+      `,
+    },
   ],
 })
 
