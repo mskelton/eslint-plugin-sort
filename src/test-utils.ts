@@ -25,7 +25,6 @@ export function createRuleTester(
     },
   }
 ) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tester = RuleTester as any
   tester.describe = describe
   tester.it = it

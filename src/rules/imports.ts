@@ -32,13 +32,18 @@ interface Options extends SorterOptions {
   typeOrder?: TypeOrder
 }
 
+const getSortValue = (node: ImportDeclaration) =>
+  node.type === "ImportDeclaration"
+    ? getName(node.source)
+    : getName((node as any).moduleReference.expression)
+
 /**
  * Returns the order of a given node based on the sort groups configured in the
  * rule options. If no sort groups are configured (default), the order returned
  * is always 0.
  */
 function getSortGroup(sortGroups: SortGroup[], node: ImportDeclaration) {
-  const source = getName(node.source)
+  const source = getSortValue(node)
 
   for (const { regex, type, order } of sortGroups) {
     switch (type) {
@@ -78,8 +83,6 @@ function getImportKindWeight(
   return getImportOrExportKindWeight(typeOrder, kind)
 }
 
-const getSortValue = (node: ImportDeclaration) => getName(node.source)
-
 const rawString = (str: string) =>
   JSON.stringify(str).slice(1, -1).replace(/\\n/g, "\\n")
 
@@ -93,7 +96,10 @@ export default {
 
     return {
       Program(program) {
-        const nodes = filterNodes(program.body, ["ImportDeclaration"])
+        const nodes = filterNodes(program.body, [
+          "ImportDeclaration",
+          "TSImportEqualsDeclaration" as "ImportDeclaration",
+        ])
 
         // If there are one or fewer imports, there is nothing to sort
         if (nodes.length < 2) {

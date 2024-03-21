@@ -20,6 +20,7 @@
     "format": "prettier --write .",
     "lint": "eslint . --ext .ts",
     "test": "vitest",
+    "test:watch": "vitest --reporter=dot",
     "ts": "tsc"
   },
   "type": "module",

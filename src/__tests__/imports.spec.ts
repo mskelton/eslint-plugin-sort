@@ -816,6 +816,31 @@ createRuleTester({
   },
 }).run("sort/imports", rule, {
   valid: [
+    {
+      name: "Programs without imports",
+      code: "var a = 1",
+    },
+    {
+      name: "Single import",
+      code: "import a from 'a'",
+    },
+    {
+      name: "Multiple imports",
+      code: dedent`
+        import a from 'a'
+        import b from 'b'
+        import c from 'c'
+      `,
+    },
+    {
+      name: "import = require()",
+      code: dedent`
+        import a from 'a'
+        import b = require('b');
+        import c from 'c'
+      `,
+    },
+
     // typeOrder
     {
       name: "typeOrder: keep",
@@ -878,6 +903,47 @@ createRuleTester({
     },
   ],
   invalid: [
+    {
+      name: "One unsorted import",
+      code: dedent`
+        import b from 'b'
+        import a from 'a'
+      `,
+      output: dedent`
+        import a from 'a'
+        import b from 'b'
+      `,
+      errors: [{ messageId: "unsorted" }],
+    },
+    {
+      name: "Two unsorted imports",
+      code: dedent`
+        import c from 'c'
+        import b from 'b'
+        import a from 'a'
+      `,
+      output: dedent`
+        import a from 'a'
+        import b from 'b'
+        import c from 'c'
+      `,
+      errors: [{ messageId: "unsorted" }],
+    },
+    {
+      name: "import = require()",
+      code: dedent`
+        import c from 'c'
+        import b = require('b')
+        import a from 'a'
+      `,
+      output: dedent`
+        import a from 'a'
+        import b = require('b')
+        import c from 'c'
+      `,
+      errors: [{ messageId: "unsorted" }],
+    },
+
     // typeOrder
     {
       name: "typeOrder: keep",
@@ -949,6 +1015,39 @@ createRuleTester({
         import c from "a.png"
         import d from "b.jpg"
         import h from "../b"
+        import i from "./b"
+      `,
+      errors: [{ messageId: "unsorted" }],
+      options: [
+        {
+          groups: [
+            { type: "type", order: 30 },
+            { regex: "\\.(png|jpg)$", order: 40 },
+            { regex: "^\\.+\\/", order: 60 },
+            { type: "dependency", order: 20 },
+            { type: "other", order: 50 },
+          ],
+        },
+      ],
+    },
+    {
+      name: "Sort groups - import = require()",
+      code: dedent`
+        import c from "a.png"
+        import h = require("../b")
+        import b from "dependency-c"
+        import type { A } from "dependency-a"
+        import d = require("b.jpg")
+        import a from "dependency-b"
+        import i from "./b"
+      `,
+      output: dedent`
+        import a from "dependency-b"
+        import b from "dependency-c"
+        import type { A } from "dependency-a"
+        import c from "a.png"
+        import d = require("b.jpg")
+        import h = require("../b")
         import i from "./b"
       `,
       errors: [{ messageId: "unsorted" }],
