@@ -92,7 +92,6 @@ export default {
     const groups = options?.groups ?? []
     const separator = options?.separator ?? ""
     const sorter = getSorter(options)
-    const source = context.getSourceCode()
 
     return {
       Program(program) {
@@ -145,15 +144,19 @@ export default {
             *fix(fixer) {
               for (const [node, complement] of enumerate(nodes, sorted)) {
                 yield fixer.replaceTextRange(
-                  getNodeRange(source, node, !isFirst(node)),
-                  getNodeText(source, complement, !isFirst(complement))
+                  getNodeRange(context.sourceCode, node, !isFirst(node)),
+                  getNodeText(
+                    context.sourceCode,
+                    complement,
+                    !isFirst(complement)
+                  )
                 )
               }
             },
           })
         }
 
-        const text = source.getText()
+        const text = context.sourceCode.getText()
         for (let i = 1; i < nodes.length; i++) {
           const node = nodes[i]
           const prevNode = nodes[i - 1]
@@ -161,7 +164,8 @@ export default {
           // If the node has preceding comments, we want to use the first
           // comment as the starting position for both determining what the
           // current separator is as well as the location for the report.
-          const nodeOrComment = source.getCommentsBefore(node)[0] ?? node
+          const nodeOrComment =
+            context.sourceCode.getCommentsBefore(node)[0] ?? node
 
           // Find the range between nodes (including comments) so we can pull
           // the text and apply fixes to newlines between imports.

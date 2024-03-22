@@ -33,7 +33,7 @@
     "index.cjs"
   ],
   "peerDependencies": {
-    "eslint": ">=6"
+    "eslint": ">=8"
   },
   "dependencies": {
     "@typescript-eslint/experimental-utils": "^5.54.1",
