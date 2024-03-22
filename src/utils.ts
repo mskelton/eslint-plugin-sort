@@ -138,7 +138,6 @@ export function report(
   nodes: Node[],
   sorted: Node[]
 ) {
-  const source = context.getSourceCode()
   const firstUnsortedNode = isUnsorted(nodes, sorted)
 
   if (firstUnsortedNode) {
@@ -148,8 +147,8 @@ export function report(
       *fix(fixer) {
         for (const [node, complement] of enumerate(nodes, sorted)) {
           yield fixer.replaceTextRange(
-            getNodeRange(source, node),
-            getNodeText(source, complement)
+            getNodeRange(context.sourceCode, node),
+            getNodeText(context.sourceCode, complement)
           )
         }
       },
