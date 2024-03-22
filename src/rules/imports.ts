@@ -1,6 +1,8 @@
 import { Rule, AST } from "eslint"
+import { TSESTree } from "@typescript-eslint/experimental-utils"
 import * as ESTree from "estree"
 import { isResolved } from "../resolver.js"
+import * as tsUtils from "../ts-utils.js"
 import {
   docsURL,
   enumerate,
@@ -20,6 +22,8 @@ import {
 
 const sortGroupsTypes = ["side-effect", "dependency", "type", "other"] as const
 
+type Import = ESTree.ImportDeclaration | TSESTree.TSImportEqualsDeclaration
+
 interface SortGroup {
   order: number
   type?: (typeof sortGroupsTypes)[number]
@@ -32,23 +36,25 @@ interface Options extends SorterOptions {
   typeOrder?: TypeOrder
 }
 
-const getSortValue = (node: ESTree.ImportDeclaration) =>
+const getSortValue = (node: Import) =>
   node.type === "ImportDeclaration"
     ? getName(node.source)
-    : getName((node as any).moduleReference.expression)
+    : tsUtils.getName(node.moduleReference)
 
 /**
  * Returns the order of a given node based on the sort groups configured in the
  * rule options. If no sort groups are configured (default), the order returned
  * is always 0.
  */
-function getSortGroup(sortGroups: SortGroup[], node: ESTree.ImportDeclaration) {
+function getSortGroup(sortGroups: SortGroup[], node: Import) {
   const source = getSortValue(node)
 
   for (const { regex, type, order } of sortGroups) {
     switch (type) {
       case "side-effect":
-        if (!node.specifiers.length) return order
+        if (node.type === "ImportDeclaration" && !node.specifiers.length) {
+          return order
+        }
         break
 
       case "type": {
@@ -73,10 +79,7 @@ function getSortGroup(sortGroups: SortGroup[], node: ESTree.ImportDeclaration) {
   return 0
 }
 
-function getImportKindWeight(
-  options: Options | undefined,
-  node: ESTree.ImportDeclaration
-) {
+function getImportKindWeight(options: Options | undefined, node: Import) {
   const typeOrder = options?.typeOrder ?? "preserve"
   const kind = (node as { importKind?: ImportOrExportKind }).importKind
 
@@ -136,7 +139,7 @@ export default {
           // When sorting, the comments for the first node are not copied as
           // we cannot determine if they are comments for the entire file or
           // just the first import.
-          const isFirst = (node: ESTree.ImportDeclaration) => node === nodes[0]
+          const isFirst = (node: ESTree.Node) => node === nodes[0]
 
           context.report({
             node: firstUnsortedNode,

@@ -10,6 +10,9 @@ import { getTextRange } from "./utils.js"
  */
 export function getName(node?: TSESTree.Node): string {
   switch (node?.type) {
+    case AST_NODE_TYPES.TSExternalModuleReference:
+      return getName(node.expression)
+
     case AST_NODE_TYPES.Identifier:
       return node.name
 

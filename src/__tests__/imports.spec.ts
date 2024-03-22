@@ -917,6 +917,35 @@ createRuleTester({
         },
       ],
     },
+    {
+      name: "Sort groups - import = require()",
+      code: dedent`
+        import 'index.css'
+        import 'side-effect'
+        import a from "dependency-b"
+        import b from "dependency-c"
+        import type { A } from "dependency-a"
+        import c from "a.png"
+        import d from "b.jpg"
+        import e = require("a")
+        import f from "b"
+        import g from "c"
+        import h from "../b"
+        import i from "./b"
+      `,
+      options: [
+        {
+          groups: [
+            { type: "side-effect", order: 10 },
+            { type: "type", order: 30 },
+            { regex: "\\.(png|jpg)$", order: 40 },
+            { regex: "^\\.+\\/", order: 60 },
+            { type: "dependency", order: 20 },
+            { type: "other", order: 50 },
+          ],
+        },
+      ],
+    },
   ],
   invalid: [
     {
@@ -1051,6 +1080,7 @@ createRuleTester({
       code: dedent`
         import c from "a.png"
         import h = require("../b")
+        import "./styles.css"
         import b from "dependency-c"
         import type { A } from "dependency-a"
         import d = require("b.jpg")
@@ -1065,11 +1095,13 @@ createRuleTester({
         import d = require("b.jpg")
         import h = require("../b")
         import i from "./b"
+        import "./styles.css"
       `,
       errors: [{ messageId: "unsorted" }],
       options: [
         {
           groups: [
+            { type: "side-effect", order: 60 },
             { type: "type", order: 30 },
             { regex: "\\.(png|jpg)$", order: 40 },
             { regex: "^\\.+\\/", order: 60 },
