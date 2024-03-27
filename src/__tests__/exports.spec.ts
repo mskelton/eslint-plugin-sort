@@ -98,6 +98,29 @@ createRuleTester().run("sort/exports", rule, {
         },
       ],
     },
+    {
+      name: "Ignores relative paths when detecting depedencies",
+      code: dedent`
+        const mark = ''
+
+        export default React
+        export { depA } from 'dependency-a'
+        export { depB } from 'dependency-b'
+        export { relB } from '../../relative-from-node-modules.js'
+        export { relA } from './a'
+        export { mark }
+      `.trim(),
+      options: [
+        {
+          groups: [
+            { type: "default", order: 10 },
+            { type: "sourceless", order: 50 },
+            { type: "dependency", order: 30 },
+            { type: "other", order: 40 },
+          ],
+        },
+      ],
+    },
   ],
   invalid: [
     {
@@ -291,13 +314,47 @@ createRuleTester().run("sort/exports", rule, {
         export * from 'a'
         export { b } from 'b'
         export { mark }
-    `.trim(),
+      `.trim(),
       options: [
         {
           groups: [
             { type: "default", order: 10 },
             { type: "sourceless", order: 50 },
             { regex: "^\\.+\\/", order: 20 },
+            { type: "dependency", order: 30 },
+            { type: "other", order: 40 },
+          ],
+        },
+      ],
+      errors: [{ messageId: "unsorted" }],
+    },
+    {
+      name: "Ignores relative paths when detecting depedencies",
+      code: dedent`
+        const mark = ''
+
+        export { depB } from 'dependency-b'
+        export { mark }
+        export default React
+        export { relB } from '../../relative-from-node-modules.js'
+        export { relA } from './a'
+        export { depA } from 'dependency-a'
+      `.trim(),
+      output: dedent`
+        const mark = ''
+
+        export default React
+        export { depA } from 'dependency-a'
+        export { depB } from 'dependency-b'
+        export { relB } from '../../relative-from-node-modules.js'
+        export { relA } from './a'
+        export { mark }
+      `.trim(),
+      options: [
+        {
+          groups: [
+            { type: "default", order: 10 },
+            { type: "sourceless", order: 50 },
             { type: "dependency", order: 30 },
             { type: "other", order: 40 },
           ],
@@ -456,7 +513,7 @@ createRuleTester({
         export type { A } from 'dependency-a'
         export { mark }
         export default React
-    `.trim(),
+      `.trim(),
       options: [
         {
           groups: [
