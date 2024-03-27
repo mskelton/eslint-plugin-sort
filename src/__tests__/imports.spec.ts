@@ -106,6 +106,29 @@ createRuleTester().run("sort/imports", rule, {
         },
       ],
     },
+    {
+      name: "Ignores relative paths when detecting depedencies",
+      code: dedent`
+        import 'index.css'
+        import 'side-effect'
+        import a from "dependency-b"
+        import b from "dependency-c"
+        import d from "b.jpg"
+        import c from "../../relative-from-node-modules.js"
+        import h from "../b"
+        import i from "./b"
+      `,
+      options: [
+        {
+          groups: [
+            { type: "side-effect", order: 10 },
+            { regex: "\\.(png|jpg)$", order: 30 },
+            { type: "dependency", order: 20 },
+            { type: "other", order: 40 },
+          ],
+        },
+      ],
+    },
 
     // Separator
     {
@@ -1107,6 +1130,40 @@ createRuleTester({
             { regex: "^\\.+\\/", order: 60 },
             { type: "dependency", order: 20 },
             { type: "other", order: 50 },
+          ],
+        },
+      ],
+    },
+    {
+      name: "Ignores relative paths when detecting depedencies",
+      code: dedent`
+        import 'index.css'
+        import c from "../../relative-from-node-modules.js"
+        import b from "dependency-c"
+        import d from "b.jpg"
+        import 'side-effect'
+        import h from "../b"
+        import a from "dependency-b"
+        import i from "./b"
+      `,
+      errors: [{ messageId: "unsorted" }],
+      output: dedent`
+        import 'index.css'
+        import 'side-effect'
+        import a from "dependency-b"
+        import b from "dependency-c"
+        import d from "b.jpg"
+        import c from "../../relative-from-node-modules.js"
+        import h from "../b"
+        import i from "./b"
+      `,
+      options: [
+        {
+          groups: [
+            { type: "side-effect", order: 10 },
+            { regex: "\\.(png|jpg)$", order: 30 },
+            { type: "dependency", order: 20 },
+            { type: "other", order: 40 },
           ],
         },
       ],

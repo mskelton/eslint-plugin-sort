@@ -3,7 +3,10 @@ import { RuleTester } from "eslint"
 import { it, describe } from "vitest"
 
 globalThis.resolver = (source) => {
-  return source.startsWith("dependency-")
+  return (
+    source.startsWith("dependency-") ||
+    source === "../../relative-from-node-modules.js"
+  )
 }
 
 export function createValidCodeVariants(
