@@ -25,12 +25,16 @@
   },
   "type": "module",
   "exports": {
-    "import": "./dist/index.js",
-    "require": "./index.cjs"
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./index.cjs"
+    }
   },
   "files": [
     "dist",
-    "index.cjs"
+    "index.cjs",
+    "index.d.ts"
   ],
   "peerDependencies": {
     "eslint": ">=8"
