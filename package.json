@@ -24,6 +24,7 @@
     "ts": "tsc"
   },
   "type": "module",
+  "types": "./index.d.ts",
   "exports": {
     ".": {
       "types": "./index.d.ts",
