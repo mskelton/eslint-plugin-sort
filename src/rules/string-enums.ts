@@ -1,8 +1,4 @@
-import {
-  ESLintUtils,
-  TSESLint,
-  TSESTree,
-} from "@typescript-eslint/utils"
+import { ESLintUtils, TSESLint, TSESTree } from "@typescript-eslint/utils"
 import { getNodeText } from "../ts-utils.js"
 import { docsURL, enumerate, getSorter, isUnsorted } from "../utils.js"
 
@@ -18,13 +14,12 @@ export default ESLintUtils.RuleCreator.withoutDocs<
   "unsorted"
 >({
   create(context) {
-    const source = context.getSourceCode()
     const options = context.options[0]
     const sorter = getSorter(options)
 
     return {
       TSEnumDeclaration(node) {
-        const nodes = node.members
+        const nodes = node.body.members ?? node.members
 
         // If there are one or fewer properties, there is nothing to sort
         if (nodes.length < 2) return
@@ -43,7 +38,10 @@ export default ESLintUtils.RuleCreator.withoutDocs<
             messageId: "unsorted",
             *fix(fixer) {
               for (const [node, complement] of enumerate(nodes, sorted)) {
-                yield fixer.replaceText(node, getNodeText(source, complement))
+                yield fixer.replaceText(
+                  node,
+                  getNodeText(context.sourceCode, complement)
+                )
               }
             },
           })
@@ -53,7 +51,6 @@ export default ESLintUtils.RuleCreator.withoutDocs<
   },
   meta: {
     docs: {
-      recommended: false,
       url: docsURL("string-enums"),
       description: `Sorts TypeScript string enums alphabetically and case insensitive in ascending order.`,
     },

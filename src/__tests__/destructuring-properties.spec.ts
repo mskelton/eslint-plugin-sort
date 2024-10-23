@@ -3,7 +3,7 @@ import { createRuleTester, createValidCodeVariants } from "../test-utils.js"
 
 const ruleTester = createRuleTester()
 
-ruleTester.run("sort/destructuring-properties", rule, {
+ruleTester.run("destructuring-properties", rule, {
   valid: [
     ...createValidCodeVariants("let {} = {}"),
     ...createValidCodeVariants("let { a } = {}"),

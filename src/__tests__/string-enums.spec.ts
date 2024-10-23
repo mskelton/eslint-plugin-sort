@@ -16,7 +16,7 @@ const createValidCodeVariants = (
   { code, options: [{ caseSensitive: true, natural: true }] },
 ]
 
-ruleTester.run("sort/string-enums", rule, {
+ruleTester.run("string-enums", rule, {
   valid: [
     ...createValidCodeVariants("enum Foo {A='a'}"),
     ...createValidCodeVariants("enum Foo {a='a', b='b'}"),

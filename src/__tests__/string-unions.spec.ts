@@ -16,7 +16,7 @@ const createValidCodeVariants = (
   { code, options: [{ caseSensitive: true, natural: true }] },
 ]
 
-ruleTester.run("sort/string-unions", rule, {
+ruleTester.run("string-unions", rule, {
   valid: [
     ...createValidCodeVariants("type A = 'a'"),
     ...createValidCodeVariants("type A = 'a' | 'b'"),

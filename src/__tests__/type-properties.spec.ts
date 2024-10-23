@@ -16,7 +16,7 @@ const createValidCodeVariants = (
   { code, options: [{ caseSensitive: true, natural: true }] },
 ]
 
-ruleTester.run("sort/type-properties", rule, {
+ruleTester.run("type-properties", rule, {
   valid: [
     // Interfaces
     ...createValidCodeVariants("interface A {}"),

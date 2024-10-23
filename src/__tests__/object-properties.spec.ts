@@ -3,7 +3,7 @@ import { createRuleTester, createValidCodeVariants } from "../test-utils.js"
 
 const ruleTester = createRuleTester()
 
-ruleTester.run("sort/object-properties", rule, {
+ruleTester.run("object-properties", rule, {
   valid: [
     // Empty object
     ...createValidCodeVariants("var a = {}"),

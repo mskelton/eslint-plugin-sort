@@ -1,8 +1,4 @@
-import {
-  ESLintUtils,
-  TSESLint,
-  TSESTree,
-} from "@typescript-eslint/utils"
+import { ESLintUtils, TSESLint, TSESTree } from "@typescript-eslint/utils"
 import { getNodeText } from "../ts-utils.js"
 import { docsURL, enumerate, getSorter, isUnsorted } from "../utils.js"
 
@@ -19,7 +15,6 @@ export default ESLintUtils.RuleCreator.withoutDocs<
   "unsorted"
 >({
   create(context) {
-    const source = context.getSourceCode()
     const options = context.options[0]
     const sorter = getSorter(options)
 
@@ -44,7 +39,10 @@ export default ESLintUtils.RuleCreator.withoutDocs<
             messageId: "unsorted",
             *fix(fixer) {
               for (const [node, complement] of enumerate(nodes, sorted)) {
-                yield fixer.replaceText(node, getNodeText(source, complement))
+                yield fixer.replaceText(
+                  node,
+                  getNodeText(context.sourceCode, complement)
+                )
               }
             },
           })
@@ -54,7 +52,6 @@ export default ESLintUtils.RuleCreator.withoutDocs<
   },
   meta: {
     docs: {
-      recommended: false,
       url: docsURL("string-unions"),
       description: `Sorts TypeScript string unions alphabetically and case insensitive in ascending order.`,
     },

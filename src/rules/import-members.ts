@@ -1,5 +1,5 @@
 import { Rule } from "eslint"
-import { docsURL, filterNodes, getSorter, report } from "../utils.js"
+import { docsURL, filterNodes, getName, getSorter, report } from "../utils.js"
 
 export default {
   create(context) {
@@ -18,7 +18,7 @@ export default {
         const sorted = nodes
           .slice()
           .sort((nodeA, nodeB) =>
-            sorter(nodeA.imported.name, nodeB.imported.name)
+            sorter(getName(nodeA.imported), getName(nodeB.imported))
           )
 
         report(context, nodes, sorted)

@@ -1,6 +1,10 @@
-import { ESLintUtils } from "@typescript-eslint/utils"
-import { RuleTester } from "eslint"
+import parser from "@typescript-eslint/parser"
 import { it, describe } from "vitest"
+import { RuleTester, Linter } from "eslint"
+
+RuleTester.describe = describe
+RuleTester.it = it
+RuleTester.itOnly = it.only
 
 globalThis.resolver = (source) => {
   return (
@@ -20,31 +24,31 @@ export function createValidCodeVariants(
   ]
 }
 
-export function createRuleTester(
-  config: unknown = {
-    parserOptions: {
-      ecmaVersion: 2018,
-      sourceType: "module",
+export function createRuleTester(config?: Linter.Config) {
+  return new RuleTester({
+    ...config,
+    languageOptions: {
+      ...config?.languageOptions,
+      parserOptions: {
+        ecmaVersion: 2018,
+        sourceType: "module",
+        ...config?.languageOptions?.parserOptions,
+      },
     },
-  }
-) {
-  const tester = RuleTester as any
-  tester.describe = describe
-  tester.it = it
-  tester.itOnly = it.only
-
-  return new RuleTester(config)
+  })
 }
 
-export function createTsRuleTester(
-  config?: Partial<ConstructorParameters<typeof ESLintUtils.RuleTester>[0]>
-) {
-  ESLintUtils.RuleTester.describe = describe
-  ESLintUtils.RuleTester.it = it
-  ESLintUtils.RuleTester.itOnly = it.only
-
-  return new ESLintUtils.RuleTester({
-    parser: "@typescript-eslint/parser",
+export function createTsRuleTester(config?: Linter.Config) {
+  return new RuleTester({
     ...config,
+    languageOptions: {
+      ...config?.languageOptions,
+      parser,
+      parserOptions: {
+        ecmaVersion: 2018,
+        sourceType: "module",
+        ...config?.languageOptions?.parserOptions,
+      },
+    },
   })
 }

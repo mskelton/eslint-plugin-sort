@@ -41,14 +41,13 @@ export default ESLintUtils.RuleCreator.withoutDocs<
   "unsorted"
 >({
   create(context) {
-    const source = context.getSourceCode()
     const options = context.options[0]
     const sorter = getSorter(options)
 
     function getRangeWithoutDelimiter(node: TSESTree.Node): TSESTree.Range {
-      const range = getNodeRange(source, node)
+      const range = getNodeRange(context.sourceCode, node)
 
-      return isDelimiter(source.getLastToken(node))
+      return isDelimiter(context.sourceCode.getLastToken(node))
         ? [range[0], range[1] - 1]
         : range
     }
@@ -76,7 +75,7 @@ export default ESLintUtils.RuleCreator.withoutDocs<
             for (const [node, complement] of enumerate(nodes, sorted)) {
               yield fixer.replaceTextRange(
                 getRangeWithoutDelimiter(node),
-                getNodeText(source, complement).replace(/[;,]$/, "")
+                getNodeText(context.sourceCode, complement).replace(/[;,]$/, "")
               )
             }
           },
@@ -95,7 +94,6 @@ export default ESLintUtils.RuleCreator.withoutDocs<
   },
   meta: {
     docs: {
-      recommended: false,
       url: docsURL("type-properties"),
       description: `Sorts TypeScript type properties alphabetically and case insensitive in ascending order.`,
     },

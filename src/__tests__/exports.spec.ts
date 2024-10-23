@@ -1,10 +1,9 @@
-import { createRequire } from "node:module"
 import dedent from "dedent"
-import { createRuleTester } from "../test-utils.js"
+import { createRuleTester, createTsRuleTester } from "../test-utils.js"
 
 const { default: rule } = await import("../rules/exports.js")
 
-createRuleTester().run("sort/exports", rule, {
+createRuleTester().run("exports", rule, {
   valid: [
     "export { a } from './a'",
     `
@@ -366,13 +365,14 @@ createRuleTester().run("sort/exports", rule, {
 })
 
 // TypeScript rules
-createRuleTester({
-  parser: createRequire(import.meta.url).resolve("@typescript-eslint/parser"),
-  parserOptions: {
-    ecmaVersion: 2018,
-    sourceType: "module",
+createTsRuleTester({
+  languageOptions: {
+    parserOptions: {
+      ecmaVersion: 2018,
+      sourceType: "module",
+    },
   },
-}).run("sort/exports", rule, {
+}).run("exports", rule, {
   valid: [
     // typeOrder
     {

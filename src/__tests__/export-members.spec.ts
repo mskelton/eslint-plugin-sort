@@ -3,7 +3,7 @@ import { createRuleTester, createValidCodeVariants } from "../test-utils.js"
 
 const ruleTester = createRuleTester()
 
-ruleTester.run("sort/export-members", rule, {
+ruleTester.run("export-members", rule, {
   valid: [
     ...createValidCodeVariants("export {} from 'a'"),
     ...createValidCodeVariants("export { a } from 'a'"),
