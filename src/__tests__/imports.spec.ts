@@ -1,5 +1,6 @@
 import dedent from "dedent"
-import { createRuleTester, createTsRuleTester } from "../test-utils.js"
+import parser from "@typescript-eslint/parser"
+import { createRuleTester } from "../test-utils.js"
 
 const { default: rule } = await import("../rules/imports.js")
 
@@ -846,7 +847,7 @@ createRuleTester().run("imports - JS", rule, {
 })
 
 // TypeScript rules
-createTsRuleTester().run("imports - TS", rule, {
+createRuleTester({ languageOptions: { parser } }).run("imports - TS", rule, {
   valid: [
     {
       name: "Programs without imports",

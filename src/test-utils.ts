@@ -1,10 +1,16 @@
-import parser from "@typescript-eslint/parser"
-import { it, describe } from "vitest"
+import { it, describe, afterAll } from "vitest"
 import { RuleTester, Linter } from "eslint"
+import parser from "@typescript-eslint/parser"
+import { RuleTester as TSRuleTester } from "@typescript-eslint/rule-tester"
 
 RuleTester.describe = describe
 RuleTester.it = it
 RuleTester.itOnly = it.only
+
+TSRuleTester.describe = describe
+TSRuleTester.it = it
+TSRuleTester.itOnly = it.only
+TSRuleTester.afterAll = afterAll
 
 globalThis.resolver = (source) => {
   return (
@@ -39,6 +45,9 @@ export function createRuleTester(config?: Linter.Config) {
 }
 
 export function createTsRuleTester(config?: Linter.Config) {
+  // TSRuleTester is broken
+  // https://github.com/typescript-eslint/typescript-eslint/issues/9676
+  // https://github.com/typescript-eslint/typescript-eslint/issues/10191
   return new RuleTester({
     ...config,
     languageOptions: {
@@ -50,5 +59,5 @@ export function createTsRuleTester(config?: Linter.Config) {
         ...config?.languageOptions?.parserOptions,
       },
     },
-  })
+  }) as unknown as TSRuleTester
 }

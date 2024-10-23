@@ -1,4 +1,4 @@
-import { TSESLint } from "@typescript-eslint/utils"
+import { RunTests } from "@typescript-eslint/rule-tester"
 import rule from "../rules/type-properties.js"
 import { createTsRuleTester } from "../test-utils.js"
 
@@ -6,7 +6,7 @@ const ruleTester = createTsRuleTester()
 
 const createValidCodeVariants = (
   code: string
-): TSESLint.RunTests<
+): RunTests<
   "unsorted",
   [{ caseSensitive?: boolean; natural?: boolean }]
 >["valid"] => [

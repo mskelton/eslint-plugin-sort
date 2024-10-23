@@ -1,5 +1,6 @@
+import parser from "@typescript-eslint/parser"
 import dedent from "dedent"
-import { createRuleTester, createTsRuleTester } from "../test-utils.js"
+import { createRuleTester } from "../test-utils.js"
 
 const { default: rule } = await import("../rules/exports.js")
 
@@ -365,14 +366,7 @@ createRuleTester().run("exports", rule, {
 })
 
 // TypeScript rules
-createTsRuleTester({
-  languageOptions: {
-    parserOptions: {
-      ecmaVersion: 2018,
-      sourceType: "module",
-    },
-  },
-}).run("exports", rule, {
+createRuleTester({ languageOptions: { parser } }).run("exports", rule, {
   valid: [
     // typeOrder
     {
