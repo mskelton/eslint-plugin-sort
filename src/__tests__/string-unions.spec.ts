@@ -1,4 +1,4 @@
-import { TSESLint } from "@typescript-eslint/experimental-utils"
+import { TSESLint } from "@typescript-eslint/utils"
 import rule from "../rules/string-unions.js"
 import { createTsRuleTester } from "../test-utils.js"
 

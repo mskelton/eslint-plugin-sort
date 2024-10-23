@@ -2,7 +2,7 @@ import {
   ESLintUtils,
   TSESLint,
   TSESTree,
-} from "@typescript-eslint/experimental-utils"
+} from "@typescript-eslint/utils"
 import { getNodeText } from "../ts-utils.js"
 import { docsURL, enumerate, getSorter, isUnsorted } from "../utils.js"
 

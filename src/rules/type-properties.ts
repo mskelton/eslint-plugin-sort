@@ -3,7 +3,7 @@ import {
   ESLintUtils,
   TSESLint,
   TSESTree,
-} from "@typescript-eslint/experimental-utils"
+} from "@typescript-eslint/utils"
 import { getName, getNodeRange, getNodeText, isDelimiter } from "../ts-utils.js"
 import { docsURL, enumerate, getSorter, isUnsorted } from "../utils.js"
 

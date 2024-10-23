@@ -1,4 +1,4 @@
-import { ESLintUtils } from "@typescript-eslint/experimental-utils"
+import { ESLintUtils } from "@typescript-eslint/utils"
 import { RuleTester } from "eslint"
 import { it, describe } from "vitest"
 

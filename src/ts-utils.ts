@@ -2,7 +2,7 @@ import {
   AST_NODE_TYPES,
   TSESLint,
   TSESTree,
-} from "@typescript-eslint/experimental-utils"
+} from "@typescript-eslint/utils"
 import { getTextRange } from "./utils.js"
 
 /**

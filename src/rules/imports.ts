@@ -1,5 +1,5 @@
 import { Rule, AST } from "eslint"
-import { TSESTree } from "@typescript-eslint/experimental-utils"
+import { TSESTree } from "@typescript-eslint/utils"
 import * as ESTree from "estree"
 import { isResolved } from "../resolver.js"
 import * as tsUtils from "../ts-utils.js"

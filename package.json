@@ -18,7 +18,7 @@
   "scripts": {
     "build": "tsup ./src/index.ts --format cjs,esm",
     "format": "prettier --write .",
-    "lint": "eslint . --ext .ts",
+    "lint": "eslint .",
     "test": "vitest",
     "test:watch": "vitest --reporter=dot",
     "ts": "tsc"
@@ -38,31 +38,28 @@
     "index.d.ts"
   ],
   "peerDependencies": {
-    "eslint": ">=8"
+    "eslint": ">=8.56.0"
   },
   "dependencies": {
-    "@typescript-eslint/experimental-utils": "^5.54.1",
+    "@typescript-eslint/utils": "^8.11.0",
     "isomorphic-resolve": "^1.0.0",
     "natural-compare": "^1.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.0",
     "@mskelton/semantic-release-config": "^1.0.1",
     "@mskelton/tsconfig": "^2.0.0",
     "@types/dedent": "^0.7.0",
-    "@types/eslint": "^8.21.1",
-    "@types/estree": "^1.0.0",
+    "@types/estree": "^1.0.6",
     "@types/natural-compare": "^1.4.1",
-    "@typescript-eslint/eslint-plugin": "^5.54.1",
-    "@typescript-eslint/parser": "^5.54.1",
     "bun-types": "^1.0.1",
     "dedent": "^0.7.0",
     "eslint": "^8.36.0",
-    "eslint-config-prettier": "^8.7.0",
+    "eslint-config-prettier": "^8.10.0",
     "prettier": "^2.8.4",
     "semantic-release": "^23.0.2",
     "tsup": "^6.6.3",
     "typescript": "^4.9.5",
+    "typescript-eslint": "^8.11.0",
     "vitest": "^0.29.2"
   }
 }

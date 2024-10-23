@@ -21,7 +21,7 @@ export function isResolved(source: string) {
     resolve(source)
     resolveCache.set(source, true)
     return true
-  } catch (e) {
+  } catch {
     resolveCache.set(source, false)
     return false
   }
