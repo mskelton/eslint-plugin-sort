@@ -45,10 +45,7 @@ export function createRuleTester(config?: Linter.Config) {
 }
 
 export function createTsRuleTester(config?: Linter.Config) {
-  // TSRuleTester is broken
-  // https://github.com/typescript-eslint/typescript-eslint/issues/9676
-  // https://github.com/typescript-eslint/typescript-eslint/issues/10191
-  return new RuleTester({
+  return new TSRuleTester({
     ...config,
     languageOptions: {
       ...config?.languageOptions,
@@ -59,5 +56,5 @@ export function createTsRuleTester(config?: Linter.Config) {
         ...config?.languageOptions?.parserOptions,
       },
     },
-  }) as unknown as TSRuleTester
+  })
 }

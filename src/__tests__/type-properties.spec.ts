@@ -126,9 +126,10 @@ ruleTester.run("type-properties", rule, {
     // Nested
     {
       code: "interface A {b:string; a:{b:string; a:number}}",
-      output: "interface A {a:{b:string; a:number}; b:string}",
-      // Rule tester will not run multiple fix iterations, but as long as we
-      // have two errors, we know the nested rule was caught.
+      output: [
+        "interface A {a:{b:string; a:number}; b:string}",
+        "interface A {a:{a:number; b:string}; b:string}",
+      ],
       errors: [{ messageId: "unsorted" }, { messageId: "unsorted" }],
     },
 
